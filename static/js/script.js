@@ -1,10 +1,10 @@
 /**
- * ResumeAI - Gaming-Inspired Futuristic Interactive Architecture & Engine
- * Midnight-Black • Electric-Purple • Cyan-Blue • Cyberpunk 3D Perspective Grid
+ * ResumeAI - Premium Light-Themed AI Recruitment Platform Architecture & Engine
+ * Arctic Blue (#2563EB) • Teal (#0D9488) • Ice White (#F8FAFC) • Pure White (#FFFFFF)
  */
 
 // ==========================================================================
-// 0. LIVE ANIMATED WALLPAPER: 3D CYBER DIGITAL GRID & NEON PARTICLES
+// 0. LIVE ANIMATED WALLPAPER: ARCTIC BLUE & TEAL PARTICLES & DIGITAL GRID
 // ==========================================================================
 
 function initNeuralWallpaper() {
@@ -27,7 +27,7 @@ function initNeuralWallpaper() {
     const mouse = {
         x: null,
         y: null,
-        radius: 160
+        radius: 170
     };
 
     window.addEventListener('mousemove', (e) => {
@@ -52,25 +52,26 @@ function initNeuralWallpaper() {
 
     function initNodes() {
         nodes = [];
-        const nodeCount = Math.floor(Math.min(width * height / 17000, 65));
+        const nodeCount = Math.floor(Math.min(width * height / 16000, 70));
+        // Arctic Blue & Teal Palette
         const colors = [
-            'rgba(168, 85, 247, ', // electric purple
-            'rgba(0, 242, 254, ',  // neon cyan
-            'rgba(124, 58, 237, ', // deep purple
-            'rgba(56, 189, 248, '  // bright cyan
+            'rgba(37, 99, 235, ',  // Arctic Blue
+            'rgba(13, 148, 136, ', // Teal
+            'rgba(59, 130, 246, ', // Soft Sky Blue
+            'rgba(20, 184, 166, '  // Vibrant Teal
         ];
 
-        for (let i = 0; i < Math.max(nodeCount, 32); i++) {
+        for (let i = 0; i < Math.max(nodeCount, 36); i++) {
             const colorPrefix = colors[i % colors.length];
             nodes.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                vx: prefersReducedMotion ? 0 : (Math.random() - 0.5) * 0.5,
-                vy: prefersReducedMotion ? 0 : (Math.random() - 0.5) * 0.5,
+                vx: prefersReducedMotion ? 0 : (Math.random() - 0.5) * 0.45,
+                vy: prefersReducedMotion ? 0 : (Math.random() - 0.5) * 0.45,
                 radius: Math.random() * 1.8 + 1.2,
                 colorPrefix: colorPrefix,
-                baseAlpha: Math.random() * 0.45 + 0.35,
-                pulseSpeed: Math.random() * 0.025 + 0.015,
+                baseAlpha: Math.random() * 0.4 + 0.35,
+                pulseSpeed: Math.random() * 0.02 + 0.015,
                 pulseVal: Math.random() * Math.PI
             });
         }
@@ -80,22 +81,22 @@ function initNeuralWallpaper() {
         ctx.clearRect(0, 0, width, height);
 
         // ----------------------------------------------------
-        // 1. Draw 3D Futuristic Perspective Digital Grid
+        // 1. Draw Subtle Light Digital Perspective Grid
         // ----------------------------------------------------
         ctx.save();
-        const horizonY = height * 0.46;
-        const parallaxX = mouse.x !== null ? (mouse.x - width * 0.5) * 0.04 : 0;
+        const horizonY = height * 0.45;
+        const parallaxX = mouse.x !== null ? (mouse.x - width * 0.5) * 0.03 : 0;
         const vanishingX = width * 0.5 + parallaxX;
 
-        // Radial perspective lines radiating towards the viewer
-        const radialLineCount = Math.floor(width / 65);
+        // Radial perspective lines
+        const radialLineCount = Math.floor(width / 70);
         for (let i = -radialLineCount; i <= radialLineCount; i++) {
-            const bottomX = width * 0.5 + (i * 75) + (parallaxX * 2.2);
+            const bottomX = width * 0.5 + (i * 80) + (parallaxX * 2.0);
             const grad = ctx.createLinearGradient(vanishingX, horizonY, bottomX, height);
-            grad.addColorStop(0, 'rgba(124, 58, 237, 0)');
-            grad.addColorStop(0.2, 'rgba(168, 85, 247, 0.06)');
-            grad.addColorStop(0.65, 'rgba(0, 242, 254, 0.14)');
-            grad.addColorStop(1, 'rgba(0, 242, 254, 0.28)');
+            grad.addColorStop(0, 'rgba(37, 99, 235, 0)');
+            grad.addColorStop(0.25, 'rgba(37, 99, 235, 0.03)');
+            grad.addColorStop(0.7, 'rgba(13, 148, 136, 0.07)');
+            grad.addColorStop(1, 'rgba(37, 99, 235, 0.12)');
 
             ctx.strokeStyle = grad;
             ctx.lineWidth = 1;
@@ -113,10 +114,10 @@ function initNeuralWallpaper() {
             const y = horizonY + Math.pow(progress, 2.3) * (height - horizonY);
 
             if (y > horizonY && y <= height) {
-                const alpha = Math.min(1, Math.pow(progress, 1.6)) * 0.22;
+                const alpha = Math.min(1, Math.pow(progress, 1.6)) * 0.12;
                 ctx.strokeStyle = i % 2 === 0 
-                    ? `rgba(0, 242, 254, ${alpha})` 
-                    : `rgba(168, 85, 247, ${alpha})`;
+                    ? `rgba(37, 99, 235, ${alpha})` 
+                    : `rgba(13, 148, 136, ${alpha})`;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(0, y);
@@ -126,14 +127,14 @@ function initNeuralWallpaper() {
         }
 
         if (!prefersReducedMotion) {
-            gridOffset = (gridOffset + 0.45) % gridStep;
+            gridOffset = (gridOffset + 0.35) % gridStep;
         }
         ctx.restore();
 
         // ----------------------------------------------------
-        // 2. Draw Floating Neon Particles & Proximity Lasers
+        // 2. Draw Floating Blue & Teal Particles & Connectors
         // ----------------------------------------------------
-        const connectionDistance = 140;
+        const connectionDistance = 145;
 
         // Node-to-node proximity lines
         for (let i = 0; i < nodes.length; i++) {
@@ -143,18 +144,18 @@ function initNeuralWallpaper() {
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
                 if (dist < connectionDistance) {
-                    const alpha = (1 - dist / connectionDistance) * 0.18;
+                    const alpha = (1 - dist / connectionDistance) * 0.15;
                     ctx.beginPath();
                     ctx.moveTo(nodes[i].x, nodes[i].y);
                     ctx.lineTo(nodes[j].x, nodes[j].y);
-                    ctx.strokeStyle = `rgba(168, 85, 247, ${alpha})`;
+                    ctx.strokeStyle = `rgba(37, 99, 235, ${alpha})`;
                     ctx.lineWidth = 0.85;
                     ctx.stroke();
                 }
             }
         }
 
-        // Mouse laser connections
+        // Mouse proximity connections
         if (mouse.x !== null && mouse.y !== null && !prefersReducedMotion) {
             for (let i = 0; i < nodes.length; i++) {
                 const dx = nodes[i].x - mouse.x;
@@ -162,12 +163,12 @@ function initNeuralWallpaper() {
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
                 if (dist < mouse.radius) {
-                    const alpha = (1 - dist / mouse.radius) * 0.5;
+                    const alpha = (1 - dist / mouse.radius) * 0.45;
                     ctx.beginPath();
                     ctx.moveTo(nodes[i].x, nodes[i].y);
                     ctx.lineTo(mouse.x, mouse.y);
-                    ctx.strokeStyle = `rgba(0, 242, 254, ${alpha})`;
-                    ctx.lineWidth = 1.2;
+                    ctx.strokeStyle = `rgba(13, 148, 136, ${alpha})`;
+                    ctx.lineWidth = 1.1;
                     ctx.stroke();
                 }
             }
@@ -192,23 +193,23 @@ function initNeuralWallpaper() {
                     const dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist < mouse.radius && dist > 0) {
                         const force = (mouse.radius - dist) / mouse.radius;
-                        n.x += (dx / dist) * force * 0.55;
-                        n.y += (dy / dist) * force * 0.55;
+                        n.x += (dx / dist) * force * 0.45;
+                        n.y += (dy / dist) * force * 0.45;
                     }
                 }
 
                 n.pulseVal += n.pulseSpeed;
             }
 
-            const currentAlpha = n.baseAlpha + Math.sin(n.pulseVal) * 0.18;
+            const currentAlpha = n.baseAlpha + Math.sin(n.pulseVal) * 0.15;
 
             // Outer soft glow halo
             ctx.beginPath();
-            ctx.arc(n.x, n.y, n.radius * 2.8, 0, Math.PI * 2);
-            ctx.fillStyle = `${n.colorPrefix}${Math.max(0, currentAlpha * 0.28)})`;
+            ctx.arc(n.x, n.y, n.radius * 2.6, 0, Math.PI * 2);
+            ctx.fillStyle = `${n.colorPrefix}${Math.max(0, currentAlpha * 0.22)})`;
             ctx.fill();
 
-            // Inner crisp laser core
+            // Inner crisp core
             ctx.beginPath();
             ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
             ctx.fillStyle = `${n.colorPrefix}${Math.min(1, currentAlpha)})`;
@@ -369,18 +370,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+function formatFileSize(bytes) {
+    if (!bytes || bytes === 0) return '0 KB';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
 function handleFileSelect(files) {
     if (!files || files.length === 0) return;
 
     currentFilesDataTransfer = new DataTransfer();
     selectedFilesList = [];
+    let invalidCount = 0;
 
     Array.from(files).forEach(file => {
         if (file.name.toLowerCase().endsWith('.pdf')) {
             currentFilesDataTransfer.items.add(file);
             selectedFilesList.push(file);
+        } else {
+            invalidCount++;
         }
     });
+
+    if (invalidCount > 0) {
+        alert(`${invalidCount} file(s) ignored. Only PDF resumes are supported.`);
+    }
 
     const fileInput = document.getElementById('resumesInput');
     if (fileInput) {
@@ -408,7 +424,7 @@ function renderSelectedFileChips() {
     selectedWrap.style.display = 'block';
     chipsContainer.innerHTML = '';
 
-    const maxDisplay = 2;
+    const maxDisplay = 4;
     const displayFiles = selectedFilesList.slice(0, maxDisplay);
     const remainingCount = selectedFilesList.length - maxDisplay;
 
@@ -418,7 +434,8 @@ function renderSelectedFileChips() {
         chip.innerHTML = `
             <i class="fa-solid fa-file-pdf file-chip-icon"></i>
             <span class="file-chip-name" title="${file.name}">${file.name}</span>
-            <span class="file-chip-remove" onclick="removeSelectedFile(event, ${index})">&times;</span>
+            <span class="file-chip-size" style="font-size: 0.72rem; color: var(--color-slate-muted); margin: 0 4px;">(${formatFileSize(file.size)})</span>
+            <span class="file-chip-remove" onclick="removeSelectedFile(event, ${index})" title="Remove file">&times;</span>
         `;
         chipsContainer.appendChild(chip);
     });
@@ -426,7 +443,7 @@ function renderSelectedFileChips() {
     if (remainingCount > 0) {
         const moreBadge = document.createElement('div');
         moreBadge.className = 'file-chip-more';
-        moreBadge.textContent = `+ ${remainingCount} more files`;
+        moreBadge.textContent = `+ ${remainingCount} more file(s)`;
         chipsContainer.appendChild(moreBadge);
     }
 }

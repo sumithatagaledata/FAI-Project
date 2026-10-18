@@ -2,119 +2,130 @@
 
 {% block title %}Recruiter Screening Dashboard - ResumeAI{% endblock %}
 
+{% block page_title %}Recruiter Screening Dashboard{% endblock %}
+
 {% block content %}
 <div class="dashboard-workspace-wrap">
-    <!-- Top Greeting & Actions Bar -->
-    <div class="workspace-header-bar">
+    <!-- Top Greeting Banner & Instant Demo CTA -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 16px;">
         <div>
-            <div class="cyber-badge mb-2">
-                <span class="cyber-dot"></span>
-                <span>SCREENING INTELLIGENCE WORKSPACE</span>
+            <div class="hero-kicker-pill" style="margin-bottom: 8px;">
+                <span class="pulsing-teal-dot"></span>
+                <span>CANDIDATE INTELLIGENCE WORKSPACE</span>
             </div>
-            <h1 class="results-job-title">Recruiter Screening Dashboard</h1>
-            <p class="section-sub">Configure role benchmarks and evaluate candidate cohorts with deep skill vector matching.</p>
+            <h2 style="font-size: 1.85rem; font-weight: 800; color: var(--color-slate-title); letter-spacing: -0.02em;">
+                Screening Workspace &amp; Cohorts
+            </h2>
+            <p style="font-size: 0.95rem; color: var(--color-slate-muted);">
+                Define target role benchmarks and screen applicant PDF cohorts with deterministic AI evaluation.
+            </p>
         </div>
-        <div class="hero-cta-group" style="margin-bottom: 0;">
-            <button type="button" class="btn-gaming-secondary" style="padding: 10px 20px; font-size: 0.85rem;" onclick="fillSampleJobData()">
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <button type="button" class="btn-nav-demo" onclick="fillSampleJobData()" style="padding: 10px 18px;">
                 <i class="fa-solid fa-file-pen"></i> Auto-fill Sample Role
             </button>
-            <button type="button" class="btn-gaming-primary" style="padding: 10px 24px; font-size: 0.85rem;" onclick="triggerSampleDemo()">
-                <i class="fa-solid fa-gamepad"></i> 1-Click Demo
+            <button type="button" class="btn-hero-demo" onclick="triggerSampleDemo()" style="padding: 10px 20px; font-size: 0.92rem;">
+                <i class="fa-solid fa-play"></i> 1-Click Demo
             </button>
         </div>
     </div>
 
-    <!-- 1. SCREENING INPUT FORM & DROPZONE -->
-    <div class="card mb-5">
+    <!-- ====================================================================
+         1. 4-STEP SCREENING WORKFLOW: STEP 1 (JOB REQS) & STEP 2 (UPLOAD RESUMES)
+         ==================================================================== -->
+    <section class="card-light-panel mb-5" id="screeningWorkflowSection">
         <form action="{{ url_for('screen_resumes') }}" method="POST" enctype="multipart/form-data" id="dashboardScreeningForm" onsubmit="return handleFormSubmit(event)">
-            <div class="screening-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px;">
-                <!-- Left: Job Requirements -->
-                <div class="screening-left-col">
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
-                        <div class="modal-cloud-icon" style="width: 42px; height: 42px; font-size: 1.1rem; margin: 0;">
-                            <i class="fa-solid fa-briefcase"></i>
-                        </div>
-                        <div>
-                            <h3 class="slot-card-title">1. Target Job Requirements</h3>
-                            <p class="slot-card-subtitle">Define target title, required technical skills, and experience</p>
+            <div class="screening-workflow-grid">
+                <!-- LEFT COLUMN: Step 1 — Job Requirements -->
+                <div class="workflow-col-left">
+                    <div class="panel-header-flex">
+                        <div class="panel-step-badge">1</div>
+                        <div class="panel-title-group">
+                            <h3>Step 1 — Job Requirements</h3>
+                            <p>Specify position title, required skills, and experience benchmarks</p>
                         </div>
                     </div>
 
-                    <div class="form-group mb-3">
-                        <label for="job_title" class="form-label-compact">Position / Target Job Title <span class="text-cyan">*</span></label>
-                        <input type="text" id="job_title" name="job_title" class="form-input-dark" placeholder="e.g. Senior Python &amp; AI Developer" required value="{{ sample_title if sample_title else 'Senior Python & AI Developer' }}">
+                    <div class="form-group-item">
+                        <label for="job_title" class="form-label-bold">
+                            Position / Target Role <span style="color: var(--color-arctic-blue);">*</span>
+                        </label>
+                        <input type="text" id="job_title" name="job_title" class="form-input-light" placeholder="e.g. Senior Python & AI Developer" required value="{{ sample_title if sample_title else 'Senior Python & AI Developer' }}">
                     </div>
 
-                    <div class="form-group">
-                        <label for="job_description" class="form-label-compact">Job Description &amp; Minimum Criteria <span class="text-cyan">*</span></label>
-                        <textarea id="job_description" name="job_description" class="form-input-dark" rows="9" placeholder="Paste the job description, required technical skills (Python, SQL, ML, Docker), required years of experience, and education benchmarks..." required>{{ sample_jd if sample_jd else 'We are seeking a Senior Python & AI Developer with 3+ years experience in Python, Flask, FastAPI, Machine Learning (Pandas, NumPy, Scikit-learn), Docker, SQL, and NLP.' }}</textarea>
-                        <span class="dropzone-hint" style="display: block; margin-top: 6px;">
-                            <i class="fa-solid fa-circle-info text-cyan"></i> The NLP engine automatically extracts required skills, experience thresholds, and education benchmarks.
+                    <div class="form-group-item">
+                        <label for="job_description" class="form-label-bold">
+                            Job Description &amp; Minimum Criteria <span style="color: var(--color-arctic-blue);">*</span>
+                        </label>
+                        <textarea id="job_description" name="job_description" class="form-textarea-light" rows="9" placeholder="Paste the job description, required technical competencies (Python, SQL, ML, Docker), required years of experience, and academic benchmarks..." required>{{ sample_jd if sample_jd else 'We are seeking a Senior Python & AI Developer with 3+ years experience in Python, Flask, FastAPI, Machine Learning (Pandas, NumPy, Scikit-learn), Docker, SQL, and NLP.' }}</textarea>
+                        <span class="form-help-hint">
+                            <i class="fa-solid fa-circle-info" style="color: var(--color-teal);"></i> The NLP engine automatically extracts required skills, experience thresholds, and degree benchmarks.
                         </span>
                     </div>
                 </div>
 
-                <!-- Right: Resume Upload Dropzone -->
-                <div class="screening-right-col">
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
-                        <div class="modal-cloud-icon" style="width: 42px; height: 42px; font-size: 1.1rem; margin: 0; background: linear-gradient(135deg, #06b6d4, #3b82f6);">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                        </div>
-                        <div>
-                            <h3 class="slot-card-title">2. Upload Resumes</h3>
-                            <p class="slot-card-subtitle">Select multiple PDF resumes for batch evaluation</p>
+                <!-- RIGHT COLUMN: Step 2 — Upload Resumes -->
+                <div class="workflow-col-right">
+                    <div class="panel-header-flex">
+                        <div class="panel-step-badge teal">2</div>
+                        <div class="panel-title-group">
+                            <h3>Step 2 — Upload Resumes</h3>
+                            <p>Select multiple candidate PDF resumes for batch evaluation</p>
                         </div>
                     </div>
 
-                    <!-- Dropzone -->
-                    <div class="dropzone-box" id="dropzone" onclick="document.getElementById('resumesInput').click()">
+                    <!-- Drag & Drop Dropzone Area -->
+                    <div class="dropzone-box-light" id="dropzone" onclick="document.getElementById('resumesInput').click()">
                         <input type="file" id="resumesInput" name="resumes" multiple accept=".pdf" style="display: none;" onchange="handleFileSelect(this.files)">
                         
-                        <div id="dropzonePrompt" class="dropzone-prompt-dark">
-                            <div class="dropzone-icon-glow">
+                        <div id="dropzonePrompt">
+                            <div class="dropzone-icon-light">
                                 <i class="fa-solid fa-file-arrow-up"></i>
                             </div>
-                            <h4 class="dropzone-h4">Drag &amp; Drop PDF Resumes Here</h4>
-                            <p class="dropzone-p">or <span class="dropzone-browse-cyan">Browse Files</span> from device</p>
-                            <span class="dropzone-hint">Format: PDF only (Up to 16 MB total batch)</span>
+                            <h4 class="dropzone-title-light">Drag &amp; Drop PDF Resumes Here</h4>
+                            <p class="dropzone-desc-light">or <span class="dropzone-browse-text">Browse Files</span> from device</p>
+                            <span class="dropzone-spec-light">Supported Format: PDF only (Up to 16 MB batch size)</span>
                         </div>
 
                         <!-- Selected Files State -->
-                        <div id="dropzoneSelected" class="dropzone-selected-wrap" style="display: none;">
-                            <div class="check-icon-circle">
-                                <i class="fa-solid fa-check"></i>
+                        <div id="dropzoneSelected" style="display: none;">
+                            <div class="selected-badge-flex">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Resumes Selected &amp; Ready for Analysis</span>
                             </div>
-                            <span class="selected-badge-title">Files Ready for Analysis</span>
-                            <div class="selected-chips-row" id="selectedChipsContainer"></div>
+                            <div class="file-chip-row" id="selectedChipsContainer"></div>
                         </div>
                     </div>
 
-                    <!-- Automated Analysis Pipeline -->
-                    <div class="what-we-analyze" style="margin-bottom: 18px;">
+                    <!-- Step 3 Preview: Automated Analysis Breakdown -->
+                    <div class="what-we-analyze" style="margin-bottom: 20px;">
+                        <span style="font-size: 0.78rem; font-weight: 800; color: var(--color-slate-heading); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 10px;">
+                            Step 3 — Deterministic AI Evaluation Pipeline
+                        </span>
                         <div class="analyze-grid">
                             <div class="analyze-item">
-                                <div class="analyze-icon icon-purple"><i class="fa-solid fa-file-lines"></i></div>
+                                <div class="analyze-icon" style="background: var(--color-soft-sky); color: var(--color-arctic-blue);"><i class="fa-solid fa-file-lines"></i></div>
                                 <div class="analyze-meta">
-                                    <h5>PDF text extraction</h5>
-                                    <p>Extract raw resume text and metadata</p>
+                                    <h5>PDF Text Parsing</h5>
+                                    <p>Extract raw text &amp; entity metadata</p>
                                 </div>
                             </div>
                             <div class="analyze-item">
-                                <div class="analyze-icon icon-indigo"><i class="fa-solid fa-brain"></i></div>
+                                <div class="analyze-icon" style="background: var(--color-soft-teal); color: var(--color-teal);"><i class="fa-solid fa-brain"></i></div>
                                 <div class="analyze-meta">
-                                    <h5>Skill taxonomy (50%)</h5>
+                                    <h5>Skill Matrix (50%)</h5>
                                     <p>Match skills against 60+ taxonomy</p>
                                 </div>
                             </div>
                             <div class="analyze-item">
-                                <div class="analyze-icon icon-blue"><i class="fa-solid fa-graduation-cap"></i></div>
+                                <div class="analyze-icon" style="background: var(--color-soft-sky); color: var(--color-arctic-blue);"><i class="fa-solid fa-graduation-cap"></i></div>
                                 <div class="analyze-meta">
-                                    <h5>Experience &amp; degree (30%)</h5>
-                                    <p>Verify tenure benchmarks and degree</p>
+                                    <h5>Experience &amp; Degree (30%)</h5>
+                                    <p>Verify tenure benchmarks &amp; degree</p>
                                 </div>
                             </div>
                             <div class="analyze-item">
-                                <div class="analyze-icon icon-violet"><i class="fa-solid fa-chart-column"></i></div>
+                                <div class="analyze-icon" style="background: var(--color-soft-teal); color: var(--color-teal);"><i class="fa-solid fa-chart-column"></i></div>
                                 <div class="analyze-meta">
                                     <h5>TF-IDF NLP (20%)</h5>
                                     <p>Compute semantic keyword vector</p>
@@ -123,131 +134,131 @@
                         </div>
                     </div>
 
-                    <!-- Action Button -->
-                    <button type="submit" class="btn-analyze-electric" id="dashboardSubmitBtn">
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn-analyze-primary" id="dashboardSubmitBtn">
                         <i class="fa-solid fa-bolt"></i> Start AI Resume Screening
                     </button>
                 </div>
             </div>
         </form>
-    </div>
+    </section>
 
-    <!-- 2. FOUR METRIC STAT SLOTS -->
-    <div class="metric-slots-grid mb-5">
+    <!-- ====================================================================
+         2. DASHBOARD METRIC KPI CARDS (DERIVED FROM ACTUAL AVAILABLE DATA)
+         ==================================================================== -->
+    <section class="kpi-slots-grid mb-5">
         <!-- 1. Total Candidates -->
-        <div class="metric-slot-card">
-            <div class="slot-icon icon-bg-purple">
-                <i class="fa-solid fa-file-invoice"></i>
+        <div class="kpi-card-light">
+            <div class="kpi-icon-box icon-blue">
+                <i class="fa-solid fa-users"></i>
             </div>
-            <div class="slot-data">
-                <span class="slot-label">Total Candidates</span>
-                <div class="slot-value">{{ summary.total_candidates }}</div>
-                <span class="slot-sub">Across all screenings</span>
+            <div class="kpi-content">
+                <span class="kpi-label-text">Total Candidates</span>
+                <div class="kpi-value-text">{{ summary.total_candidates }}</div>
+                <span class="kpi-sub-text">Across all screening sessions</span>
             </div>
         </div>
 
         <!-- 2. Avg. Match Score -->
-        <div class="metric-slot-card">
-            <div class="slot-icon icon-bg-green">
+        <div class="kpi-card-light">
+            <div class="kpi-icon-box icon-teal">
                 <i class="fa-solid fa-chart-line"></i>
             </div>
-            <div class="slot-data">
-                <span class="slot-label">Avg. Match Score</span>
-                <div class="slot-value">{{ summary.avg_score }}%</div>
-                <span class="slot-sub">From recent screenings</span>
+            <div class="kpi-content">
+                <span class="kpi-label-text">Avg. Match Score</span>
+                <div class="kpi-value-text">{{ summary.avg_score }}%</div>
+                <span class="kpi-sub-text">From actual evaluated candidates</span>
             </div>
         </div>
 
         <!-- 3. Strong Matches -->
-        <div class="metric-slot-card">
-            <div class="slot-icon icon-bg-emerald">
+        <div class="kpi-card-light">
+            <div class="kpi-icon-box icon-green">
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
-            <div class="slot-data">
-                <span class="slot-label">Strong Matches</span>
-                <div class="slot-value text-emerald">{{ summary.strong_count }}</div>
-                <span class="slot-sub">Above 70% threshold</span>
+            <div class="kpi-content">
+                <span class="kpi-label-text">Strong Matches</span>
+                <div class="kpi-value-text" style="color: var(--color-success);">{{ summary.strong_count }}</div>
+                <span class="kpi-sub-text">&ge; 70% overall match threshold</span>
             </div>
         </div>
 
-        <!-- 4. Screening Jobs -->
-        <div class="metric-slot-card">
-            <div class="slot-icon icon-bg-blue">
+        <!-- 4. Active Requisitions -->
+        <div class="kpi-card-light">
+            <div class="kpi-icon-box icon-indigo">
                 <i class="fa-solid fa-briefcase"></i>
             </div>
-            <div class="slot-data">
-                <span class="slot-label">Screening Sessions</span>
-                <div class="slot-value">{{ summary.total_jobs }}</div>
-                <span class="slot-sub">Active job requisitions</span>
+            <div class="kpi-content">
+                <span class="kpi-label-text">Screening Sessions</span>
+                <div class="kpi-value-text">{{ summary.total_jobs }}</div>
+                <span class="kpi-sub-text">Stored recruitment sessions</span>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- 3. MIDDLE SECTION (RECENT SCREENINGS + DONUT + TOP SKILLS) -->
-    <div class="dashboard-mid-grid mb-5">
+    <!-- ====================================================================
+         3. RECENT SCREENINGS & MATCH DISTRIBUTION (SPLIT 2-COL)
+         ==================================================================== -->
+    <div class="dashboard-split-grid mb-5">
         <!-- Left: Recent Screenings List -->
-        <div class="card recent-screenings-card">
-            <div class="card-header-flex">
+        <div class="recent-screenings-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <div>
-                    <h3 class="slot-card-title">Recent Screenings</h3>
-                    <p class="slot-card-subtitle">Active evaluation sessions and applicant cohorts</p>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--color-slate-heading);">Recent Screenings</h3>
+                    <p style="font-size: 0.82rem; color: var(--color-slate-muted);">Active evaluation sessions and applicant pools</p>
                 </div>
-                <a href="{{ url_for('history') }}" class="btn-link-sm">View all <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="{{ url_for('history') }}" style="color: var(--color-arctic-blue); font-size: 0.85rem; font-weight: 700; text-decoration: none;">
+                    View all <i class="fa-solid fa-arrow-right"></i>
+                </a>
             </div>
 
-            <div class="screenings-table-wrap">
-                <div class="screenings-table-header">
-                    <span class="col-th">Position &amp; Date</span>
-                    <span class="col-th text-right">Top Score / Action</span>
-                </div>
-
-                <div class="screenings-list">
-                    {% if summary.recent_jobs %}
-                        {% for job in summary.recent_jobs %}
-                            <a href="{{ url_for('view_results', job_id=job.id) }}" class="screening-row-item">
-                                <div class="job-meta-left">
-                                    <div class="job-avatar-icon icon-color-{{ loop.index % 4 }}">
-                                        <i class="fa-solid fa-briefcase"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="job-row-title">{{ job.job_title }}</h4>
-                                        <span class="job-row-sub">
-                                            {{ job.created_at[:10] if job.created_at else 'Recent' }} • {{ job.candidate_count }} applicant{% if job.candidate_count != 1 %}s{% endif %}
-                                        </span>
-                                    </div>
+            <div class="screenings-list">
+                {% if summary.recent_jobs %}
+                    {% for job in summary.recent_jobs %}
+                        <a href="{{ url_for('view_results', job_id=job.id) }}" class="screening-row-item" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 10px; text-decoration: none; color: inherit; background: var(--color-ice-white); transition: all 0.2s ease;">
+                            <div style="display: flex; align-items: center; gap: 14px;">
+                                <div style="width: 38px; height: 38px; border-radius: var(--radius-sm); background: var(--color-soft-sky); color: var(--color-arctic-blue); display: flex; align-items: center; justify-content: center; font-size: 1.05rem;">
+                                    <i class="fa-solid fa-briefcase"></i>
                                 </div>
-                                <div class="job-meta-right">
-                                    {% if job.top_score %}
-                                        <span class="badge-light-score">Top: {{ job.top_score }}%</span>
-                                    {% endif %}
-                                    <span class="row-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                                <div>
+                                    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--color-slate-heading);">{{ job.job_title }}</h4>
+                                    <span style="font-size: 0.78rem; color: var(--color-slate-muted);">
+                                        {{ job.created_at[:10] if job.created_at else 'Recent' }} • {{ job.candidate_count }} applicant{% if job.candidate_count != 1 %}s{% endif %}
+                                    </span>
                                 </div>
-                            </a>
-                        {% endfor %}
-                    {% else %}
-                        <div class="empty-screenings-state">
-                            <div class="empty-icon-wrap"><i class="fa-solid fa-folder-open"></i></div>
-                            <h4>No Screening Sessions Yet</h4>
-                            <p>Upload candidate resumes or click <strong>"1-Click Demo"</strong> to generate demonstration data instantly.</p>
-                            <button type="button" class="btn btn-cinematic-secondary btn-sm mt-3" onclick="triggerSampleDemo()">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> 1-Click Sample Demo
-                            </button>
-                        </div>
-                    {% endif %}
-                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                {% if job.top_score %}
+                                    <span style="font-size: 0.78rem; font-weight: 700; background: var(--color-soft-teal); color: var(--color-teal); padding: 4px 10px; border-radius: var(--radius-pill); border: 1px solid var(--color-soft-teal-border);">
+                                        Top: {{ job.top_score }}%
+                                    </span>
+                                {% endif %}
+                                <i class="fa-solid fa-chevron-right" style="color: var(--color-slate-light); font-size: 0.85rem;"></i>
+                            </div>
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <div style="text-align: center; padding: 40px 20px; color: var(--color-slate-muted);">
+                        <i class="fa-solid fa-folder-open" style="font-size: 2.2rem; color: var(--color-slate-light); margin-bottom: 12px;"></i>
+                        <h4 style="font-size: 1rem; font-weight: 700; color: var(--color-slate-heading);">No Screening Sessions Yet</h4>
+                        <p style="font-size: 0.85rem;">Upload resumes above or click <strong>"1-Click Demo"</strong> to test the screening engine.</p>
+                        <button type="button" class="btn-nav-demo mt-3" onclick="triggerSampleDemo()">
+                            <i class="fa-solid fa-play"></i> 1-Click Sample Demo
+                        </button>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
-        <!-- Right: Donut Chart & Top Skills -->
-        <div class="right-stack-col">
-            <!-- 1. Match Distribution Card -->
-            <div class="card distribution-card">
-                <h3 class="slot-card-title mb-2">Match Distribution</h3>
-                <div class="donut-chart-flex">
-                    <div class="donut-svg-wrap">
-                        <svg class="donut-chart-svg" viewBox="0 0 120 120">
-                            <!-- Background ring -->
-                            <circle cx="60" cy="60" r="46" fill="transparent" stroke="rgba(255,255,255,0.08)" stroke-width="16"></circle>
+        <!-- Right: Donut Distribution & Top Skills -->
+        <div class="analytics-stack-panel" style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Match Distribution Donut Card -->
+            <div class="donut-light-card">
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--color-slate-heading); margin-bottom: 16px;">Match Distribution</h3>
+                <div style="display: flex; align-items: center; justify-content: space-around; gap: 16px; flex-wrap: wrap;">
+                    <div style="position: relative; width: 120px; height: 120px;">
+                        <svg viewBox="0 0 120 120" style="transform: rotate(-90deg); width: 100%; height: 100%;">
+                            <circle cx="60" cy="60" r="46" fill="transparent" stroke="#E2E8F0" stroke-width="16"></circle>
                             
                             {% set total = summary.total_candidates %}
                             {% if total > 0 %}
@@ -256,56 +267,56 @@
                                 {% set mod_p = summary.moderate_count / total %}
                                 {% set low_p = summary.low_count / total %}
 
-                                <!-- Strong segment (Emerald) -->
-                                <circle cx="60" cy="60" r="46" fill="transparent" stroke="#10b981" stroke-width="16"
+                                <!-- Strong (Teal) -->
+                                <circle cx="60" cy="60" r="46" fill="transparent" stroke="#0D9488" stroke-width="16"
                                     stroke-dasharray="{{ strong_p * circ }} {{ circ }}" stroke-dashoffset="0"
                                     stroke-linecap="round"></circle>
                                 
-                                <!-- Moderate segment (Cyan) -->
-                                <circle cx="60" cy="60" r="46" fill="transparent" stroke="#06b6d4" stroke-width="16"
+                                <!-- Moderate (Arctic Blue) -->
+                                <circle cx="60" cy="60" r="46" fill="transparent" stroke="#2563EB" stroke-width="16"
                                     stroke-dasharray="{{ mod_p * circ }} {{ circ }}" stroke-dashoffset="-{{ strong_p * circ }}"
                                     stroke-linecap="round"></circle>
                                 
-                                <!-- Low segment (Purple) -->
-                                <circle cx="60" cy="60" r="46" fill="transparent" stroke="#8b5cf6" stroke-width="16"
+                                <!-- Low (Slate) -->
+                                <circle cx="60" cy="60" r="46" fill="transparent" stroke="#94A3B8" stroke-width="16"
                                     stroke-dasharray="{{ low_p * circ }} {{ circ }}" stroke-dashoffset="-{{ (strong_p + mod_p) * circ }}"
                                     stroke-linecap="round"></circle>
                             {% else %}
-                                <circle cx="60" cy="60" r="46" fill="transparent" stroke="rgba(255,255,255,0.12)" stroke-width="16" stroke-dasharray="289 289"></circle>
+                                <circle cx="60" cy="60" r="46" fill="transparent" stroke="#E2E8F0" stroke-width="16" stroke-dasharray="289 289"></circle>
                             {% endif %}
                         </svg>
-                        <div class="donut-center-label">
-                            <span class="donut-big-num">{{ summary.total_candidates }}</span>
-                            <span class="donut-sub-text">Candidates</span>
+                        <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                            <span style="font-size: 1.35rem; font-weight: 800; color: var(--color-slate-title); line-height: 1;">{{ summary.total_candidates }}</span>
+                            <span style="font-size: 0.65rem; color: var(--color-slate-muted); font-weight: 600; text-transform: uppercase;">Candidates</span>
                         </div>
                     </div>
 
-                    <!-- Legend list -->
-                    <div class="donut-legend">
-                        <div class="legend-row">
-                            <span class="legend-dot dot-emerald"></span>
-                            <span class="legend-name">Strong</span>
-                            <span class="legend-num">{{ summary.strong_count }}</span>
+                    <!-- Legend -->
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem;">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #0D9488;"></span>
+                            <span style="color: var(--color-slate-body); font-weight: 600;">Strong (&ge;70%):</span>
+                            <strong style="color: var(--color-slate-title);">{{ summary.strong_count }}</strong>
                         </div>
-                        <div class="legend-row">
-                            <span class="legend-dot dot-blue"></span>
-                            <span class="legend-name">Moderate</span>
-                            <span class="legend-num">{{ summary.moderate_count }}</span>
+                        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem;">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #2563EB;"></span>
+                            <span style="color: var(--color-slate-body); font-weight: 600;">Moderate (45-69%):</span>
+                            <strong style="color: var(--color-slate-title);">{{ summary.moderate_count }}</strong>
                         </div>
-                        <div class="legend-row">
-                            <span class="legend-dot dot-purple"></span>
-                            <span class="legend-name">Low</span>
-                            <span class="legend-num">{{ summary.low_count }}</span>
+                        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem;">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #94A3B8;"></span>
+                            <span style="color: var(--color-slate-body); font-weight: 600;">Low (&lt;45%):</span>
+                            <strong style="color: var(--color-slate-title);">{{ summary.low_count }}</strong>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. Top Skills Card -->
-            <div class="card top-skills-card" id="analyticsSection">
-                <div class="card-header-flex">
-                    <h3 class="slot-card-title">Top Skills</h3>
-                    <a href="#rankingsSection" class="btn-link-sm">View all <i class="fa-solid fa-arrow-right"></i></a>
+            <!-- Top Skills Card -->
+            <div class="top-skills-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--color-slate-heading);">Top Extracted Skills</h3>
+                    <a href="#rankingsSection" style="font-size: 0.82rem; color: var(--color-arctic-blue); font-weight: 700; text-decoration: none;">Filter <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
                 <div class="top-skills-pills">
                     {% for skill in summary.top_skills %}
@@ -318,48 +329,46 @@
         </div>
     </div>
 
-    <!-- 4. CANDIDATE RANKINGS LEADERBOARD TABLE -->
-    <div class="card candidate-rankings-card" id="rankingsSection">
-        <div class="rankings-header-flex">
+    <!-- ====================================================================
+         4. STEP 4 — CANDIDATE RANKINGS LEADERBOARD TABLE
+         ==================================================================== -->
+    <section class="leaderboard-panel-light" id="rankingsSection">
+        <div class="table-toolbar-flex">
             <div>
-                <h3 class="slot-card-title">Candidate Rankings Leaderboard</h3>
-                <p class="slot-card-subtitle">Deterministic ranking evaluated with custom Merge Sort &amp; Max-Heap priority queue</p>
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--color-slate-heading);">Step 4 — Candidate Rankings Leaderboard</h3>
+                <p style="font-size: 0.85rem; color: var(--color-slate-muted);">Deterministic ranking evaluated with stable Merge Sort &amp; Binary Max-Heap priority queue</p>
             </div>
 
             <!-- Search and Filter Toolbar -->
-            <div class="rankings-toolbar">
-                <div class="table-search-box">
-                    <i class="fa-solid fa-magnifying-glass table-search-icon"></i>
-                    <input type="text" id="candidateSearchInput" class="table-search-input" placeholder="Search by name, email, or skill..." onkeyup="filterRankingsTable()">
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <div style="position: relative; width: 240px;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--color-slate-light); font-size: 0.85rem;"></i>
+                    <input type="text" id="candidateSearchInput" class="light-table-search" placeholder="Search candidate, skill..." onkeyup="filterRankingsTable()" style="padding-left: 34px;">
                 </div>
 
-                <div class="filter-dropdown-wrap">
-                    <select id="skillDropdownFilter" class="toolbar-select" onchange="filterRankingsTable()">
-                        <option value="">All Skills</option>
-                        {% for skill in summary.top_skills %}
-                            <option value="{{ skill }}">{{ skill }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                <select id="skillDropdownFilter" class="light-select-control" onchange="filterRankingsTable()">
+                    <option value="">All Skills</option>
+                    {% for skill in summary.top_skills %}
+                        <option value="{{ skill }}">{{ skill }}</option>
+                    {% endfor %}
+                </select>
 
-                <div class="filter-dropdown-wrap">
-                    <select id="sortDropdownFilter" class="toolbar-select" onchange="sortRankingsTable(this.value)">
-                        <option value="score_desc">Sort: Match Score ↓</option>
-                        <option value="score_asc">Sort: Match Score ↑</option>
-                        <option value="exp_desc">Sort: Experience ↓</option>
-                        <option value="name_asc">Sort: Name (A-Z)</option>
-                    </select>
-                </div>
+                <select id="sortDropdownFilter" class="light-select-control" onchange="sortRankingsTable(this.value)">
+                    <option value="score_desc">Sort: Score &darr;</option>
+                    <option value="score_asc">Sort: Score &uarr;</option>
+                    <option value="exp_desc">Sort: Experience &darr;</option>
+                    <option value="name_asc">Sort: Name (A-Z)</option>
+                </select>
 
-                <button type="button" class="btn-clear-filters" onclick="clearRankingsFilters()">
-                    <i class="fa-solid fa-rotate-left"></i> Reset
+                <button type="button" class="btn-clear-filters" onclick="clearRankingsFilters()" title="Reset Filters">
+                    <i class="fa-solid fa-rotate-left"></i>
                 </button>
             </div>
         </div>
 
         <!-- Table Responsive -->
-        <div class="rankings-table-responsive">
-            <table class="saas-table" id="rankingsTable">
+        <div style="overflow-x: auto;">
+            <table class="light-saas-table" id="rankingsTable">
                 <thead>
                     <tr>
                         <th style="width: 50px;">#</th>
@@ -382,7 +391,7 @@
                                 data-exp="{{ c.experience_years }}">
                                 <td class="col-rank">
                                     {% if loop.index == 1 %}
-                                        <span class="rank-badge rank-1" title="Rank 1 - Top Candidate">👑 1</span>
+                                        <span class="rank-badge rank-1" title="Rank 1 - Top Candidate">🥇 1</span>
                                     {% elif loop.index == 2 %}
                                         <span class="rank-badge rank-2" title="Rank 2">🥈 2</span>
                                     {% elif loop.index == 3 %}
@@ -393,7 +402,7 @@
                                 </td>
 
                                 <td class="col-candidate">
-                                    <div class="cand-cell-flex">
+                                    <div class="cand-info-flex">
                                         <div class="cand-avatar avatar-tint-{{ loop.index % 5 }}">
                                             {{ c.initials }}
                                         </div>
@@ -407,10 +416,10 @@
                                 </td>
 
                                 <td class="col-score">
-                                    <div class="score-cell-flex">
-                                        <span class="score-percent-val">{{ c.match_score }}%</span>
-                                        <div class="score-progress-track">
-                                            <div class="score-progress-bar {% if c.match_score >= 70 %}bar-emerald{% elif c.match_score >= 45 %}bar-blue{% else %}bar-purple{% endif %}" 
+                                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                                        <span style="font-weight: 800; font-size: 0.95rem; color: var(--color-slate-title);">{{ c.match_score }}%</span>
+                                        <div class="score-track-light">
+                                            <div class="score-bar-fill {% if c.match_score >= 70 %}bar-teal{% elif c.match_score >= 45 %}bar-blue{% else %}bar-slate{% endif %}" 
                                                  style="width: {{ c.match_score }}%;"></div>
                                         </div>
                                     </div>
@@ -418,16 +427,16 @@
 
                                 <td class="col-badge">
                                     {% if c.match_score >= 70 %}
-                                        <span class="status-pill pill-strong">Strong Match</span>
+                                        <span class="status-pill-light pill-strong">Strong Match</span>
                                     {% elif c.match_score >= 45 %}
-                                        <span class="status-pill pill-moderate">Moderate Match</span>
+                                        <span class="status-pill-light pill-moderate">Moderate Match</span>
                                     {% else %}
-                                        <span class="status-pill pill-low">Low Match</span>
+                                        <span class="status-pill-light pill-low">Low Match</span>
                                     {% endif %}
                                 </td>
 
                                 <td class="col-skills">
-                                    <div class="table-skills-flex">
+                                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                                         {% for s in c.matched_skills[:3] %}
                                             <span class="skill-tag-pill">{{ s }}</span>
                                         {% endfor %}
@@ -442,28 +451,25 @@
                                 </td>
 
                                 <td class="col-exp">
-                                    <span class="exp-text">{{ c.experience_years|format_exp }} yrs</span>
+                                    <span style="font-size: 0.88rem; font-weight: 600; color: var(--color-slate-body);">{{ c.experience_years|format_exp }} yrs</span>
                                 </td>
 
                                 <td class="col-actions text-right">
                                     <a href="{{ url_for('candidate_detail', candidate_id=c.id) }}" class="btn-action-view">
                                         View Details
                                     </a>
-                                    <button type="button" class="btn-dots-menu" onclick="toggleRowMenu(event, {{ c.id }})" title="Options">
-                                        <i class="fa-solid fa-ellipsis-vertical"></i>
-                                    </button>
                                 </td>
                             </tr>
                         {% endfor %}
                     {% else %}
                         <tr>
                             <td colspan="7" class="text-center py-5">
-                                <div class="empty-table-state">
-                                    <i class="fa-solid fa-users-slash empty-icon"></i>
-                                    <h4>No candidates evaluated yet</h4>
-                                    <p>Start a new screening session or try the 1-click sample demo.</p>
-                                    <button type="button" class="btn btn-cinematic-primary btn-sm mt-3" onclick="triggerSampleDemo()">
-                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Run 1-Click Demo
+                                <div style="text-align: center; padding: 48px 24px; color: var(--color-slate-muted);">
+                                    <i class="fa-solid fa-users-slash" style="font-size: 2.2rem; color: var(--color-slate-light); margin-bottom: 14px;"></i>
+                                    <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--color-slate-heading); margin-bottom: 6px;">No candidates evaluated yet</h4>
+                                    <p style="font-size: 0.9rem;">Start a new screening session above or run our 1-click sample demo.</p>
+                                    <button type="button" class="btn-hero-arctic mt-3" style="padding: 10px 24px; font-size: 0.88rem; margin: 16px auto 0;" onclick="triggerSampleDemo()">
+                                        <i class="fa-solid fa-play"></i> Run 1-Click Demo
                                     </button>
                                 </div>
                             </td>
@@ -472,6 +478,6 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 </div>
 {% endblock %}

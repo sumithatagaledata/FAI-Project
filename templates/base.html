@@ -3,242 +3,333 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ResumeAI - Futuristic AI Resume Intelligence Platform{% endblock %}</title>
-    <!-- Google Fonts: Orbitron (Gaming / Sci-Fi), Plus Jakarta Sans & Inter -->
+    <title>{% block title %}ResumeAI - AI Based Resume Screening System{% endblock %}</title>
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Gaming Design System CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=5.0">
+    <!-- Light-Theme Premium CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=6.0">
 </head>
 <body class="futuristic-app">
-    <!-- 0. LIVE ANIMATED WALLPAPER (3D DIGITAL GRID & NEON PARTICLES) -->
+    <!-- 0. LIVE ANIMATED WALLPAPER (ARCTIC BLUE & TEAL PARTICLES & DIGITAL GRID) -->
     <div class="neural-canvas-container" aria-hidden="true">
         <canvas id="neuralCanvas"></canvas>
         <div class="ambient-glow-mesh"></div>
     </div>
 
-    <!-- 1. MINIMAL GAMING NAVBAR -->
-    <header class="site-navbar">
-        <div class="nav-container">
-            <!-- Brand Logo -->
-            <a href="{{ url_for('index') }}" class="brand-link">
-                <div class="brand-logo-glow">
-                    <i class="fa-solid fa-brain"></i>
-                </div>
-                <div class="brand-name-wrap">
-                    <span class="brand-name">RESUME<span style="color: var(--cyan-neon);">AI</span></span>
-                    <span class="brand-tag">AI Based Resume Screening System</span>
-                </div>
-            </a>
-
-            <!-- Center Navigation Links -->
-            <nav class="nav-links-cluster">
-                <a href="{{ url_for('index') }}" class="nav-anchor {% if request.endpoint == 'index' %}active{% endif %}">
-                    <i class="fa-solid fa-house"></i> Overview
+    {% if request.endpoint == 'index' %}
+        <!-- 1. LANDING PAGE NAVBAR (COMPACT & CLEAN) -->
+        <header class="site-navbar">
+            <div class="nav-container">
+                <!-- Brand Logo -->
+                <a href="{{ url_for('index') }}" class="brand-link">
+                    <div class="brand-logo-glow">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <div class="brand-name-wrap">
+                        <span class="brand-name">Resume<span>AI</span></span>
+                        <span class="brand-tag">AI Based Resume Screening System</span>
+                    </div>
                 </a>
-                <a href="{{ url_for('dashboard') }}" class="nav-anchor {% if request.endpoint == 'dashboard' %}active{% endif %}">
-                    <i class="fa-solid fa-layer-group"></i> Workspace
-                </a>
-                <a href="{{ url_for('history') }}" class="nav-anchor {% if request.endpoint == 'history' %}active{% endif %}">
-                    <i class="fa-solid fa-clock-rotate-left"></i> History
-                </a>
-                <a href="{{ url_for('index') }}#pipelineSection" class="nav-anchor">
-                    <i class="fa-solid fa-microchip"></i> Pipeline
-                </a>
-            </nav>
 
-            <!-- Right Actions Cluster -->
-            <div class="nav-actions-cluster">
-                <!-- 1-Click Demo -->
-                <button type="button" class="btn-nav-demo" onclick="triggerSampleDemo()" title="Run instant candidate screening with sample data">
-                    <i class="fa-solid fa-gamepad"></i> Try Demo
-                </button>
+                <!-- Center Navigation Links -->
+                <nav class="nav-links-cluster">
+                    <a href="#featuresSection" class="nav-anchor">
+                        <i class="fa-solid fa-sparkles"></i> Features
+                    </a>
+                    <a href="#howItWorksSection" class="nav-anchor">
+                        <i class="fa-solid fa-list-check"></i> How It Works
+                    </a>
+                    <a href="#scoringSection" class="nav-anchor">
+                        <i class="fa-solid fa-chart-pie"></i> Scoring Model
+                    </a>
+                </nav>
 
-                <!-- Start Screening Primary CTA -->
-                <button type="button" class="btn-nav-screening" onclick="openUploadModal()">
-                    <i class="fa-solid fa-bolt"></i> Start Screening
-                </button>
-
-                <!-- Notifications -->
-                <div class="notification-wrap" onclick="toggleNotificationDropdown(event)">
-                    <button type="button" class="btn-icon" title="Notifications">
-                        <i class="fa-regular fa-bell"></i>
-                        <span class="notification-badge"></span>
+                <!-- Right Actions Cluster -->
+                <div class="nav-actions-cluster">
+                    <button type="button" class="btn-nav-demo" onclick="triggerSampleDemo()" title="Run instant candidate screening with sample data">
+                        <i class="fa-solid fa-play"></i> Explore Demo
                     </button>
-                    <div class="notification-dropdown" id="notificationDropdown">
-                        <div class="notif-header">
-                            <strong>System Telemetry</strong>
-                            <span class="badge badge-success">Online</span>
+                    <a href="{{ url_for('dashboard') }}" class="btn-nav-screening">
+                        <i class="fa-solid fa-bolt"></i> Start Screening
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN LANDING CONTENT -->
+        <main class="site-main">
+            {% block landing_content %}{% endblock %}
+        </main>
+
+        <!-- LANDING FOOTER -->
+        <footer class="landing-footer" style="background: var(--color-pure-white); border-top: 1px solid var(--border-color); padding: 36px 32px; text-align: center; color: var(--color-slate-muted); font-size: 0.88rem; position: relative; z-index: 10;">
+            <div style="max-width: 1360px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-weight: 800; color: var(--color-slate-heading);">ResumeAI</span>
+                    <span>• AI Based Resume Screening System</span>
+                </div>
+                <div style="display: flex; gap: 20px;">
+                    <a href="#featuresSection" style="color: var(--color-slate-muted); text-decoration: none;">Features</a>
+                    <a href="#howItWorksSection" style="color: var(--color-slate-muted); text-decoration: none;">How It Works</a>
+                    <a href="{{ url_for('dashboard') }}" style="color: var(--color-arctic-blue); text-decoration: none; font-weight: 700;">Recruiter Dashboard</a>
+                </div>
+            </div>
+        </footer>
+
+    {% else %}
+        <!-- 2. RECRUITER SAAS DASHBOARD SHELL (INTERNAL APP) -->
+        <div class="app-shell">
+            <!-- Left Sidebar (~260px) -->
+            <aside class="app-sidebar">
+                <div class="sidebar-brand-box">
+                    <a href="{{ url_for('index') }}" class="brand-link">
+                        <div class="brand-logo-glow" style="width: 36px; height: 36px; font-size: 1.05rem;">
+                            <i class="fa-solid fa-brain"></i>
                         </div>
-                        <div class="notif-item">
-                            <i class="fa-solid fa-circle-check text-success"></i>
-                            <div>
-                                <p class="notif-title">Neural Engine Active</p>
-                                <p class="notif-time">Multi-vector screening and ranking algorithms ready.</p>
+                        <div class="brand-name-wrap">
+                            <span class="brand-name" style="font-size: 1.12rem;">Resume<span>AI</span></span>
+                            <span class="brand-tag" style="font-size: 0.62rem;">AI Based Resume Screening System</span>
+                        </div>
+                    </a>
+                </div>
+
+                <nav class="sidebar-nav-list">
+                    <a href="{{ url_for('dashboard') }}" class="sidebar-nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                        <i class="fa-solid fa-table-columns"></i>
+                        <span>Overview</span>
+                    </a>
+                    <a href="{{ url_for('dashboard') }}#screeningWorkflowSection" class="sidebar-nav-link" onclick="if(window.location.pathname === '/dashboard'){ document.getElementById('screeningWorkflowSection')?.scrollIntoView({behavior: 'smooth'}); }">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <span>New Screening</span>
+                    </a>
+                    <a href="{{ url_for('history') }}" class="sidebar-nav-link {% if request.endpoint == 'history' %}active{% endif %}">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Screening History</span>
+                    </a>
+                    <a href="{{ url_for('dashboard') }}#rankingsSection" class="sidebar-nav-link">
+                        <i class="fa-solid fa-square-poll-vertical"></i>
+                        <span>Results</span>
+                    </a>
+                    <a href="javascript:void(0)" class="sidebar-nav-link" onclick="document.getElementById('engineInfoModal').style.display='flex'">
+                        <i class="fa-solid fa-microchip"></i>
+                        <span>Engine Information</span>
+                    </a>
+                </nav>
+
+                <div class="sidebar-bottom-info">
+                    <span class="sidebar-info-title"><i class="fa-solid fa-shield-halved text-teal"></i> System Engine</span>
+                    <p class="sidebar-info-desc">Deterministic 4-Factor Matching with MergeSort &amp; Max-Heap prioritization.</p>
+                </div>
+            </aside>
+
+            <!-- Main Application Content (Offset by sidebar) -->
+            <div class="app-main-content">
+                <!-- Top Header (~72px) -->
+                <header class="app-header">
+                    <div class="header-title-wrap">
+                        <a href="{{ url_for('index') }}" class="btn-icon-light" title="Back to Landing Page">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                        <h1 class="header-page-title">{% block page_title %}Recruiter Screening Dashboard{% endblock %}</h1>
+                    </div>
+
+                    <div class="header-search-box">
+                        <i class="fa-solid fa-magnifying-glass header-search-icon"></i>
+                        <input type="text" class="header-search-input" placeholder="Search candidates, skills, jobs... (Ctrl+K)" onkeyup="handleGlobalSearch(this.value)">
+                    </div>
+
+                    <div class="header-user-controls">
+                        <button type="button" class="btn-nav-demo" onclick="triggerSampleDemo()" title="Run instant candidate screening with sample data">
+                            <i class="fa-solid fa-play"></i> Explore Demo
+                        </button>
+                        <button type="button" class="btn-nav-screening" onclick="openUploadModal()">
+                            <i class="fa-solid fa-plus"></i> New Screening
+                        </button>
+                        <button type="button" class="btn-icon-light text-muted" title="Reset Stored Data" onclick="confirmClearData()">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Page Body -->
+                <main class="workspace-page-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            <div class="flash-container mb-4">
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ category if category != 'error' else 'danger' }}">
+                                        <i class="fa-solid {% if category == 'success' %}fa-circle-check{% else %}fa-triangle-exclamation{% endif %}"></i>
+                                        <span>{{ message }}</span>
+                                        <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+                                    </div>
+                                {% endfor %}
                             </div>
+                        {% endif %}
+                    {% endwith %}
+
+                    {% block content %}{% endblock %}
+                </main>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- ENGINE INFORMATION MODAL -->
+    <div id="engineInfoModal" class="modal-overlay" style="display: none;" onclick="if(event.target.id === 'engineInfoModal') this.style.display='none'">
+        <div class="modal-card">
+            <button type="button" class="modal-close-btn" onclick="document.getElementById('engineInfoModal').style.display='none'">&times;</button>
+            <div class="modal-header-center">
+                <div class="modal-cloud-icon" style="background: var(--color-soft-teal); color: var(--color-teal);">
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+                <h2 class="modal-title">Deterministic Engine Information</h2>
+                <p class="modal-subtitle">Transparent mathematical and algorithmic candidate evaluation pipeline.</p>
+            </div>
+            <div class="what-we-analyze">
+                <div class="analyze-grid">
+                    <div class="analyze-item">
+                        <div class="analyze-icon" style="background: var(--color-soft-sky); color: var(--color-arctic-blue);"><i class="fa-solid fa-file-lines"></i></div>
+                        <div class="analyze-meta">
+                            <h5>PDF Text Extraction</h5>
+                            <p>Extracts entity metadata, contact coordinates, and tenure experience.</p>
+                        </div>
+                    </div>
+                    <div class="analyze-item">
+                        <div class="analyze-icon" style="background: var(--color-soft-teal); color: var(--color-teal);"><i class="fa-solid fa-brain"></i></div>
+                        <div class="analyze-meta">
+                            <h5>Skill Taxonomy (50% Weight)</h5>
+                            <p>Cross-references 60+ computer science and technical competencies.</p>
+                        </div>
+                    </div>
+                    <div class="analyze-item">
+                        <div class="analyze-icon" style="background: var(--color-soft-sky); color: var(--color-arctic-blue);"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <div class="analyze-meta">
+                            <h5>Experience &amp; Education (30% Weight)</h5>
+                            <p>Evaluates tenure thresholds (20%) and academic credentials (10%).</p>
+                        </div>
+                    </div>
+                    <div class="analyze-item">
+                        <div class="analyze-icon" style="background: var(--color-soft-teal); color: var(--color-teal);"><i class="fa-solid fa-chart-column"></i></div>
+                        <div class="analyze-meta">
+                            <h5>TF-IDF Cosine Match (20% Weight)</h5>
+                            <p>Computes sub-linear term frequency and semantic cosine vectors.</p>
                         </div>
                     </div>
                 </div>
-
-                <!-- Clear Data -->
-                <button type="button" class="btn-icon text-muted" title="Reset Stored Data" onclick="confirmClearData()">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
+            </div>
+            <div style="margin-top: 20px; padding: 14px 18px; background: var(--color-ice-white); border-radius: var(--radius-md); font-size: 0.82rem; color: var(--color-slate-body); border: 1px solid var(--border-color);">
+                <strong>Ranking Algorithms:</strong> Stable Merge Sort ensures deterministic tie-breaking across multi-key candidate records, while a Binary Max-Heap supports efficient priority extraction.
             </div>
         </div>
-    </header>
+    </div>
 
-    <!-- 2. MAIN APPLICATION CONTENT -->
-    <main class="site-main">
-        <!-- Flash Messages Toast -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-container">
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category if category != 'error' else 'danger' }}">
-                            <i class="fa-solid {% if category == 'success' %}fa-circle-check{% else %}fa-triangle-exclamation{% endif %}"></i>
-                            <span>{{ message }}</span>
-                            <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
-        <!-- Child Page Body -->
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- 3. UNIVERSAL "UPLOAD RESUMES" MODAL (GAMING CYBERPUNK THEME) -->
+    <!-- UNIVERSAL "UPLOAD RESUMES" QUICK MODAL -->
     <div id="uploadResumesModal" class="modal-overlay" style="display: none;" onclick="handleModalBackdropClick(event)">
         <div class="modal-card">
-            <!-- Close Button -->
             <button type="button" class="modal-close-btn" onclick="closeUploadModal()">&times;</button>
 
-            <!-- Modal Header -->
             <div class="modal-header-center">
                 <div class="modal-cloud-icon">
                     <i class="fa-solid fa-cloud-arrow-up"></i>
                 </div>
-                <h2 class="modal-title">Upload Resumes</h2>
+                <h2 class="modal-title">Upload Resumes for Screening</h2>
                 <p class="modal-subtitle">Screen candidate cohorts with deep skill vector matching and tournament ranking.</p>
             </div>
 
-            <!-- Screening Form -->
             <form action="{{ url_for('screen_resumes') }}" method="POST" enctype="multipart/form-data" id="modalScreeningForm" onsubmit="return handleFormSubmit(event)">
-                <!-- Job Requirements Accordion -->
+                <!-- Job Requirements Section -->
                 <div class="modal-jd-section">
                     <div class="jd-section-header" onclick="toggleJdAccordion()">
                         <div class="jd-title-flex">
-                            <i class="fa-solid fa-briefcase" style="color: var(--cyan-neon);"></i>
+                            <i class="fa-solid fa-briefcase" style="color: var(--color-arctic-blue);"></i>
                             <span id="jdSectionLabel">Target Position: <strong>{{ sample_title if sample_title else 'Senior Python & AI Developer' }}</strong></span>
                         </div>
-                        <span class="text-xs font-medium" style="color: var(--cyan-neon);" id="jdToggleBtn"><i class="fa-solid fa-pen-to-square"></i> Edit JD Requirements</span>
+                        <span class="text-xs font-medium" style="color: var(--color-arctic-blue);" id="jdToggleBtn"><i class="fa-solid fa-pen-to-square"></i> Edit Requirements</span>
                     </div>
 
                     <div id="jdAccordionBody" class="jd-accordion-body" style="display: none;">
                         <div class="form-group mb-2">
-                            <label for="job_title" class="form-label-sm">Job Title / Target Role</label>
-                            <input type="text" id="job_title" name="job_title" class="form-control-sm" value="{{ sample_title if sample_title else 'Senior Python & AI Developer' }}" required>
+                            <label for="modal_job_title" class="form-label-sm">Job Title / Target Role</label>
+                            <input type="text" id="modal_job_title" name="job_title" class="form-control-sm" value="{{ sample_title if sample_title else 'Senior Python & AI Developer' }}" required>
                         </div>
                         <div class="form-group">
-                            <label for="job_description" class="form-label-sm">Job Description &amp; Minimum Criteria</label>
-                            <textarea id="job_description" name="job_description" class="form-control-sm" rows="4" required>{{ sample_jd if sample_jd else 'We are seeking a Senior Python & AI Developer with 3+ years experience in Python, Flask, FastAPI, Machine Learning (Pandas, NumPy, Scikit-learn), Docker, SQL, and NLP.' }}</textarea>
-                            <button type="button" class="btn-text-sm mt-1" style="color: var(--cyan-neon);" onclick="fillSampleJobData()">
+                            <label for="modal_job_description" class="form-label-sm">Job Description &amp; Minimum Criteria</label>
+                            <textarea id="modal_job_description" name="job_description" class="form-control-sm" rows="4" required>{{ sample_jd if sample_jd else 'We are seeking a Senior Python & AI Developer with 3+ years experience in Python, Flask, FastAPI, Machine Learning (Pandas, NumPy, Scikit-learn), Docker, SQL, and NLP.' }}</textarea>
+                            <button type="button" class="btn-text-sm mt-1" style="color: var(--color-teal);" onclick="fillSampleJobData()">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-fill Sample Role
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Drag & Drop Dropzone Area -->
-                <div class="dropzone-box" id="dropzone" onclick="document.getElementById('resumesInput').click()">
+                <!-- Drag & Drop Dropzone -->
+                <div class="dropzone-box-light" id="dropzone" onclick="document.getElementById('resumesInput').click()">
                     <input type="file" id="resumesInput" name="resumes" multiple accept=".pdf" style="display: none;" onchange="handleFileSelect(this.files)">
                     
-                    <!-- Default Dropzone Prompt -->
-                    <div id="dropzonePrompt" class="dropzone-prompt">
-                        <div class="dropzone-icon-circle">
+                    <div id="dropzonePrompt">
+                        <div class="dropzone-icon-light">
                             <i class="fa-solid fa-file-arrow-up"></i>
                         </div>
-                        <h4 class="dropzone-h4">Drag &amp; Drop PDF Resumes Here</h4>
-                        <p class="dropzone-p">or <span class="dropzone-browse">Browse Files</span> from your device</p>
-                        <span class="dropzone-hint">Format: PDF only (Up to 16 MB batch size)</span>
+                        <h4 class="dropzone-title-light">Drag &amp; Drop PDF Resumes Here</h4>
+                        <p class="dropzone-desc-light">or <span class="dropzone-browse-text">Browse Files</span> from device</p>
+                        <span class="dropzone-spec-light">Supported Format: PDF only (Up to 16 MB batch size)</span>
                     </div>
 
-                    <!-- Selected Files Box -->
-                    <div id="dropzoneSelected" class="dropzone-selected-wrap" style="display: none;">
-                        <div class="selected-badge-center">
-                            <div class="check-icon-circle">
-                                <i class="fa-solid fa-check"></i>
-                            </div>
-                            <span class="selected-badge-title">Files Ready for Analysis</span>
+                    <div id="dropzoneSelected" style="display: none;">
+                        <div class="selected-badge-flex">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Resumes Selected &amp; Ready</span>
                         </div>
-
-                        <!-- Chip Pills for Selected Files -->
-                        <div class="selected-chips-row" id="selectedChipsContainer"></div>
+                        <div class="file-chip-row" id="selectedChipsContainer"></div>
                     </div>
                 </div>
 
-                <!-- "What We'll Analyze" 2x2 Pipeline Grid -->
+                <!-- Analysis Summary -->
                 <div class="what-we-analyze">
-                    <span class="analyze-section-title">Automated Analysis Breakdown</span>
                     <div class="analyze-grid">
                         <div class="analyze-item">
-                            <div class="analyze-icon icon-purple">
-                                <i class="fa-solid fa-file-lines"></i>
-                            </div>
+                            <div class="analyze-icon" style="background: var(--color-soft-sky); color: var(--color-arctic-blue);"><i class="fa-solid fa-file-lines"></i></div>
                             <div class="analyze-meta">
-                                <h5>PDF text extraction</h5>
-                                <p>Extract raw text &amp; entity metadata</p>
+                                <h5>PDF Text Extraction</h5>
+                                <p>Extract entity metadata &amp; experience</p>
                             </div>
                         </div>
-
                         <div class="analyze-item">
-                            <div class="analyze-icon icon-indigo">
-                                <i class="fa-solid fa-brain"></i>
-                            </div>
+                            <div class="analyze-icon" style="background: var(--color-soft-teal); color: var(--color-teal);"><i class="fa-solid fa-brain"></i></div>
                             <div class="analyze-meta">
-                                <h5>Skill taxonomy matching</h5>
-                                <p>Match skills against 60+ taxonomy</p>
+                                <h5>Skill Taxonomy (50%)</h5>
+                                <p>Match against 60+ technical taxonomy</p>
                             </div>
                         </div>
-
                         <div class="analyze-item">
-                            <div class="analyze-icon icon-blue">
-                                <i class="fa-solid fa-graduation-cap"></i>
-                            </div>
+                            <div class="analyze-icon" style="background: var(--color-soft-sky); color: var(--color-arctic-blue);"><i class="fa-solid fa-graduation-cap"></i></div>
                             <div class="analyze-meta">
-                                <h5>Experience &amp; education</h5>
-                                <p>Evaluate tenure &amp; degree benchmarks</p>
+                                <h5>Experience &amp; Degree (30%)</h5>
+                                <p>Verify tenure benchmarks &amp; degree</p>
                             </div>
                         </div>
-
                         <div class="analyze-item">
-                            <div class="analyze-icon icon-violet">
-                                <i class="fa-solid fa-chart-column"></i>
-                            </div>
+                            <div class="analyze-icon" style="background: var(--color-soft-teal); color: var(--color-teal);"><i class="fa-solid fa-chart-column"></i></div>
                             <div class="analyze-meta">
-                                <h5>TF-IDF cosine similarity</h5>
-                                <p>Measure semantic relevance vector</p>
+                                <h5>TF-IDF Vector (20%)</h5>
+                                <p>Compute semantic cosine relevance</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Primary Action Button -->
-                <div class="modal-action-wrap">
-                    <button type="submit" class="btn-primary-gradient" id="submitBtn">
-                        <i class="fa-solid fa-bolt"></i> Analyze Resumes Now
-                    </button>
-                </div>
+                <!-- Submit Button -->
+                <button type="submit" class="btn-analyze-primary" id="modalSubmitBtn" style="margin-top: 20px;">
+                    <i class="fa-solid fa-bolt"></i> Start AI Resume Screening
+                </button>
             </form>
         </div>
     </div>
 
-    <!-- 4. HIGH-TECH LOADING OVERLAY -->
+    <!-- HIGH-TECH LOADING OVERLAY -->
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="loading-card">
             <div class="spinner"></div>
@@ -248,6 +339,6 @@
     </div>
 
     <!-- Scripts -->
-    <script src="{{ url_for('static', filename='js/script.js') }}?v=5.0"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}?v=6.0"></script>
 </body>
 </html>
