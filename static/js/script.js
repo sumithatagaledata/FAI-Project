@@ -1,5 +1,6 @@
 /**
- * ResumeAI - Premium Light-Themed AI Recruitment Platform Architecture & Engine
+ * Talentora AI - Premium Light-Themed AI Recruitment Platform Architecture & Engine
+ * "Intelligence That Finds Talent."
  * Arctic Blue (#2563EB) • Teal (#0D9488) • Ice White (#F8FAFC) • Pure White (#FFFFFF)
  */
 

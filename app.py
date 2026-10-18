@@ -83,7 +83,7 @@ def serve_static(filename: str):
 
 @app.route('/')
 def index():
-    """Main recruiter dashboard matching ResumeAI SaaS interface."""
+    """Landing page and recruiter portal for Talentora AI."""
     summary = database.get_dashboard_summary()
     return render_template(
         'index.html',

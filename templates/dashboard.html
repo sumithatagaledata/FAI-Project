@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Recruiter Screening Dashboard - ResumeAI{% endblock %}
+{% block title %}Recruiter Screening Dashboard — Talentora AI{% endblock %}
 
 {% block page_title %}Recruiter Screening Dashboard{% endblock %}
 
@@ -311,13 +311,21 @@
                                 data-exp="{{ c.experience_years }}">
                                 <td class="col-rank">
                                     {% if loop.index == 1 %}
-                                        <span class="rank-badge rank-1" title="Rank 1">🥇 1</span>
+                                        <span class="rank-badge-medal rank-1" title="Rank 1 - Top Candidate">
+                                            <i class="fa-solid fa-crown"></i> 1
+                                        </span>
                                     {% elif loop.index == 2 %}
-                                        <span class="rank-badge rank-2" title="Rank 2">🥈 2</span>
+                                        <span class="rank-badge-medal rank-2" title="Rank 2">
+                                            <i class="fa-solid fa-medal"></i> 2
+                                        </span>
                                     {% elif loop.index == 3 %}
-                                        <span class="rank-badge rank-3" title="Rank 3">🥉 3</span>
+                                        <span class="rank-badge-medal rank-3" title="Rank 3">
+                                            <i class="fa-solid fa-award"></i> 3
+                                        </span>
                                     {% else %}
-                                        <span class="rank-num">{{ loop.index }}</span>
+                                        <span class="rank-badge-medal rank-default">
+                                            #{{ loop.index }}
+                                        </span>
                                     {% endif %}
                                 </td>
 
@@ -327,19 +335,32 @@
                                             {{ c.initials }}
                                         </div>
                                         <div class="cand-meta">
-                                            <a href="{{ url_for('candidate_detail', candidate_id=c.id) }}" class="cand-name-link">
+                                            <a href="{{ url_for('candidate_detail', candidate_id=c.id) }}" class="cand-name-title">
                                                 {{ c.name }}
                                             </a>
-                                            <span class="cand-email">{{ c.email }}</span>
+                                            <div class="cand-contact-row">
+                                                <span class="cand-contact-item" title="{{ c.email }}">
+                                                    <i class="fa-regular fa-envelope"></i> {{ c.email }}
+                                                </span>
+                                                {% if c.phone and c.phone != 'Not Available' %}
+                                                <span class="cand-contact-item">
+                                                    <i class="fa-solid fa-phone"></i> {{ c.phone }}
+                                                </span>
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
 
                                 <td class="col-score">
-                                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                                        <span style="font-weight: 800; font-size: 0.92rem; color: var(--color-slate-title);">{{ c.match_score }}%</span>
-                                        <div class="score-track-light">
-                                            <div class="score-bar-fill {% if c.match_score >= 70 %}bar-teal{% elif c.match_score >= 45 %}bar-blue{% else %}bar-slate{% endif %}" 
+                                    <div class="cand-score-box">
+                                        <div class="cand-score-header">
+                                            <span class="cand-score-percent {% if c.match_score >= 70 %}score-text-high{% elif c.match_score >= 45 %}score-text-moderate{% else %}score-text-low{% endif %}">
+                                                {{ c.match_score }}%
+                                            </span>
+                                        </div>
+                                        <div class="score-track-modern">
+                                            <div class="score-fill-modern {% if c.match_score >= 70 %}fill-high{% elif c.match_score >= 45 %}fill-moderate{% else %}fill-low{% endif %}" 
                                                  style="width: {{ c.match_score }}%;"></div>
                                         </div>
                                     </div>
@@ -347,36 +368,60 @@
 
                                 <td class="col-badge">
                                     {% if c.match_score >= 70 %}
-                                        <span class="status-pill-light pill-strong">Strong Match</span>
+                                        <span class="status-pill-modern pill-high">
+                                            <i class="fa-solid fa-circle-check"></i> High Match
+                                        </span>
                                     {% elif c.match_score >= 45 %}
-                                        <span class="status-pill-light pill-moderate">Moderate Match</span>
+                                        <span class="status-pill-modern pill-moderate">
+                                            <i class="fa-solid fa-circle-dot"></i> Moderate Match
+                                        </span>
                                     {% else %}
-                                        <span class="status-pill-light pill-low">Low Match</span>
+                                        <span class="status-pill-modern pill-low">
+                                            <i class="fa-solid fa-circle-minus"></i> Low Match
+                                        </span>
                                     {% endif %}
                                 </td>
 
                                 <td class="col-skills">
-                                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                    <div class="cand-skills-chips-wrap">
                                         {% for s in c.matched_skills[:3] %}
-                                            <span class="skill-tag-pill">{{ s }}</span>
+                                            <span class="skill-chip-pill" title="Matched Requirement">
+                                                <i class="fa-solid fa-check"></i> {{ s }}
+                                            </span>
                                         {% endfor %}
                                         {% if c.matched_skills|length > 3 %}
-                                            <span class="skill-tag-more">+{{ c.matched_skills|length - 3 }}</span>
+                                            <span class="skill-chip-more" title="{{ c.matched_skills[3:]|join(', ') }}">
+                                                +{{ c.matched_skills|length - 3 }} more
+                                            </span>
                                         {% elif not c.matched_skills and c.skills %}
                                             {% for s in c.skills[:2] %}
-                                                <span class="skill-tag-pill">{{ s }}</span>
+                                                <span class="skill-chip-pill" style="background: var(--color-soft-sky-light); color: var(--color-arctic-blue); border-color: var(--color-soft-sky);">
+                                                    <i class="fa-solid fa-tag"></i> {{ s }}
+                                                </span>
                                             {% endfor %}
                                         {% endif %}
                                     </div>
                                 </td>
 
                                 <td class="col-exp">
-                                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--color-slate-body);">{{ c.experience_years|format_exp }} yrs</span>
+                                    <div class="cand-exp-edu-col">
+                                        <span class="cand-tenure-tag">
+                                            <i class="fa-solid fa-briefcase" style="color: var(--color-arctic-blue); font-size: 0.8rem;"></i>
+                                            {{ c.experience_years|format_exp }} yrs
+                                        </span>
+                                        {% if c.education and c.education != 'Not Available' %}
+                                        <span class="cand-edu-tag" title="{{ c.education }}">
+                                            <i class="fa-solid fa-graduation-cap"></i>
+                                            {{ c.education }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
                                 </td>
 
                                 <td class="col-actions text-right">
-                                    <a href="{{ url_for('candidate_detail', candidate_id=c.id) }}" class="btn-action-view">
-                                        View Details
+                                    <a href="{{ url_for('candidate_detail', candidate_id=c.id) }}" class="btn-view-details">
+                                        <span>View Details</span>
+                                        <i class="fa-solid fa-arrow-right"></i>
                                     </a>
                                 </td>
                             </tr>

@@ -246,6 +246,13 @@ def get_candidates_for_job(job_id: int) -> List[Dict[str, Any]]:
         d["additional_skills"] = json.loads(d["additional_skills"]) if d["additional_skills"] else []
         d["explanations"] = json.loads(d["explanations_json"]) if d["explanations_json"] else []
         d["skills"] = d["matched_skills"] + d["additional_skills"]
+        name_parts = (d.get("name") or "Candidate").split()
+        if len(name_parts) >= 2:
+            d["initials"] = f"{name_parts[0][0]}{name_parts[1][0]}".upper()
+        elif len(name_parts) == 1 and name_parts[0]:
+            d["initials"] = name_parts[0][:2].upper()
+        else:
+            d["initials"] = "CD"
         candidates.append(d)
     return candidates
 
@@ -265,6 +272,13 @@ def get_candidate_by_id(candidate_id: int) -> Optional[Dict[str, Any]]:
     d["additional_skills"] = json.loads(d["additional_skills"]) if d["additional_skills"] else []
     d["explanations"] = json.loads(d["explanations_json"]) if d["explanations_json"] else []
     d["skills"] = d["matched_skills"] + d["additional_skills"]
+    name_parts = (d.get("name") or "Candidate").split()
+    if len(name_parts) >= 2:
+        d["initials"] = f"{name_parts[0][0]}{name_parts[1][0]}".upper()
+    elif len(name_parts) == 1 and name_parts[0]:
+        d["initials"] = name_parts[0][:2].upper()
+    else:
+        d["initials"] = "CD"
     return d
 
 

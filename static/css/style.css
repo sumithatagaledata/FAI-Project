@@ -1,5 +1,6 @@
 /* ==========================================================================
-   ResumeAI - Premium Light-Themed AI Recruitment Platform Design System
+   Talentora AI - Premium Light-Themed AI Recruitment Platform Design System
+   "Intelligence That Finds Talent."
    Arctic Blue (#2563EB) • Teal (#0D9488) • Ice White (#F8FAFC)
    Pure White (#FFFFFF) • Slate Blue (#334155) • Soft Sky Blue (#DBEAFE)
    ========================================================================== */
@@ -1732,7 +1733,8 @@ body.futuristic-app {
 }
 
 /* ==========================================================================
-   9. CANDIDATE RANKINGS LEADERBOARD TABLE (STEP 4)
+/* ==========================================================================
+   9. TALENTORA AI - PREMIUM CANDIDATE RESULTS & LEADERBOARD SYSTEM
    ========================================================================== */
 
 .table-toolbar-flex {
@@ -1741,244 +1743,504 @@ body.futuristic-app {
     align-items: center;
     margin-bottom: 20px;
     flex-wrap: wrap;
-    gap: 14px;
+    gap: 16px;
 }
 
-.toolbar-controls-cluster {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.table-search-box {
-    position: relative;
-    min-width: 260px;
-}
-
-.table-search-icon {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--color-slate-light);
-    font-size: 0.88rem;
-}
-
-.table-search-input {
+.light-table-search {
     width: 100%;
-    padding: 9px 14px 9px 38px;
+    padding: 10px 14px 10px 36px;
     border-radius: var(--radius-pill);
     border: 1px solid var(--border-color);
     background: var(--color-pure-white);
     color: var(--color-slate-heading);
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     outline: none;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-xs);
 }
 
-.table-search-input:focus {
+.light-table-search:focus {
     border-color: var(--color-arctic-blue);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
-.toolbar-select {
-    padding: 9px 16px;
+.light-select-control {
+    padding: 10px 16px;
     border-radius: var(--radius-pill);
     border: 1px solid var(--border-color);
     background: var(--color-pure-white);
     color: var(--color-slate-heading);
     font-size: 0.85rem;
+    font-weight: 600;
     outline: none;
     cursor: pointer;
     font-family: inherit;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-xs);
+}
+
+.light-select-control:focus {
+    border-color: var(--color-arctic-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .btn-clear-filters {
     background: var(--color-pure-white);
     color: var(--color-slate-muted);
     border: 1px solid var(--border-color);
-    padding: 9px 16px;
-    border-radius: var(--radius-pill);
-    font-size: 0.82rem;
-    font-weight: 600;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-xs);
 }
 
 .btn-clear-filters:hover {
-    color: var(--color-slate-heading);
-    border-color: var(--color-slate-muted);
+    color: var(--color-arctic-blue);
+    border-color: var(--color-arctic-blue);
+    background: var(--color-soft-sky-light);
+    transform: rotate(-45deg);
 }
 
-/* SaaS Light Table */
-.table-responsive-clean {
-    overflow-x: auto;
-}
-
-.saas-table-light {
+/* Premium Candidate Leaderboard Table */
+.light-saas-table, .saas-table-light {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0 10px;
     text-align: left;
 }
 
-.saas-table-light th {
-    padding: 14px 16px;
-    font-size: 0.76rem;
+.light-saas-table thead th, .saas-table-light thead th {
+    padding: 12px 18px;
+    font-size: 0.74rem;
     font-weight: 700;
     color: var(--color-slate-muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--color-ice-white);
+    letter-spacing: 0.06em;
+    border-bottom: 2px solid var(--border-color);
+    background: transparent;
 }
 
-.saas-table-light td {
-    padding: 16px;
-    border-bottom: 1px solid var(--border-color-light);
-    font-size: 0.9rem;
+.ranking-row {
+    background: var(--color-pure-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-color);
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+.ranking-row td {
+    padding: 16px 18px;
     vertical-align: middle;
+    background: var(--color-pure-white);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s ease;
 }
 
-.saas-table-light tbody tr:hover {
-    background: var(--color-soft-sky-light);
+.ranking-row td:first-child {
+    border-left: 1px solid var(--border-color);
+    border-top-left-radius: var(--radius-lg);
+    border-bottom-left-radius: var(--radius-lg);
 }
 
-.cand-cell-flex {
+.ranking-row td:last-child {
+    border-right: 1px solid var(--border-color);
+    border-top-right-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
+}
+
+.ranking-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -4px rgba(37, 99, 235, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+}
+
+.ranking-row:hover td {
+    background: #FAFCFF;
+    border-color: #BFDBFE;
+}
+
+/* Rank Medals & Badges */
+.rank-badge-medal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    border-radius: var(--radius-pill);
+    font-size: 0.88rem;
+    font-weight: 800;
+}
+
+.rank-badge-medal.rank-1 {
+    background: linear-gradient(135deg, #FEF3C7, #FFFBEB);
+    color: #B45309;
+    border: 1.5px solid #FCD34D;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+}
+
+.rank-badge-medal.rank-2 {
+    background: linear-gradient(135deg, #F1F5F9, #F8FAFC);
+    color: #475569;
+    border: 1.5px solid #CBD5E1;
+    box-shadow: 0 2px 8px rgba(100, 116, 139, 0.15);
+}
+
+.rank-badge-medal.rank-3 {
+    background: linear-gradient(135deg, #FFEDD5, #FFF7ED);
+    color: #C2410C;
+    border: 1.5px solid #FDBA74;
+    box-shadow: 0 2px 8px rgba(234, 88, 12, 0.18);
+}
+
+.rank-badge-medal.rank-default {
+    background: var(--color-ice-white);
+    color: var(--color-slate-muted);
+    border: 1px solid var(--border-color);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+/* Candidate Identity Flex */
+.cand-info-flex {
     display: flex;
     align-items: center;
     gap: 14px;
 }
 
-.cand-avatar-circle {
-    width: 38px;
-    height: 38px;
+.cand-avatar {
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background: var(--color-soft-sky);
-    color: var(--color-arctic-blue);
     font-weight: 800;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.cand-name-link {
-    font-size: 0.95rem;
+.avatar-tint-0 { background: linear-gradient(135deg, #DBEAFE, #EFF6FF); color: #1D4ED8; border: 1.5px solid #BFDBFE; }
+.avatar-tint-1 { background: linear-gradient(135deg, #CCFBF1, #F0FDFA); color: #0F766E; border: 1.5px solid #99F6E4; }
+.avatar-tint-2 { background: linear-gradient(135deg, #E0E7FF, #EEF2FF); color: #4338CA; border: 1.5px solid #C7D2FE; }
+.avatar-tint-3 { background: linear-gradient(135deg, #FCE7F3, #FDF2F8); color: #BE185D; border: 1.5px solid #FBCFE8; }
+.avatar-tint-4 { background: linear-gradient(135deg, #FEF3C7, #FFFBEB); color: #B45309; border: 1.5px solid #FDE68A; }
+
+.cand-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cand-name-title {
+    font-size: 0.98rem;
     font-weight: 700;
-    color: var(--color-slate-heading);
+    color: var(--color-slate-title);
     text-decoration: none;
-    transition: color 0.2s;
+    transition: color 0.2s ease;
+    display: inline-block;
 }
 
-.cand-name-link:hover {
+.cand-name-title:hover {
     color: var(--color-arctic-blue);
 }
 
-.cand-email {
-    font-size: 0.78rem;
-    color: var(--color-slate-muted);
-}
-
-.score-cell-flex {
+.cand-contact-row {
     display: flex;
     align-items: center;
     gap: 12px;
+    font-size: 0.78rem;
+    color: var(--color-slate-muted);
+    flex-wrap: wrap;
 }
 
-.score-percent-val {
-    font-weight: 800;
-    font-size: 0.95rem;
-    color: var(--color-slate-heading);
-    min-width: 44px;
-}
-
-.score-progress-track {
-    flex: 1;
-    height: 7px;
-    background: var(--border-color-light);
-    border-radius: var(--radius-pill);
-    overflow: hidden;
-    min-width: 75px;
-}
-
-.score-progress-bar {
-    height: 100%;
-    border-radius: var(--radius-pill);
-}
-
-.bar-emerald { background: var(--color-teal); }
-.bar-blue { background: var(--color-arctic-blue); }
-.bar-purple { background: var(--color-slate-muted); }
-
-/* Status Badges */
-.status-pill {
+.cand-contact-item {
     display: inline-flex;
     align-items: center;
-    padding: 4px 12px;
-    border-radius: var(--radius-pill);
-    font-size: 0.75rem;
-    font-weight: 700;
+    gap: 5px;
 }
 
-.pill-strong {
-    background: var(--color-success-bg);
-    color: var(--color-success);
-    border: 1px solid var(--color-success-border);
+.cand-contact-item i {
+    font-size: 0.72rem;
+    color: var(--color-slate-light);
 }
 
-.pill-moderate {
-    background: var(--color-soft-sky);
-    color: var(--color-arctic-blue);
-    border: 1px solid rgba(37, 99, 235, 0.2);
-}
-
-.pill-low {
-    background: var(--color-danger-bg);
-    color: var(--color-danger);
-    border: 1px solid var(--color-danger-border);
-}
-
-.table-skills-flex {
+/* Match Score Indicator */
+.cand-score-box {
     display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 120px;
+}
+
+.cand-score-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.cand-score-percent {
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.score-text-high { color: #0D9488; }
+.score-text-moderate { color: #2563EB; }
+.score-text-low { color: #64748B; }
+
+.score-track-modern {
+    width: 100%;
+    height: 7px;
+    background: #E2E8F0;
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    position: relative;
+}
+
+.score-fill-modern {
+    height: 100%;
+    border-radius: var(--radius-pill);
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fill-high { background: linear-gradient(90deg, #0D9488, #10B981); }
+.fill-moderate { background: linear-gradient(90deg, #2563EB, #38BDF8); }
+.fill-low { background: linear-gradient(90deg, #64748B, #94A3B8); }
+
+/* Accessible Status Badges */
+.status-pill-modern {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 0.76rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-pill-modern.pill-high {
+    background: #ECFDF5;
+    color: #065F46;
+    border: 1px solid #A7F3D0;
+}
+
+.status-pill-modern.pill-moderate {
+    background: #EFF6FF;
+    color: #1E40AF;
+    border: 1px solid #BFDBFE;
+}
+
+.status-pill-modern.pill-low {
+    background: #F1F5F9;
+    color: #475569;
+    border: 1px solid #CBD5E1;
+}
+
+/* Skills Matched Chips */
+.cand-skills-chips-wrap {
+    display: flex;
+    align-items: center;
     gap: 6px;
     flex-wrap: wrap;
-    align-items: center;
+    max-width: 290px;
 }
 
-.skill-tag-pill {
+.skill-chip-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #F0FDF4;
+    color: #047857;
+    border: 1px solid #BBF7D0;
     font-size: 0.74rem;
     font-weight: 600;
     padding: 3px 10px;
     border-radius: var(--radius-pill);
-    background: var(--color-soft-sky-light);
-    color: var(--color-arctic-blue);
-    border: 1px solid var(--color-soft-sky);
+    transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
-.skill-tag-more {
+.skill-chip-pill:hover {
+    background: #DCFCE7;
+    border-color: #86EFAC;
+    transform: translateY(-1px);
+}
+
+.skill-chip-more {
+    display: inline-flex;
+    align-items: center;
+    background: #F8FAFC;
+    color: #0D9488;
+    border: 1px solid #CCFBF1;
     font-size: 0.72rem;
     font-weight: 700;
-    color: var(--color-teal);
+    padding: 3px 8px;
+    border-radius: var(--radius-pill);
+    cursor: default;
+    white-space: nowrap;
 }
 
-.btn-action-view {
+/* Experience & Education Column */
+.cand-exp-edu-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cand-tenure-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--color-slate-body);
+}
+
+.cand-edu-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--color-teal);
+    background: var(--color-soft-teal);
+    border: 1px solid var(--color-soft-teal-border);
+    padding: 2px 8px;
+    border-radius: 6px;
+    width: fit-content;
+}
+
+/* View Details Action Button */
+.btn-view-details {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     background: var(--color-pure-white);
     color: var(--color-arctic-blue);
-    border: 1px solid var(--border-color);
-    padding: 6px 14px;
-    border-radius: var(--radius-pill);
-    font-size: 0.8rem;
+    border: 1.5px solid #DBEAFE;
+    font-size: 0.84rem;
     font-weight: 700;
+    padding: 8px 18px;
+    border-radius: var(--radius-pill);
     text-decoration: none;
-    transition: all 0.2s;
-    box-shadow: var(--shadow-xs);
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08);
+    white-space: nowrap;
 }
 
-.btn-action-view:hover {
+.btn-view-details:hover {
     background: var(--color-arctic-blue);
-    color: #ffffff;
+    color: #FFFFFF;
     border-color: var(--color-arctic-blue);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+}
+
+.btn-view-details i {
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.btn-view-details:hover i {
+    transform: translateX(3px);
+}
+
+/* Brand Logo Image in Head/Sidebar */
+.brand-logo-img {
+    width: 28px;
+    height: 28px;
+    display: block;
+}
+
+.brand-logo-glow {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    transition: transform 0.25s ease;
+    padding: 3px;
+    flex-shrink: 0;
+}
+
+/* Responsive Mobile Cards for Candidate Results (≤ 850px) */
+@media (max-width: 850px) {
+    .light-saas-table, .saas-table-light {
+        display: block;
+        border-spacing: 0;
+    }
+    .light-saas-table thead, .saas-table-light thead {
+        display: none;
+    }
+    .light-saas-table tbody, .saas-table-light tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        width: 100%;
+    }
+    .ranking-row {
+        display: flex;
+        flex-direction: column;
+        padding: 18px;
+        border-radius: var(--radius-lg);
+        gap: 12px;
+        border: 1px solid var(--border-color);
+    }
+    .ranking-row td {
+        display: block;
+        padding: 0;
+        border: none !important;
+        background: transparent !important;
+    }
+    .ranking-row td.col-rank {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        order: 1;
+    }
+    .ranking-row td.col-candidate {
+        order: 2;
+    }
+    .ranking-row td.col-score {
+        order: 3;
+    }
+    .ranking-row td.col-badge {
+        order: 1;
+        align-self: flex-end;
+        margin-top: -38px;
+    }
+    .ranking-row td.col-skills {
+        order: 4;
+    }
+    .cand-skills-chips-wrap {
+        max-width: 100%;
+    }
+    .ranking-row td.col-exp {
+        order: 5;
+    }
+    .ranking-row td.col-actions {
+        order: 6;
+        margin-top: 6px;
+    }
+    .btn-view-details {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 16px;
+    }
 }
 
 /* ==========================================================================

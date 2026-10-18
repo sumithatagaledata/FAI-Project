@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ResumeAI - AI Based Resume Screening System{% endblock %}</title>
+    <title>{% block title %}Talentora AI — Intelligence That Finds Talent.{% endblock %}</title>
+    <meta name="description" content="Talentora AI — Intelligence That Finds Talent. AI Based Resume Screening System with transparent deterministic scoring.">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
     <!-- Google Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +14,7 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Light-Theme Premium CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=6.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=7.0">
 </head>
 <body class="futuristic-app">
     <!-- 0. LIVE ANIMATED WALLPAPER (ARCTIC BLUE & TEAL PARTICLES & DIGITAL GRID) -->
@@ -27,11 +30,11 @@
                 <!-- Brand Logo -->
                 <a href="{{ url_for('index') }}" class="brand-link">
                     <div class="brand-logo-glow">
-                        <i class="fa-solid fa-brain"></i>
+                        <img src="{{ url_for('static', filename='img/talentora-logo.svg') }}" alt="Talentora AI" class="brand-logo-img">
                     </div>
                     <div class="brand-name-wrap">
-                        <span class="brand-name">Resume<span>AI</span></span>
-                        <span class="brand-tag">AI Based Resume Screening System</span>
+                        <span class="brand-name">Talentora <span>AI</span></span>
+                        <span class="brand-tag">Intelligence That Finds Talent. • AI Based Screening</span>
                     </div>
                 </a>
 
@@ -68,9 +71,10 @@
         <!-- LANDING FOOTER -->
         <footer class="landing-footer" style="background: var(--color-pure-white); border-top: 1px solid var(--border-color); padding: 36px 32px; text-align: center; color: var(--color-slate-muted); font-size: 0.88rem; position: relative; z-index: 10;">
             <div style="max-width: 1360px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-weight: 800; color: var(--color-slate-heading);">ResumeAI</span>
-                    <span>• AI Based Resume Screening System</span>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="{{ url_for('static', filename='img/talentora-logo.svg') }}" alt="Talentora AI" style="width: 24px; height: 24px; border-radius: 6px;">
+                    <span style="font-weight: 800; color: var(--color-slate-heading);">Talentora AI</span>
+                    <span>• Intelligence That Finds Talent.</span>
                 </div>
                 <div style="display: flex; gap: 20px;">
                     <a href="#featuresSection" style="color: var(--color-slate-muted); text-decoration: none;">Features</a>
@@ -87,12 +91,12 @@
             <aside class="app-sidebar">
                 <div class="sidebar-brand-box">
                     <a href="{{ url_for('index') }}" class="brand-link">
-                        <div class="brand-logo-glow" style="width: 36px; height: 36px; font-size: 1.05rem;">
-                            <i class="fa-solid fa-brain"></i>
+                        <div class="brand-logo-glow" style="width: 38px; height: 38px;">
+                            <img src="{{ url_for('static', filename='img/talentora-logo.svg') }}" alt="Talentora AI" class="brand-logo-img">
                         </div>
                         <div class="brand-name-wrap">
-                            <span class="brand-name" style="font-size: 1.12rem;">Resume<span>AI</span></span>
-                            <span class="brand-tag" style="font-size: 0.62rem;">AI Based Resume Screening System</span>
+                            <span class="brand-name" style="font-size: 1.15rem;">Talentora <span>AI</span></span>
+                            <span class="brand-tag" style="font-size: 0.65rem;">Intelligence That Finds Talent.</span>
                         </div>
                     </a>
                 </div>
