@@ -1,169 +1,380 @@
 {% extends 'base.html' %}
 
-{% block title %}Home - AI Based Resume Screening System{% endblock %}
+{% block title %}Dashboard - ResumeAI Screening System{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="hero-badge">
-        <i class="fa-solid fa-graduation-cap"></i> AI + Data Structures & Algorithms Mini-Project
-    </div>
-    <h1 class="hero-title">
-        AI Based <span class="gradient-text">Resume Screening</span> System
-    </h1>
-    <p class="hero-subtitle">
-        Accelerate recruitment workflows with intelligent PDF parsing, NLP keyword matching, multi-factor scoring, and deterministic candidate ranking using custom algorithms.
-    </p>
+<div class="dashboard-container">
+    <!-- Top Greeting & Header Bar -->
+    <div class="dashboard-greeting-row">
+        <div class="greeting-text">
+            <span class="greeting-sub">Good morning, Sneha 👋</span>
+            <h1 class="greeting-title">Your Screening Dashboard</h1>
+            <p class="greeting-desc">Upload resumes, run AI analysis, and find the best candidates.</p>
+        </div>
 
-    <div class="hero-cta-group">
-        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
-            <i class="fa-solid fa-sliders"></i> Start Screening
-        </a>
-        <button onclick="triggerSampleDemo()" class="btn btn-secondary btn-lg">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Run 1-Click Demo
-        </button>
+        <div class="greeting-actions">
+            <button type="button" class="btn btn-primary-pill" onclick="openUploadModal()">
+                <i class="fa-solid fa-plus"></i> New Screening
+            </button>
+            <button type="button" class="btn btn-secondary-pill" onclick="triggerSampleDemo()">
+                <i class="fa-solid fa-play"></i> Try Demo
+            </button>
+        </div>
     </div>
 
-    <!-- Quick Stats Banner -->
-    <div class="quick-stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon icon-blue"><i class="fa-solid fa-file-pdf"></i></div>
-            <div class="stat-info">
-                <h3>Multi-PDF Extraction</h3>
-                <p>Pure Python PDF text & entity parser</p>
+    <!-- 4 Metrics KPI Row (Matching Screenshot Slots) -->
+    <div class="metric-slots-grid">
+        <!-- 1. Total Candidates -->
+        <div class="metric-slot-card">
+            <div class="slot-icon icon-bg-purple">
+                <i class="fa-solid fa-file-invoice"></i>
+            </div>
+            <div class="slot-data">
+                <span class="slot-label">Total Candidates</span>
+                <div class="slot-value">{{ summary.total_candidates }}</div>
+                <span class="slot-sub">Across all screenings</span>
             </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon icon-purple"><i class="fa-solid fa-network-wired"></i></div>
-            <div class="stat-info">
-                <h3>TF-IDF & Cosine NLP</h3>
-                <p>Semantic document vectorization</p>
+
+        <!-- 2. Avg. Match Score -->
+        <div class="metric-slot-card">
+            <div class="slot-icon icon-bg-green">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div class="slot-data">
+                <span class="slot-label">Avg. Match Score</span>
+                <div class="slot-value">{{ summary.avg_score }}%</div>
+                <span class="slot-sub">From recent screenings</span>
             </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon icon-green"><i class="fa-solid fa-arrow-down-9-1"></i></div>
-            <div class="stat-info">
-                <h3>Merge Sort & Max-Heap</h3>
-                <p>Strict O(N log N) candidate ranking</p>
+
+        <!-- 3. Strong Matches -->
+        <div class="metric-slot-card">
+            <div class="slot-icon icon-bg-emerald">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div class="slot-data">
+                <span class="slot-label">Strong Matches</span>
+                <div class="slot-value text-emerald">{{ summary.strong_count }}</div>
+                <span class="slot-sub">Above 70% match</span>
             </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon icon-amber"><i class="fa-solid fa-circle-nodes"></i></div>
-            <div class="stat-info">
-                <h3>Explainable Scoring</h3>
-                <p>Transparent factor breakdown</p>
+
+        <!-- 4. Screening Jobs -->
+        <div class="metric-slot-card">
+            <div class="slot-icon icon-bg-blue">
+                <i class="fa-solid fa-briefcase"></i>
+            </div>
+            <div class="slot-data">
+                <span class="slot-label">Screening Jobs</span>
+                <div class="slot-value">{{ summary.total_jobs }}</div>
+                <span class="slot-sub">Active sessions</span>
             </div>
         </div>
     </div>
-</section>
 
-<!-- System Architecture & Workflow -->
-<section class="workflow-section">
-    <div class="section-header text-center">
-        <span class="section-tag">System Pipeline</span>
-        <h2 class="section-title">How the Screening Engine Works</h2>
-        <p class="section-desc">From unstructured PDF resumes to ranked, explainable candidate recommendations.</p>
+    <!-- Middle Grid: 2/3 Left (Recent Screenings) + 1/3 Right (Match Distribution & Skills) -->
+    <div class="dashboard-mid-grid">
+        <!-- Left: Recent Screenings Card -->
+        <div class="card recent-screenings-card">
+            <div class="card-header-flex">
+                <div>
+                    <h3 class="slot-card-title">Recent Screenings</h3>
+                    <p class="slot-card-subtitle">Latest recruitment roles and candidate evaluations</p>
+                </div>
+                <a href="{{ url_for('history') }}" class="btn-link-sm">View all <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <div class="screenings-table-wrap">
+                <div class="screenings-table-header">
+                    <span class="col-th">Job Title</span>
+                    <span class="col-th text-right">Candidates / Action</span>
+                </div>
+
+                <div class="screenings-list">
+                    {% if summary.recent_jobs %}
+                        {% for job in summary.recent_jobs %}
+                            <a href="{{ url_for('view_results', job_id=job.id) }}" class="screening-row-item">
+                                <div class="job-meta-left">
+                                    <div class="job-avatar-icon icon-color-{{ loop.index % 4 }}">
+                                        <i class="fa-solid fa-briefcase"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="job-row-title">{{ job.job_title }}</h4>
+                                        <span class="job-row-sub">
+                                            {{ job.created_at[:10] if job.created_at else 'Recent' }} • {{ job.candidate_count }} candidate{% if job.candidate_count != 1 %}s{% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="job-meta-right">
+                                    {% if job.top_score %}
+                                        <span class="badge badge-light-score">Top: {{ job.top_score }}%</span>
+                                    {% endif %}
+                                    <span class="row-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Empty State for Recent Screenings -->
+                        <div class="empty-screenings-state">
+                            <div class="empty-icon-wrap"><i class="fa-solid fa-folder-open"></i></div>
+                            <h4>No Screening Sessions Yet</h4>
+                            <p>Upload candidate resumes or click <strong>"Try Demo"</strong> to load instant demonstration data.</p>
+                            <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="triggerSampleDemo()">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> 1-Click Sample Demo
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Stacked Cards (Match Distribution + Top Skills) -->
+        <div class="right-stack-col">
+            <!-- 1. Match Distribution Donut Card -->
+            <div class="card distribution-card">
+                <h3 class="slot-card-title mb-2">Match Distribution</h3>
+                <div class="donut-chart-flex">
+                    <!-- SVG Donut Chart -->
+                    <div class="donut-svg-wrap">
+                        <svg class="donut-chart-svg" viewBox="0 0 120 120">
+                            <!-- Background ring -->
+                            <circle cx="60" cy="60" r="46" fill="transparent" stroke="#f1f5f9" stroke-width="16"></circle>
+                            
+                            {% set total = summary.total_candidates %}
+                            {% if total > 0 %}
+                                {% set circ = 289.0 %}
+                                {% set strong_p = summary.strong_count / total %}
+                                {% set mod_p = summary.moderate_count / total %}
+                                {% set low_p = summary.low_count / total %}
+
+                                <!-- Strong segment (Emerald) -->
+                                <circle cx="60" cy="60" r="46" fill="transparent" stroke="#10b981" stroke-width="16"
+                                    stroke-dasharray="{{ strong_p * circ }} {{ circ }}" stroke-dashoffset="0"
+                                    stroke-linecap="round"></circle>
+                                
+                                <!-- Moderate segment (Blue) -->
+                                <circle cx="60" cy="60" r="46" fill="transparent" stroke="#3b82f6" stroke-width="16"
+                                    stroke-dasharray="{{ mod_p * circ }} {{ circ }}" stroke-dashoffset="-{{ strong_p * circ }}"
+                                    stroke-linecap="round"></circle>
+                                
+                                <!-- Low segment (Purple) -->
+                                <circle cx="60" cy="60" r="46" fill="transparent" stroke="#8b5cf6" stroke-width="16"
+                                    stroke-dasharray="{{ low_p * circ }} {{ circ }}" stroke-dashoffset="-{{ (strong_p + mod_p) * circ }}"
+                                    stroke-linecap="round"></circle>
+                            {% else %}
+                                <circle cx="60" cy="60" r="46" fill="transparent" stroke="#cbd5e1" stroke-width="16" stroke-dasharray="289 289"></circle>
+                            {% endif %}
+                        </svg>
+                        <div class="donut-center-label">
+                            <span class="donut-big-num">{{ summary.total_candidates }}</span>
+                            <span class="donut-sub-text">Candidates</span>
+                        </div>
+                    </div>
+
+                    <!-- Legend list -->
+                    <div class="donut-legend">
+                        <div class="legend-row">
+                            <span class="legend-dot dot-emerald"></span>
+                            <span class="legend-name">Strong</span>
+                            <span class="legend-num">{{ summary.strong_count }}</span>
+                        </div>
+                        <div class="legend-row">
+                            <span class="legend-dot dot-blue"></span>
+                            <span class="legend-name">Moderate</span>
+                            <span class="legend-num">{{ summary.moderate_count }}</span>
+                        </div>
+                        <div class="legend-row">
+                            <span class="legend-dot dot-purple"></span>
+                            <span class="legend-name">Low</span>
+                            <span class="legend-num">{{ summary.low_count }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Top Skills Card -->
+            <div class="card top-skills-card" id="analyticsSection">
+                <div class="card-header-flex">
+                    <h3 class="slot-card-title">Top Skills</h3>
+                    <a href="#rankingsSection" class="btn-link-sm">View all <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="top-skills-pills">
+                    {% for skill in summary.top_skills %}
+                        <button type="button" class="skill-pill-btn" onclick="filterBySkillPill('{{ skill }}')">
+                            {{ skill }}
+                        </button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="workflow-steps">
-        <div class="workflow-step">
-            <div class="step-number">1</div>
-            <div class="step-icon"><i class="fa-solid fa-briefcase"></i></div>
-            <h4>Job Description</h4>
-            <p>Recruiter enters requirements; NLP extracts skills, experience & education benchmarks.</p>
-        </div>
-
-        <div class="workflow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-
-        <div class="workflow-step">
-            <div class="step-number">2</div>
-            <div class="step-icon"><i class="fa-solid fa-file-lines"></i></div>
-            <h4>Resume Parsing</h4>
-            <p>Extracts text from uploaded PDF resumes without hallucination.</p>
-        </div>
-
-        <div class="workflow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-
-        <div class="workflow-step">
-            <div class="step-number">3</div>
-            <div class="step-icon"><i class="fa-solid fa-brain"></i></div>
-            <h4>AI / NLP Matching</h4>
-            <p>Computes skill set intersections and TF-IDF cosine similarity.</p>
-        </div>
-
-        <div class="workflow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-
-        <div class="workflow-step">
-            <div class="step-number">4</div>
-            <div class="step-icon"><i class="fa-solid fa-ranking-star"></i></div>
-            <h4>DSA Ranking</h4>
-            <p>Custom Merge Sort and Max-Heap generate the ranked leaderboard.</p>
-        </div>
-    </div>
-</section>
-
-<!-- Explainable Scoring Weights Section -->
-<section class="scoring-section">
-    <div class="section-header text-center">
-        <span class="section-tag">Evaluation Model</span>
-        <h2 class="section-title">Configurable 4-Factor Scoring</h2>
-        <p class="section-desc">Clear, non-blackbox scoring formula tailored for recruitement transparency.</p>
-    </div>
-
-    <div class="scoring-grid">
-        <div class="weight-card">
-            <div class="weight-percentage text-primary">50%</div>
-            <h3>Skill Match</h3>
-            <p>Mathematical set intersection between job-required skills and candidate skill inventory.</p>
-        </div>
-        <div class="weight-card">
-            <div class="weight-percentage text-purple">20%</div>
-            <h3>Experience Match</h3>
-            <p>Numerical comparison of verified work tenure against specified minimum role requirements.</p>
-        </div>
-        <div class="weight-card">
-            <div class="weight-percentage text-emerald">10%</div>
-            <h3>Education Level</h3>
-            <p>Degree hierarchy qualification alignment (Ph.D., Master's, Bachelor's, Diploma).</p>
-        </div>
-        <div class="weight-card">
-            <div class="weight-percentage text-amber">20%</div>
-            <h3>Semantic TF-IDF</h3>
-            <p>Cosine similarity on normalized term frequency vectors for domain keyword affinity.</p>
-        </div>
-    </div>
-</section>
-
-<!-- Academic & DSA Details -->
-<section class="about-section">
-    <div class="about-card">
-        <div class="about-header">
-            <i class="fa-solid fa-code"></i>
+    <!-- Lower Slot: Candidate Rankings Leaderboard (Matching Screenshot) -->
+    <div class="card candidate-rankings-card" id="rankingsSection">
+        <div class="rankings-header-flex">
             <div>
-                <h3>Academic & Technical Foundations</h3>
-                <p>Designed and structured specifically to demonstrate core Computer Science topics.</p>
+                <h3 class="slot-card-title">Candidate Rankings</h3>
+                <p class="slot-card-subtitle">Deterministic ranking evaluated with Merge Sort & Max-Heap</p>
+            </div>
+
+            <!-- Search and Filter Toolbar -->
+            <div class="rankings-toolbar">
+                <!-- Search input -->
+                <div class="table-search-box">
+                    <i class="fa-solid fa-magnifying-glass table-search-icon"></i>
+                    <input type="text" id="candidateSearchInput" class="table-search-input" placeholder="Search by name or skills..." onkeyup="filterRankingsTable()">
+                </div>
+
+                <!-- Skill Filter Dropdown -->
+                <div class="filter-dropdown-wrap">
+                    <select id="skillDropdownFilter" class="toolbar-select" onchange="filterRankingsTable()">
+                        <option value="">All Skills</option>
+                        {% for skill in summary.top_skills %}
+                            <option value="{{ skill }}">{{ skill }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Sort Dropdown -->
+                <div class="filter-dropdown-wrap">
+                    <select id="sortDropdownFilter" class="toolbar-select" onchange="sortRankingsTable(this.value)">
+                        <option value="score_desc">Sort by: Match Score ↓</option>
+                        <option value="score_asc">Sort by: Match Score ↑</option>
+                        <option value="exp_desc">Sort by: Experience ↓</option>
+                        <option value="name_asc">Sort by: Name (A-Z)</option>
+                    </select>
+                </div>
+
+                <!-- Clear Filters Button -->
+                <button type="button" class="btn-clear-filters" onclick="clearRankingsFilters()">
+                    <i class="fa-solid fa-rotate-left"></i> Clear Filters
+                </button>
             </div>
         </div>
-        <div class="about-grid">
-            <div class="about-item">
-                <h4><i class="fa-solid fa-calculator text-primary"></i> Data Structures & Algorithms</h4>
-                <ul>
-                    <li><strong>Merge Sort & Quick Sort:</strong> Implemented manually in <code>algorithms.py</code> for candidate ranking.</li>
-                    <li><strong>Max-Heap (Priority Queue):</strong> Dynamic heap for $O(1)$ top candidate peek and $O(K \log N)$ top-K retrieval.</li>
-                    <li><strong>Inverted Index & Hash Maps:</strong> O(1) skill-to-candidate dictionary lookups.</li>
-                    <li><strong>Binary Search:</strong> Fast $O(\log N)$ candidate name retrieval on sorted sets.</li>
-                </ul>
-            </div>
-            <div class="about-item">
-                <h4><i class="fa-solid fa-robot text-purple"></i> Natural Language Processing</h4>
-                <ul>
-                    <li><strong>Tokenization & Normalization:</strong> Custom stop-word removal and punctuation cleaning.</li>
-                    <li><strong>Skill Taxonomy:</strong> Curated taxonomy covering 60+ technologies and canonical aliases.</li>
-                    <li><strong>TF-IDF & Cosine Metric:</strong> Pure Python vector dot products with L2 normalization.</li>
-                    <li><strong>Zero External Paid APIs:</strong> Fully self-contained and runnable offline.</li>
-                </ul>
-            </div>
+
+        <!-- Table -->
+        <div class="rankings-table-responsive">
+            <table class="saas-table" id="rankingsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Candidate</th>
+                        <th style="width: 170px;">Match Score</th>
+                        <th>Status</th>
+                        <th>Skills Matched</th>
+                        <th>Experience</th>
+                        <th class="text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="rankingsTableBody">
+                    {% if summary.candidates %}
+                        {% for c in summary.candidates %}
+                            <tr class="ranking-row" 
+                                data-name="{{ c.name|lower }}" 
+                                data-email="{{ c.email|lower }}" 
+                                data-skills="{{ c.skills|join(' ')|lower }}" 
+                                data-score="{{ c.match_score }}"
+                                data-exp="{{ c.experience_years }}">
+                                <!-- Rank Rank Medal -->
+                                <td class="col-rank">
+                                    {% if loop.index == 1 %}
+                                        <span class="rank-badge rank-1" title="Rank 1 - Top Candidate">👑 1</span>
+                                    {% elif loop.index == 2 %}
+                                        <span class="rank-badge rank-2" title="Rank 2">🥈 2</span>
+                                    {% elif loop.index == 3 %}
+                                        <span class="rank-badge rank-3" title="Rank 3">🥉 3</span>
+                                    {% else %}
+                                        <span class="rank-num">{{ loop.index }}</span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Candidate Avatar & Details -->
+                                <td class="col-candidate">
+                                    <div class="cand-cell-flex">
+                                        <div class="cand-avatar avatar-tint-{{ loop.index % 5 }}">
+                                            {{ c.initials }}
+                                        </div>
+                                        <div class="cand-meta">
+                                            <a href="{{ url_for('candidate_detail', candidate_id=c.id) }}" class="cand-name-link">
+                                                {{ c.name }}
+                                            </a>
+                                            <span class="cand-email">{{ c.email }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Match Score Progress Bar -->
+                                <td class="col-score">
+                                    <div class="score-cell-flex">
+                                        <span class="score-percent-val">{{ c.match_score }}%</span>
+                                        <div class="score-progress-track">
+                                            <div class="score-progress-bar {% if c.match_score >= 70 %}bar-emerald{% elif c.match_score >= 45 %}bar-blue{% else %}bar-purple{% endif %}" 
+                                                 style="width: {{ c.match_score }}%;"></div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Status Badge -->
+                                <td class="col-badge">
+                                    {% if c.match_score >= 70 %}
+                                        <span class="status-pill pill-strong">Strong Match</span>
+                                    {% elif c.match_score >= 45 %}
+                                        <span class="status-pill pill-moderate">Moderate Match</span>
+                                    {% else %}
+                                        <span class="status-pill pill-low">Low Match</span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Skills Matched Chips -->
+                                <td class="col-skills">
+                                    <div class="table-skills-flex">
+                                        {% for s in c.matched_skills[:3] %}
+                                            <span class="skill-tag-pill">{{ s }}</span>
+                                        {% endfor %}
+                                        {% if c.matched_skills|length > 3 %}
+                                            <span class="skill-tag-more">+{{ c.matched_skills|length - 3 }}</span>
+                                        {% elif not c.matched_skills and c.skills %}
+                                            {% for s in c.skills[:2] %}
+                                                <span class="skill-tag-pill">{{ s }}</span>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </td>
+
+                                <!-- Experience -->
+                                <td class="col-exp">
+                                    <span class="exp-text">{{ c.experience_years|format_exp }} yrs</span>
+                                </td>
+
+                                <!-- Action Buttons -->
+                                <td class="col-actions text-right">
+                                    <a href="{{ url_for('candidate_detail', candidate_id=c.id) }}" class="btn-action-view">
+                                        View Details
+                                    </a>
+                                    <button type="button" class="btn-dots-menu" onclick="toggleRowMenu(event, {{ c.id }})" title="Options">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="empty-table-state">
+                                    <i class="fa-solid fa-users-slash empty-icon"></i>
+                                    <h4>No candidates evaluated yet</h4>
+                                    <p>Start a new screening session or try the 1-click sample demo.</p>
+                                    <button type="button" class="btn btn-primary-pill btn-sm mt-3" onclick="triggerSampleDemo()">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Run 1-Click Demo
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
     </div>
-</section>
+</div>
 {% endblock %}

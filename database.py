@@ -302,3 +302,85 @@ def clear_all_data() -> bool:
     conn.commit()
     conn.close()
     return True
+
+
+def get_dashboard_summary() -> Dict[str, Any]:
+    """
+    Fetches aggregate statistics, recent screening jobs,
+    skill distribution, and ranked candidate leaderboard for the overview dashboard.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    jobs = get_all_jobs()
+
+    cursor.execute("""
+        SELECT c.*, j.job_title 
+        FROM candidates c
+        LEFT JOIN jobs j ON c.job_id = j.id
+        ORDER BY c.match_score DESC
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+
+    all_cands = []
+    skill_counts: Dict[str, int] = {}
+    strong_count = 0
+    moderate_count = 0
+    low_count = 0
+    total_score = 0.0
+
+    for idx, r in enumerate(rows):
+        d = dict(r)
+        d["matched_skills"] = json.loads(d["matched_skills"]) if d.get("matched_skills") else []
+        d["missing_skills"] = json.loads(d["missing_skills"]) if d.get("missing_skills") else []
+        d["additional_skills"] = json.loads(d["additional_skills"]) if d.get("additional_skills") else []
+        d["explanations"] = json.loads(d["explanations_json"]) if d.get("explanations_json") else []
+        d["skills"] = d["matched_skills"] + d["additional_skills"]
+        d["rank"] = idx + 1
+
+        # Initials for avatar
+        name_parts = (d.get("name") or "Candidate").split()
+        if len(name_parts) >= 2:
+            d["initials"] = f"{name_parts[0][0]}{name_parts[1][0]}".upper()
+        elif len(name_parts) == 1 and name_parts[0]:
+            d["initials"] = name_parts[0][:2].upper()
+        else:
+            d["initials"] = "CD"
+
+        score = float(d.get("match_score", 0.0))
+        total_score += score
+        if score >= 70.0:
+            strong_count += 1
+        elif score >= 45.0:
+            moderate_count += 1
+        else:
+            low_count += 1
+
+        for s in d["skills"]:
+            if s:
+                skill_counts[s] = skill_counts.get(s, 0) + 1
+
+        all_cands.append(d)
+
+    total_candidates = len(all_cands)
+    avg_score = round(total_score / total_candidates, 1) if total_candidates > 0 else 0.0
+
+    # Top skills
+    sorted_skills = sorted(skill_counts.items(), key=lambda x: x[1], reverse=True)[:8]
+    top_skills = [item[0] for item in sorted_skills]
+    if not top_skills:
+        top_skills = ["Python", "Machine Learning", "SQL", "Docker", "Pandas", "FastAPI"]
+
+    return {
+        "recent_jobs": jobs[:6],
+        "total_jobs": len(jobs),
+        "candidates": all_cands[:15],
+        "total_candidates": total_candidates,
+        "avg_score": avg_score,
+        "strong_count": strong_count,
+        "moderate_count": moderate_count,
+        "low_count": low_count,
+        "top_skills": top_skills
+    }
+

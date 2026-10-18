@@ -83,21 +83,27 @@ def serve_static(filename: str):
 
 @app.route('/')
 def index():
-    """Landing page with project overview, DSA features, and workflow guide."""
-    jobs = database.get_all_jobs()
-    total_screenings = len(jobs)
-    total_candidates = sum(j.get("candidate_count", 0) for j in jobs)
-    return render_template('index.html', total_screenings=total_screenings, total_candidates=total_candidates)
+    """Main recruiter dashboard matching ResumeAI SaaS interface."""
+    summary = database.get_dashboard_summary()
+    return render_template(
+        'index.html',
+        summary=summary,
+        sample_title=SAMPLE_JOB_TITLE,
+        sample_jd=SAMPLE_JOB_DESCRIPTION
+    )
 
 
 @app.route('/dashboard')
 def dashboard():
-    """Recruiter dashboard to input Job Description and upload PDF resumes."""
+    """Recruiter dashboard / screener interface."""
+    summary = database.get_dashboard_summary()
     return render_template(
         'dashboard.html',
+        summary=summary,
         sample_title=SAMPLE_JOB_TITLE,
         sample_jd=SAMPLE_JOB_DESCRIPTION
     )
+
 
 
 @app.route('/screen', methods=['POST'])
