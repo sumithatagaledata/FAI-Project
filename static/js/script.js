@@ -1,12 +1,12 @@
 /**
- * ResumeAI - Interactive Client Scripts (Matching Modern UI/UX Reference)
+ * ResumeAI - Premium Cinematic Client Interaction & Motion Scripts
  */
 
 let selectedFilesList = [];
 let currentFilesDataTransfer = new DataTransfer();
 
 // ==========================================
-// 1. MODAL CONTROLS & JD ACCORDION
+// 1. MODAL CONTROLS & KEYBOARD ACCESSIBILITY
 // ==========================================
 
 function openUploadModal() {
@@ -30,6 +30,23 @@ function handleModalBackdropClick(event) {
         closeUploadModal();
     }
 }
+
+// ESC key to close modal, Ctrl+K for search
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeUploadModal();
+        const notifDropdown = document.getElementById('notificationDropdown');
+        if (notifDropdown) notifDropdown.classList.remove('active');
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const searchInput = document.getElementById('globalSearchInput') || document.getElementById('candidateSearchInput');
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+        }
+    }
+});
 
 function toggleJdAccordion() {
     const body = document.getElementById('jdAccordionBody');
@@ -276,6 +293,10 @@ function handleGlobalSearch(query) {
     if (tableSearch) {
         tableSearch.value = query;
         filterRankingsTable();
+        const rankingsSection = document.getElementById('rankingsSection');
+        if (rankingsSection && query.length > 2) {
+            rankingsSection.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 }
 
@@ -336,6 +357,26 @@ function triggerSampleDemo() {
         hideLoading();
         alert("Failed to load demo: " + err);
     });
+}
+
+function deleteJob(jobId) {
+    if (confirm("Are you sure you want to delete this screening session and its evaluated candidates?")) {
+        showLoading("Removing Session...", "Deleting screening records from database.");
+        fetch(`/api/delete-job/${jobId}`, { method: 'POST' })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.reload();
+                } else {
+                    hideLoading();
+                    alert("Delete failed: " + data.message);
+                }
+            })
+            .catch(err => {
+                hideLoading();
+                alert("Error deleting session: " + err);
+            });
+    }
 }
 
 function confirmClearData() {

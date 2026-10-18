@@ -1,28 +1,114 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard - ResumeAI Screening System{% endblock %}
+{% block title %}ResumeAI - Intelligent Candidate Screening & Ranking{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
-    <!-- Top Greeting & Header Bar -->
-    <div class="dashboard-greeting-row">
-        <div class="greeting-text">
-            <span class="greeting-sub">Good morning, Sneha 👋</span>
-            <h1 class="greeting-title">Your Screening Dashboard</h1>
-            <p class="greeting-desc">Upload resumes, run AI analysis, and find the best candidates.</p>
+    <!-- ====================================================================
+         1. CINEMATIC HERO SECTION & INTERACTIVE AI SCANNER SIMULATOR
+         ==================================================================== -->
+    <section class="hero-banner">
+        <div class="hero-left-content">
+            <div class="hero-headline-badge">
+                <span class="dot-live"></span>
+                <span>Deterministic AI Recruitment Engine</span>
+            </div>
+            
+            <h1 class="hero-title-editorial">
+                Hire smarter. <br>
+                <span class="gradient-text-luminous">Discover the right talent.</span>
+            </h1>
+            
+            <p class="hero-subtitle-refined">
+                Screen dozens of PDF resumes in seconds using explainable Natural Language Processing, TF-IDF cosine similarity, and deterministic Merge Sort & Max-Heap ranking.
+            </p>
+
+            <div class="hero-action-cluster">
+                <button type="button" class="btn-cinematic-primary" onclick="openUploadModal()">
+                    <i class="fa-solid fa-bolt"></i> Start Screening
+                </button>
+                <button type="button" class="btn-cinematic-secondary" onclick="triggerSampleDemo()">
+                    <i class="fa-solid fa-play"></i> Explore Demo
+                </button>
+            </div>
+
+            <!-- Trust / Capability Signals -->
+            <div class="hero-trust-bar">
+                <span class="trust-item"><i class="fa-solid fa-shield-check"></i> Zero Paid API Cost</span>
+                <span class="trust-item"><i class="fa-solid fa-code-merge"></i> Strict O(N log N) DSA</span>
+                <span class="trust-item"><i class="fa-solid fa-lock"></i> 100% Offline Capable</span>
+            </div>
         </div>
 
-        <div class="greeting-actions">
-            <button type="button" class="btn btn-primary-pill" onclick="openUploadModal()">
-                <i class="fa-solid fa-plus"></i> New Screening
-            </button>
-            <button type="button" class="btn btn-secondary-pill" onclick="triggerSampleDemo()">
-                <i class="fa-solid fa-play"></i> Try Demo
-            </button>
-        </div>
-    </div>
+        <!-- Right: Interactive Candidate Scanner Simulator Card -->
+        <div class="hero-scanner-card" id="heroScannerCard">
+            <!-- Pulsing Radar Scanning Line -->
+            <div class="scanner-radar-line"></div>
 
-    <!-- 4 Metrics KPI Row (Matching Screenshot Slots) -->
+            <div class="scanner-header">
+                <span class="scanner-title-badge">
+                    <i class="fa-solid fa-microchip"></i> Live Screening Simulation
+                </span>
+                <span class="badge badge-success">AI Match Active</span>
+            </div>
+
+            <!-- Candidate Profile Preview -->
+            <div class="scanner-profile-preview">
+                <div class="scanner-avatar-ring">
+                    <svg viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="16" fill="transparent" stroke="#ede9fe" stroke-width="3"></circle>
+                        <circle cx="20" cy="20" r="16" fill="transparent" stroke="url(#heroRingGrad)" stroke-width="3"
+                                stroke-dasharray="100.5" stroke-dashoffset="15" stroke-linecap="round"></circle>
+                        <defs>
+                            <linearGradient id="heroRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#4f46e5" />
+                                <stop offset="100%" stop-color="#10b981" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="scanner-avatar-inner">AS</div>
+                </div>
+
+                <div class="scanner-meta">
+                    <div class="scanner-cand-name">
+                        <span>Aarav Sharma</span>
+                        <span class="badge badge-green" style="font-size: 0.68rem; padding: 2px 8px;">Top Match</span>
+                    </div>
+                    <div class="scanner-cand-role">Senior Python & AI Engineer • 3.5 yrs exp</div>
+                    <div class="scanner-skills-row">
+                        <span class="scanner-skill-chip"><i class="fa-solid fa-check"></i> Python</span>
+                        <span class="scanner-skill-chip"><i class="fa-solid fa-check"></i> FastAPI</span>
+                        <span class="scanner-skill-chip"><i class="fa-solid fa-check"></i> Machine Learning</span>
+                        <span class="scanner-skill-chip"><i class="fa-solid fa-check"></i> Docker</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explainability Metrics Grid -->
+            <div class="scanner-breakdown-row">
+                <div class="scanner-metric-pill">
+                    <span class="scanner-metric-label">Skills (50%)</span>
+                    <span class="scanner-metric-score text-emerald">92%</span>
+                </div>
+                <div class="scanner-metric-pill">
+                    <span class="scanner-metric-label">Experience</span>
+                    <span class="scanner-metric-score text-primary">85%</span>
+                </div>
+                <div class="scanner-metric-pill">
+                    <span class="scanner-metric-label">Education</span>
+                    <span class="scanner-metric-score text-purple">100%</span>
+                </div>
+                <div class="scanner-metric-pill">
+                    <span class="scanner-metric-label">TF-IDF Vector</span>
+                    <span class="scanner-metric-score text-amber">84%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====================================================================
+         2. FOUR METRIC STAT SLOTS (ACROSS ALL SCREENINGS)
+         ==================================================================== -->
     <div class="metric-slots-grid">
         <!-- 1. Total Candidates -->
         <div class="metric-slot-card">
@@ -56,7 +142,7 @@
             <div class="slot-data">
                 <span class="slot-label">Strong Matches</span>
                 <div class="slot-value text-emerald">{{ summary.strong_count }}</div>
-                <span class="slot-sub">Above 70% match</span>
+                <span class="slot-sub">Above 70% threshold</span>
             </div>
         </div>
 
@@ -66,29 +152,31 @@
                 <i class="fa-solid fa-briefcase"></i>
             </div>
             <div class="slot-data">
-                <span class="slot-label">Screening Jobs</span>
+                <span class="slot-label">Screening Sessions</span>
                 <div class="slot-value">{{ summary.total_jobs }}</div>
-                <span class="slot-sub">Active sessions</span>
+                <span class="slot-sub">Active job requisitions</span>
             </div>
         </div>
     </div>
 
-    <!-- Middle Grid: 2/3 Left (Recent Screenings) + 1/3 Right (Match Distribution & Skills) -->
+    <!-- ====================================================================
+         3. MIDDLE SECTION (RECENT SCREENINGS + DONUT + TOP SKILLS)
+         ==================================================================== -->
     <div class="dashboard-mid-grid">
-        <!-- Left: Recent Screenings Card -->
+        <!-- Left 2/3: Recent Screenings List -->
         <div class="card recent-screenings-card">
             <div class="card-header-flex">
                 <div>
                     <h3 class="slot-card-title">Recent Screenings</h3>
-                    <p class="slot-card-subtitle">Latest recruitment roles and candidate evaluations</p>
+                    <p class="slot-card-subtitle">Active evaluation sessions and applicant cohorts</p>
                 </div>
                 <a href="{{ url_for('history') }}" class="btn-link-sm">View all <i class="fa-solid fa-arrow-right"></i></a>
             </div>
 
             <div class="screenings-table-wrap">
                 <div class="screenings-table-header">
-                    <span class="col-th">Job Title</span>
-                    <span class="col-th text-right">Candidates / Action</span>
+                    <span class="col-th">Position & Date</span>
+                    <span class="col-th text-right">Top Score / Action</span>
                 </div>
 
                 <div class="screenings-list">
@@ -102,25 +190,24 @@
                                     <div>
                                         <h4 class="job-row-title">{{ job.job_title }}</h4>
                                         <span class="job-row-sub">
-                                            {{ job.created_at[:10] if job.created_at else 'Recent' }} • {{ job.candidate_count }} candidate{% if job.candidate_count != 1 %}s{% endif %}
+                                            {{ job.created_at[:10] if job.created_at else 'Recent' }} • {{ job.candidate_count }} applicant{% if job.candidate_count != 1 %}s{% endif %}
                                         </span>
                                     </div>
                                 </div>
                                 <div class="job-meta-right">
                                     {% if job.top_score %}
-                                        <span class="badge badge-light-score">Top: {{ job.top_score }}%</span>
+                                        <span class="badge-light-score">Top: {{ job.top_score }}%</span>
                                     {% endif %}
                                     <span class="row-arrow"><i class="fa-solid fa-chevron-right"></i></span>
                                 </div>
                             </a>
                         {% endfor %}
                     {% else %}
-                        <!-- Empty State for Recent Screenings -->
                         <div class="empty-screenings-state">
                             <div class="empty-icon-wrap"><i class="fa-solid fa-folder-open"></i></div>
                             <h4>No Screening Sessions Yet</h4>
-                            <p>Upload candidate resumes or click <strong>"Try Demo"</strong> to load instant demonstration data.</p>
-                            <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="triggerSampleDemo()">
+                            <p>Upload candidate resumes or click <strong>"Explore Demo"</strong> to generate demonstration data instantly.</p>
+                            <button type="button" class="btn btn-cinematic-secondary btn-sm mt-3" onclick="triggerSampleDemo()">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i> 1-Click Sample Demo
                             </button>
                         </div>
@@ -129,13 +216,12 @@
             </div>
         </div>
 
-        <!-- Right: Stacked Cards (Match Distribution + Top Skills) -->
+        <!-- Right 1/3: Match Distribution Donut & Top Skills -->
         <div class="right-stack-col">
-            <!-- 1. Match Distribution Donut Card -->
+            <!-- 1. Match Distribution Card -->
             <div class="card distribution-card">
                 <h3 class="slot-card-title mb-2">Match Distribution</h3>
                 <div class="donut-chart-flex">
-                    <!-- SVG Donut Chart -->
                     <div class="donut-svg-wrap">
                         <svg class="donut-chart-svg" viewBox="0 0 120 120">
                             <!-- Background ring -->
@@ -210,12 +296,14 @@
         </div>
     </div>
 
-    <!-- Lower Slot: Candidate Rankings Leaderboard (Matching Screenshot) -->
+    <!-- ====================================================================
+         4. CANDIDATE RANKINGS LEADERBOARD TABLE (LOWER SLOT)
+         ==================================================================== -->
     <div class="card candidate-rankings-card" id="rankingsSection">
         <div class="rankings-header-flex">
             <div>
                 <h3 class="slot-card-title">Candidate Rankings</h3>
-                <p class="slot-card-subtitle">Deterministic ranking evaluated with Merge Sort & Max-Heap</p>
+                <p class="slot-card-subtitle">Deterministic rank evaluated using custom Merge Sort & Max-Heap priority queue</p>
             </div>
 
             <!-- Search and Filter Toolbar -->
@@ -223,7 +311,7 @@
                 <!-- Search input -->
                 <div class="table-search-box">
                     <i class="fa-solid fa-magnifying-glass table-search-icon"></i>
-                    <input type="text" id="candidateSearchInput" class="table-search-input" placeholder="Search by name or skills..." onkeyup="filterRankingsTable()">
+                    <input type="text" id="candidateSearchInput" class="table-search-input" placeholder="Search by name, email, or skill..." onkeyup="filterRankingsTable()">
                 </div>
 
                 <!-- Skill Filter Dropdown -->
@@ -253,7 +341,7 @@
             </div>
         </div>
 
-        <!-- Table -->
+        <!-- Table Responsive -->
         <div class="rankings-table-responsive">
             <table class="saas-table" id="rankingsTable">
                 <thead>
@@ -365,7 +453,7 @@
                                     <i class="fa-solid fa-users-slash empty-icon"></i>
                                     <h4>No candidates evaluated yet</h4>
                                     <p>Start a new screening session or try the 1-click sample demo.</p>
-                                    <button type="button" class="btn btn-primary-pill btn-sm mt-3" onclick="triggerSampleDemo()">
+                                    <button type="button" class="btn btn-cinematic-primary btn-sm mt-3" onclick="triggerSampleDemo()">
                                         <i class="fa-solid fa-wand-magic-sparkles"></i> Run 1-Click Demo
                                     </button>
                                 </div>
