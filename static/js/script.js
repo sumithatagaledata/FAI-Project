@@ -655,17 +655,66 @@ function confirmClearData() {
     }
 }
 
+let loadingTimer = null;
+
 function showLoading(title, subtitle) {
     const overlay = document.getElementById('loadingOverlay');
     const titleEl = document.getElementById('loadingTitle');
     const subEl = document.getElementById('loadingSubtitle');
+    const progressFill = document.getElementById('loadingProgressFill');
 
     if (titleEl && title) titleEl.textContent = title;
     if (subEl && subtitle) subEl.textContent = subtitle;
+
+    // Reset stages
+    const stages = [
+        { id: 'stage1', text: '1. Extracting PDF text & entity coordinates' },
+        { id: 'stage2', text: '2. Cross-referencing 60+ technical skill taxonomy' },
+        { id: 'stage3', text: '3. Calculating TF-IDF semantic cosine similarity' },
+        { id: 'stage4', text: '4. Executing stable MergeSort & Max-Heap ranking' }
+    ];
+
+    stages.forEach((s, idx) => {
+        const el = document.getElementById(s.id);
+        if (el) {
+            el.className = idx === 0 ? 'loading-stage-item active' : 'loading-stage-item';
+            const icon = el.querySelector('.stage-icon');
+            if (icon) icon.innerHTML = idx === 0 ? '<i class="fa-solid fa-spinner fa-spin"></i>' : '<i class="fa-regular fa-circle"></i>';
+        }
+    });
+
+    if (progressFill) progressFill.style.width = '25%';
     if (overlay) overlay.style.display = 'flex';
+
+    if (loadingTimer) clearInterval(loadingTimer);
+
+    let currentStage = 0;
+    loadingTimer = setInterval(() => {
+        currentStage++;
+        if (currentStage < stages.length) {
+            const prevEl = document.getElementById(stages[currentStage - 1].id);
+            if (prevEl) {
+                prevEl.className = 'loading-stage-item completed';
+                const icon = prevEl.querySelector('.stage-icon');
+                if (icon) icon.innerHTML = '<i class="fa-solid fa-circle-check" style="color: var(--color-teal);"></i>';
+            }
+            const currEl = document.getElementById(stages[currentStage].id);
+            if (currEl) {
+                currEl.className = 'loading-stage-item active';
+                const icon = currEl.querySelector('.stage-icon');
+                if (icon) icon.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            }
+            if (progressFill) {
+                progressFill.style.width = `${Math.min(95, (currentStage + 1) * 24)}%`;
+            }
+        } else {
+            clearInterval(loadingTimer);
+        }
+    }, 450);
 }
 
 function hideLoading() {
+    if (loadingTimer) clearInterval(loadingTimer);
     const overlay = document.getElementById('loadingOverlay');
     if (overlay) overlay.style.display = 'none';
 }

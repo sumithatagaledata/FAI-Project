@@ -7,30 +7,30 @@
 {% block content %}
 <div class="candidate-container">
     <!-- Back Breadcrumb Bar -->
-    <div class="card-light-panel mb-4" style="padding: 14px 20px;">
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-            <a href="{{ url_for('view_results', job_id=job.id) }}" style="color: var(--color-arctic-blue); font-size: 0.9rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+    <div class="card-light-panel mb-4" style="padding: 12px 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <a href="{{ url_for('view_results', job_id=job.id) }}" class="link-clean">
                 <i class="fa-solid fa-arrow-left"></i> Back to Leaderboard
             </a>
-            <span style="font-size: 0.85rem; color: var(--color-slate-muted);">Target Position: <strong style="color: var(--color-slate-heading);">{{ job.job_title }}</strong></span>
+            <span style="font-size: 0.82rem; color: var(--color-slate-muted);">Position: <strong style="color: var(--color-slate-heading);">{{ job.job_title }}</strong></span>
         </div>
     </div>
 
     <!-- Candidate Profile Header Card -->
     <div class="card-light-panel mb-4">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--gradient-primary); color: #ffffff; font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px;">
+            <div style="display: flex; align-items: center; gap: 18px;">
+                <div style="width: 58px; height: 58px; border-radius: 50%; background: var(--gradient-primary); color: #ffffff; font-size: 1.4rem; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);">
                     {{ candidate.name[:2]|upper if candidate.name != 'Not Available' else 'NA' }}
                 </div>
                 <div>
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap;">
-                        <h1 style="font-size: 1.65rem; font-weight: 800; color: var(--color-slate-title); margin: 0;">{{ candidate.name }}</h1>
-                        <span style="font-size: 0.78rem; font-weight: 700; background: var(--color-soft-sky); color: var(--color-arctic-blue); padding: 4px 12px; border-radius: var(--radius-pill);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap;">
+                        <h1 style="font-size: 1.55rem; font-weight: 800; color: var(--color-slate-title); margin: 0;">{{ candidate.name }}</h1>
+                        <span style="font-size: 0.76rem; font-weight: 700; background: var(--color-soft-sky); color: var(--color-arctic-blue); padding: 3px 10px; border-radius: var(--radius-pill);">
                             <i class="fa-solid fa-trophy"></i> Rank #{{ candidate.rank }} of {{ candidate.total_pool }}
                         </span>
                     </div>
-                    <div style="display: flex; gap: 16px; font-size: 0.85rem; color: var(--color-slate-muted); flex-wrap: wrap;">
+                    <div style="display: flex; gap: 14px; font-size: 0.82rem; color: var(--color-slate-muted); flex-wrap: wrap;">
                         <span><i class="fa-regular fa-envelope" style="color: var(--color-arctic-blue);"></i> {{ candidate.email }}</span>
                         <span><i class="fa-solid fa-phone" style="color: var(--color-teal);"></i> {{ candidate.phone }}</span>
                         <span><i class="fa-solid fa-file-pdf" style="color: var(--color-danger);"></i> {{ candidate.resume_filename }}</span>
@@ -38,67 +38,62 @@
                 </div>
             </div>
 
-            <div style="text-align: right; background: var(--color-ice-white); padding: 16px 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
-                <div style="font-size: 2.2rem; font-weight: 900; color: var(--color-slate-title); line-height: 1;">{{ candidate.match_score }}%</div>
+            <div style="text-align: right; background: var(--color-ice-white); padding: 14px 22px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                <div style="font-size: 2rem; font-weight: 900; color: var(--color-slate-title); line-height: 1;">{{ candidate.match_score }}%</div>
                 <div style="margin-top: 4px;">
                     <span class="status-pill-light {% if candidate.match_score >= 70 %}pill-strong{% elif candidate.match_score >= 45 %}pill-moderate{% else %}pill-low{% endif %}">
                         {{ candidate.badge }}
                     </span>
                 </div>
-                <span style="font-size: 0.74rem; color: var(--color-slate-muted); font-weight: 600; text-transform: uppercase; margin-top: 4px; display: block;">Overall Match Score</span>
             </div>
         </div>
     </div>
 
     <!-- 4-Factor Breakdown KPI Grid -->
-    <div class="kpi-slots-grid mb-5">
-        <div class="kpi-card-light">
-            <div class="kpi-icon-box icon-teal"><i class="fa-solid fa-brain"></i></div>
-            <div class="kpi-content">
-                <span class="kpi-label-text">Skills Match (Weight: 50%)</span>
-                <div class="kpi-value-text">{{ candidate.skill_score }}%</div>
-                <span class="kpi-sub-text">Direct taxonomy match</span>
+    <div class="kpi-slots-grid mb-4">
+        <div class="kpi-card-clean">
+            <div class="kpi-icon-pill icon-teal"><i class="fa-solid fa-brain"></i></div>
+            <div>
+                <span class="kpi-label-muted">Skills (50%)</span>
+                <div class="kpi-stat-bold">{{ candidate.skill_score }}%</div>
             </div>
         </div>
 
-        <div class="kpi-card-light">
-            <div class="kpi-icon-box icon-blue"><i class="fa-solid fa-business-time"></i></div>
-            <div class="kpi-content">
-                <span class="kpi-label-text">Experience (Weight: 20%)</span>
-                <div class="kpi-value-text">{{ candidate.exp_score }}%</div>
-                <span class="kpi-sub-text">Verified tenure threshold</span>
+        <div class="kpi-card-clean">
+            <div class="kpi-icon-pill icon-blue"><i class="fa-solid fa-business-time"></i></div>
+            <div>
+                <span class="kpi-label-muted">Experience (20%)</span>
+                <div class="kpi-stat-bold">{{ candidate.exp_score }}%</div>
             </div>
         </div>
 
-        <div class="kpi-card-light">
-            <div class="kpi-icon-box icon-green"><i class="fa-solid fa-graduation-cap"></i></div>
-            <div class="kpi-content">
-                <span class="kpi-label-text">Education (Weight: 10%)</span>
-                <div class="kpi-value-text">{{ candidate.edu_score }}%</div>
-                <span class="kpi-sub-text">Degree benchmark</span>
+        <div class="kpi-card-clean">
+            <div class="kpi-icon-pill icon-green"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div>
+                <span class="kpi-label-muted">Education (10%)</span>
+                <div class="kpi-stat-bold">{{ candidate.edu_score }}%</div>
             </div>
         </div>
 
-        <div class="kpi-card-light">
-            <div class="kpi-icon-box icon-indigo"><i class="fa-solid fa-chart-column"></i></div>
-            <div class="kpi-content">
-                <span class="kpi-label-text">TF-IDF Vector (Weight: 20%)</span>
-                <div class="kpi-value-text">{{ candidate.tfidf_score }}%</div>
-                <span class="kpi-sub-text">Semantic cosine relevance</span>
+        <div class="kpi-card-clean">
+            <div class="kpi-icon-pill icon-indigo"><i class="fa-solid fa-chart-column"></i></div>
+            <div>
+                <span class="kpi-label-muted">TF-IDF Vector (20%)</span>
+                <div class="kpi-stat-bold">{{ candidate.tfidf_score }}%</div>
             </div>
         </div>
     </div>
 
     <!-- Main Detail Grid -->
-    <div class="dashboard-split-grid mb-5">
+    <div class="mid-workspace-grid mb-4">
         <!-- Left: Explainability & Skill Gap -->
         <div class="card-light-panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color-light);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color-light);">
                 <div>
-                    <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--color-slate-heading);">Why This Candidate Matched</h3>
-                    <p style="font-size: 0.82rem; color: var(--color-slate-muted);">Explainable Natural Language Processing reasoning for recruiters</p>
+                    <h3 class="panel-title-clean">Why This Candidate Matched</h3>
+                    <p class="panel-sub-text">Explainable Natural Language Processing reasoning for recruiters</p>
                 </div>
-                <span style="font-size: 0.78rem; font-weight: 700; background: var(--color-soft-teal); color: var(--color-teal); padding: 4px 12px; border-radius: var(--radius-pill); border: 1px solid var(--color-soft-teal-border);">
+                <span style="font-size: 0.76rem; font-weight: 700; background: var(--color-soft-teal); color: var(--color-teal); padding: 3px 10px; border-radius: var(--radius-pill); border: 1px solid var(--color-soft-teal-border);">
                     <i class="fa-solid fa-wand-magic-sparkles"></i> AI Explainability
                 </span>
             </div>
@@ -106,45 +101,45 @@
             <div class="explain-list">
                 {% if candidate.explanations %}
                     {% for exp in candidate.explanations %}
-                        <div style="background: var(--color-soft-teal); border: 1px solid var(--color-soft-teal-border); color: #0F766E; padding: 12px 16px; border-radius: var(--radius-md); font-size: 0.88rem; display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <div style="background: var(--color-soft-teal); border: 1px solid var(--color-soft-teal-border); color: #0F766E; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.85rem; display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                             <i class="fa-solid fa-circle-check" style="color: var(--color-teal);"></i>
                             <span>{{ exp }}</span>
                         </div>
                     {% endfor %}
                 {% else %}
-                    <p style="font-size: 0.88rem; color: var(--color-slate-muted);">Standard multi-factor scoring applied across verified skills, education, and tenure thresholds.</p>
+                    <p style="font-size: 0.85rem; color: var(--color-slate-muted);">Standard multi-factor scoring applied across verified skills, education, and tenure thresholds.</p>
                 {% endif %}
             </div>
 
             <!-- Skills Gap Analysis -->
-            <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color-light);">
-                <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--color-slate-heading); margin-bottom: 14px;">Skills Gap Analysis</h4>
+            <div style="margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border-color-light);">
+                <h4 style="font-size: 1rem; font-weight: 800; color: var(--color-slate-heading); margin-bottom: 12px;">Skills Gap Analysis</h4>
                 
-                <div style="margin-bottom: 16px;">
-                    <span style="font-size: 0.76rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">
+                <div style="margin-bottom: 14px;">
+                    <span style="font-size: 0.74rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px;">
                         Matched Required Skills ({{ candidate.matched_skills|length }})
                     </span>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                         {% for s in candidate.matched_skills %}
                             <span class="skill-tag-pill" style="background: var(--color-soft-teal); color: var(--color-teal); border-color: var(--color-soft-teal-border);">
-                                <i class="fa-solid fa-check" style="font-size: 0.75rem;"></i> {{ s }}
+                                <i class="fa-solid fa-check" style="font-size: 0.7rem;"></i> {{ s }}
                             </span>
                         {% endfor %}
                         {% if not candidate.matched_skills %}
-                            <span style="font-size: 0.85rem; color: var(--color-slate-muted);">No explicit required skills detected in resume.</span>
+                            <span style="font-size: 0.82rem; color: var(--color-slate-muted);">No explicit required skills detected in resume.</span>
                         {% endif %}
                     </div>
                 </div>
 
                 {% if candidate.missing_skills %}
-                <div style="margin-bottom: 16px;">
-                    <span style="font-size: 0.76rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">
+                <div style="margin-bottom: 14px;">
+                    <span style="font-size: 0.74rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px;">
                         Missing Target Skills ({{ candidate.missing_skills|length }})
                     </span>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                         {% for s in candidate.missing_skills %}
                             <span class="skill-tag-pill" style="background: #FFF1F2; color: #E11D48; border-color: #FECDD3;">
-                                <i class="fa-solid fa-xmark" style="font-size: 0.75rem;"></i> {{ s }}
+                                <i class="fa-solid fa-xmark" style="font-size: 0.7rem;"></i> {{ s }}
                             </span>
                         {% endfor %}
                     </div>
@@ -153,13 +148,13 @@
 
                 {% if candidate.additional_skills %}
                 <div>
-                    <span style="font-size: 0.76rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">
+                    <span style="font-size: 0.74rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px;">
                         Bonus / Additional Skills ({{ candidate.additional_skills|length }})
                     </span>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                         {% for s in candidate.additional_skills %}
                             <span class="skill-tag-pill" style="background: var(--color-soft-sky); color: var(--color-arctic-blue); border-color: var(--color-soft-sky);">
-                                <i class="fa-solid fa-plus" style="font-size: 0.75rem;"></i> {{ s }}
+                                <i class="fa-solid fa-plus" style="font-size: 0.7rem;"></i> {{ s }}
                             </span>
                         {% endfor %}
                     </div>
@@ -169,38 +164,38 @@
         </div>
 
         <!-- Right: Candidate Background & Raw Text -->
-        <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
             <div class="card-light-panel">
-                <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--color-slate-heading); margin-bottom: 16px;">Background &amp; Credentials</h3>
+                <h3 class="panel-title-clean mb-3" style="font-size: 1.05rem;">Background &amp; Credentials</h3>
 
-                <div style="margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color-light);">
-                    <span style="font-size: 0.76rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; display: block; margin-bottom: 4px;">Education Level</span>
-                    <span style="font-size: 0.95rem; font-weight: 700; color: var(--color-slate-title);">{{ candidate.education }}</span>
+                <div style="margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color-light);">
+                    <span style="font-size: 0.74rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Education</span>
+                    <span style="font-size: 0.92rem; font-weight: 700; color: var(--color-slate-title);">{{ candidate.education }}</span>
                 </div>
 
-                <div style="margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color-light);">
-                    <span style="font-size: 0.76rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; display: block; margin-bottom: 4px;">Experience Verified</span>
-                    <span style="font-size: 0.95rem; font-weight: 700; color: var(--color-slate-title);">{{ candidate.experience_years|format_exp }} Years</span>
+                <div style="margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color-light);">
+                    <span style="font-size: 0.74rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Experience</span>
+                    <span style="font-size: 0.92rem; font-weight: 700; color: var(--color-slate-title);">{{ candidate.experience_years|format_exp }} Years</span>
                 </div>
 
-                <div style="margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color-light);">
-                    <span style="font-size: 0.76rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; display: block; margin-bottom: 4px;">Projects &amp; Experience</span>
-                    <p style="font-size: 0.88rem; color: var(--color-slate-body); line-height: 1.5;">{{ candidate.projects if candidate.projects else 'Extracted from resume work history.' }}</p>
+                <div style="margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color-light);">
+                    <span style="font-size: 0.74rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Projects</span>
+                    <p style="font-size: 0.85rem; color: var(--color-slate-body); line-height: 1.45;">{{ candidate.projects if candidate.projects else 'Extracted from resume work history.' }}</p>
                 </div>
 
                 <div>
-                    <span style="font-size: 0.76rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; display: block; margin-bottom: 4px;">Certifications &amp; Training</span>
-                    <p style="font-size: 0.88rem; color: var(--color-slate-body); line-height: 1.5;">{{ candidate.certifications if candidate.certifications else 'Verified credentials in engineering profile.' }}</p>
+                    <span style="font-size: 0.74rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; display: block; margin-bottom: 2px;">Certifications</span>
+                    <p style="font-size: 0.85rem; color: var(--color-slate-body); line-height: 1.45;">{{ candidate.certifications if candidate.certifications else 'Verified credentials in engineering profile.' }}</p>
                 </div>
             </div>
 
             <!-- Extracted Text Drawer -->
             <div class="card-light-panel">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--color-slate-heading);">Extracted Text Sample</h3>
-                    <span style="font-size: 0.75rem; background: var(--color-ice-white); border: 1px solid var(--border-color); padding: 3px 10px; border-radius: var(--radius-pill); color: var(--color-slate-muted);">PyPDF Parser</span>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 class="panel-title-clean" style="font-size: 1rem;">Extracted Resume Text</h3>
+                    <span style="font-size: 0.72rem; background: var(--color-ice-white); border: 1px solid var(--border-color); padding: 2px 8px; border-radius: var(--radius-pill); color: var(--color-slate-muted);">PyPDF</span>
                 </div>
-                <div style="background: var(--color-ice-white); border-radius: var(--radius-sm); padding: 14px; font-size: 0.78rem; color: var(--color-slate-body); max-height: 180px; overflow-y: auto; font-family: monospace; border: 1px solid var(--border-color); line-height: 1.5;">
+                <div style="background: var(--color-ice-white); border-radius: var(--radius-sm); padding: 12px; font-size: 0.76rem; color: var(--color-slate-body); max-height: 150px; overflow-y: auto; font-family: monospace; border: 1px solid var(--border-color); line-height: 1.45;">
                     {{ candidate.raw_text[:600] }}...
                 </div>
             </div>

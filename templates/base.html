@@ -287,58 +287,48 @@
                     </div>
                 </div>
 
-                <!-- Analysis Summary -->
-                <div class="what-we-analyze">
-                    <div class="analyze-grid">
-                        <div class="analyze-item">
-                            <div class="analyze-icon" style="background: var(--color-soft-sky); color: var(--color-arctic-blue);"><i class="fa-solid fa-file-lines"></i></div>
-                            <div class="analyze-meta">
-                                <h5>PDF Text Extraction</h5>
-                                <p>Extract entity metadata &amp; experience</p>
-                            </div>
-                        </div>
-                        <div class="analyze-item">
-                            <div class="analyze-icon" style="background: var(--color-soft-teal); color: var(--color-teal);"><i class="fa-solid fa-brain"></i></div>
-                            <div class="analyze-meta">
-                                <h5>Skill Taxonomy (50%)</h5>
-                                <p>Match against 60+ technical taxonomy</p>
-                            </div>
-                        </div>
-                        <div class="analyze-item">
-                            <div class="analyze-icon" style="background: var(--color-soft-sky); color: var(--color-arctic-blue);"><i class="fa-solid fa-graduation-cap"></i></div>
-                            <div class="analyze-meta">
-                                <h5>Experience &amp; Degree (30%)</h5>
-                                <p>Verify tenure benchmarks &amp; degree</p>
-                            </div>
-                        </div>
-                        <div class="analyze-item">
-                            <div class="analyze-icon" style="background: var(--color-soft-teal); color: var(--color-teal);"><i class="fa-solid fa-chart-column"></i></div>
-                            <div class="analyze-meta">
-                                <h5>TF-IDF Vector (20%)</h5>
-                                <p>Compute semantic cosine relevance</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Submit Button -->
-                <button type="submit" class="btn-analyze-primary" id="modalSubmitBtn" style="margin-top: 20px;">
-                    <i class="fa-solid fa-bolt"></i> Start AI Resume Screening
+                <button type="submit" class="btn-primary-screen" id="modalSubmitBtn" style="margin-top: 18px;">
+                    <span>Start AI Resume Screening</span>
+                    <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- HIGH-TECH LOADING OVERLAY -->
+    <!-- HIGH-TECH LOADING OVERLAY WITH 4-STAGE SCREENING CHECKLIST -->
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="loading-card">
-            <div class="spinner"></div>
-            <h3 id="loadingTitle">Processing Resumes...</h3>
-            <p id="loadingSubtitle">Extracting text, computing semantic vector similarity, and executing tournament ranking.</p>
+            <div class="loading-orb-spinner"></div>
+            <h3 class="loading-title" id="loadingTitle">Screening Candidate Resumes...</h3>
+            <p class="loading-subtitle" id="loadingSubtitle">Executing multi-vector NLP analysis and deterministic tournament ranking.</p>
+
+            <div class="loading-stage-list">
+                <div class="loading-stage-item active" id="stage1">
+                    <span class="stage-icon"><i class="fa-solid fa-spinner fa-spin"></i></span>
+                    <span>1. Extracting PDF text &amp; entity coordinates</span>
+                </div>
+                <div class="loading-stage-item" id="stage2">
+                    <span class="stage-icon"><i class="fa-regular fa-circle"></i></span>
+                    <span>2. Cross-referencing 60+ technical skill taxonomy</span>
+                </div>
+                <div class="loading-stage-item" id="stage3">
+                    <span class="stage-icon"><i class="fa-regular fa-circle"></i></span>
+                    <span>3. Calculating TF-IDF semantic cosine similarity</span>
+                </div>
+                <div class="loading-stage-item" id="stage4">
+                    <span class="stage-icon"><i class="fa-regular fa-circle"></i></span>
+                    <span>4. Executing stable MergeSort &amp; Max-Heap ranking</span>
+                </div>
+            </div>
+
+            <div class="loading-progress-track">
+                <div class="loading-progress-fill" id="loadingProgressFill" style="width: 25%;"></div>
+            </div>
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="{{ url_for('static', filename='js/script.js') }}?v=6.0"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}?v=7.0"></script>
 </body>
 </html>

@@ -10,27 +10,27 @@
     <div class="card-light-panel mb-4">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
             <div>
-                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
-                    <span style="font-size: 0.78rem; font-weight: 700; background: var(--color-soft-sky); color: var(--color-arctic-blue); padding: 4px 10px; border-radius: var(--radius-pill);">
+                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
+                    <span style="font-size: 0.76rem; font-weight: 700; background: var(--color-soft-sky); color: var(--color-arctic-blue); padding: 3px 10px; border-radius: var(--radius-pill);">
                         <i class="fa-solid fa-briefcase"></i> Session #{{ job.id }}
                     </span>
-                    <span style="font-size: 0.78rem; font-weight: 600; background: var(--color-ice-white); color: var(--color-slate-muted); padding: 4px 10px; border-radius: var(--radius-pill); border: 1px solid var(--border-color);">
+                    <span style="font-size: 0.76rem; font-weight: 600; background: var(--color-ice-white); color: var(--color-slate-muted); padding: 3px 10px; border-radius: var(--radius-pill); border: 1px solid var(--border-color);">
                         <i class="fa-solid fa-calendar"></i> {{ job.created_at[:10] if job.created_at else 'Recent' }}
                     </span>
                     {% if job.required_experience > 0 %}
-                    <span style="font-size: 0.78rem; font-weight: 700; background: var(--color-soft-teal); color: var(--color-teal); padding: 4px 10px; border-radius: var(--radius-pill); border: 1px solid var(--color-soft-teal-border);">
+                    <span style="font-size: 0.76rem; font-weight: 700; background: var(--color-soft-teal); color: var(--color-teal); padding: 3px 10px; border-radius: var(--radius-pill); border: 1px solid var(--color-soft-teal-border);">
                         <i class="fa-solid fa-business-time"></i> {{ job.required_experience|format_exp }}+ Yrs Required
                     </span>
                     {% endif %}
                 </div>
-                <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--color-slate-title); margin-bottom: 8px;">{{ job.job_title }}</h1>
-                <p style="font-size: 0.92rem; color: var(--color-slate-body); max-width: 820px; line-height: 1.6;">{{ job.job_description[:220] }}...</p>
+                <h1 style="font-size: 1.65rem; font-weight: 800; color: var(--color-slate-title); margin-bottom: 6px;">{{ job.job_title }}</h1>
+                <p style="font-size: 0.88rem; color: var(--color-slate-muted); max-width: 800px; line-height: 1.5;">{{ job.job_description[:200] }}...</p>
             </div>
             <div style="display: flex; gap: 10px; align-items: center;">
-                <button type="button" class="btn-nav-screening" onclick="openUploadModal()">
+                <button type="button" class="btn-primary-screen" onclick="openUploadModal()" style="padding: 9px 18px; font-size: 0.88rem; width: auto;">
                     <i class="fa-solid fa-plus"></i> New Screening
                 </button>
-                <button onclick="window.print()" class="btn-nav-demo" title="Print / Export Report">
+                <button onclick="window.print()" class="btn-nav-demo" title="Print / Export Report" style="padding: 9px 16px; font-size: 0.88rem;">
                     <i class="fa-solid fa-print"></i> Export
                 </button>
             </div>
@@ -38,12 +38,12 @@
 
         <!-- Target Required Skills Chips -->
         {% if job.required_skills %}
-        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color-light); display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-            <span style="font-size: 0.82rem; font-weight: 700; color: var(--color-slate-heading);">Target Required Skills:</span>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color-light); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-slate-heading);">Required Skills:</span>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                 {% for s in job.required_skills %}
                 <span class="skill-tag-pill" style="background: var(--color-soft-sky); color: var(--color-arctic-blue); border-color: var(--color-soft-sky);">
-                    <i class="fa-solid fa-check" style="font-size: 0.75rem;"></i> {{ s }}
+                    <i class="fa-solid fa-check" style="font-size: 0.7rem;"></i> {{ s }}
                 </span>
                 {% endfor %}
             </div>
@@ -52,69 +52,59 @@
     </div>
 
     <!-- KPI Metric Cards Grid -->
-    <div class="kpi-slots-grid mb-5">
-        <div class="kpi-card-light">
-            <div class="kpi-icon-box icon-blue"><i class="fa-solid fa-users"></i></div>
-            <div class="kpi-content">
-                <span class="kpi-label-text">Candidates Evaluated</span>
-                <div class="kpi-value-text">{{ total_count }}</div>
-                <span class="kpi-sub-text">In this cohort</span>
+    <div class="kpi-slots-grid mb-4">
+        <div class="kpi-card-clean">
+            <div class="kpi-icon-pill icon-blue"><i class="fa-solid fa-users"></i></div>
+            <div>
+                <span class="kpi-label-muted">Candidates Evaluated</span>
+                <div class="kpi-stat-bold">{{ total_count }}</div>
             </div>
         </div>
 
-        <div class="kpi-card-light">
-            <div class="kpi-icon-box icon-teal"><i class="fa-solid fa-chart-line"></i></div>
-            <div class="kpi-content">
-                <span class="kpi-label-text">Average Match Score</span>
-                <div class="kpi-value-text">{{ avg_score }}%</div>
-                <span class="kpi-sub-text">Across cohort</span>
+        <div class="kpi-card-clean">
+            <div class="kpi-icon-pill icon-teal"><i class="fa-solid fa-chart-line"></i></div>
+            <div>
+                <span class="kpi-label-muted">Average Match</span>
+                <div class="kpi-stat-bold">{{ avg_score }}%</div>
             </div>
         </div>
 
-        <div class="kpi-card-light">
-            <div class="kpi-icon-box icon-green"><i class="fa-solid fa-trophy"></i></div>
-            <div class="kpi-content">
-                <span class="kpi-label-text">Top Match</span>
-                <div class="kpi-value-text" style="color: var(--color-success);">
-                    {% if top_candidate %}
-                    {{ top_candidate.match_score }}%
-                    {% else %}
-                    N/A
-                    {% endif %}
+        <div class="kpi-card-clean">
+            <div class="kpi-icon-pill icon-green"><i class="fa-solid fa-trophy"></i></div>
+            <div>
+                <span class="kpi-label-muted">Top Candidate</span>
+                <div class="kpi-stat-bold" style="color: var(--color-teal);">
+                    {% if top_candidate %}{{ top_candidate.match_score }}%{% else %}N/A{% endif %}
                 </div>
-                <span class="kpi-sub-text">
-                    <strong>{{ top_candidate.name if top_candidate else 'None' }}</strong>
-                </span>
             </div>
         </div>
 
-        <div class="kpi-card-light">
-            <div class="kpi-icon-box icon-indigo"><i class="fa-solid fa-code-merge"></i></div>
-            <div class="kpi-content">
-                <span class="kpi-label-text">Sorting Algorithm</span>
-                <div class="kpi-value-text" style="font-size: 1.35rem;">MergeSort</div>
-                <span class="kpi-sub-text">Deterministic O(N log N)</span>
+        <div class="kpi-card-clean">
+            <div class="kpi-icon-pill icon-indigo"><i class="fa-solid fa-code-merge"></i></div>
+            <div>
+                <span class="kpi-label-muted">Algorithm</span>
+                <div class="kpi-stat-bold" style="font-size: 1.25rem;">MergeSort</div>
             </div>
         </div>
     </div>
 
     <!-- Candidate Leaderboard Card -->
-    <section class="leaderboard-panel-light" id="rankingsSection">
-        <div class="table-toolbar-flex">
+    <div class="card-light-panel" id="rankingsSection">
+        <div class="table-toolbar-flex" style="margin-bottom: 18px;">
             <div>
-                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--color-slate-heading);">Candidate Leaderboard</h3>
-                <p style="font-size: 0.85rem; color: var(--color-slate-muted);">Deterministic rank evaluated using custom Merge Sort &amp; Max-Heap priority queue</p>
+                <h3 class="panel-title-clean" style="font-size: 1.2rem;">Candidate Rankings Leaderboard</h3>
+                <p class="panel-sub-text">Deterministic ranking evaluated with stable Merge Sort &amp; Max-Heap priority queue</p>
             </div>
 
             <!-- Toolbar Controls -->
-            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                <div style="position: relative; width: 240px;">
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div style="position: relative; width: 230px;">
                     <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--color-slate-light); font-size: 0.85rem;"></i>
                     <input type="text" id="candidateSearchInput" class="light-table-search"
-                        placeholder="Search candidate, skill, email..." onkeyup="filterRankingsTable()" style="padding-left: 34px;">
+                        placeholder="Search candidate, skill..." onkeyup="filterRankingsTable()" style="padding-left: 32px; font-size: 0.85rem; padding-top: 7px; padding-bottom: 7px;">
                 </div>
 
-                <select id="skillDropdownFilter" class="light-select-control" onchange="filterRankingsTable()">
+                <select id="skillDropdownFilter" class="light-select-control" onchange="filterRankingsTable()" style="font-size: 0.85rem; padding: 7px 12px;">
                     <option value="">All Skills</option>
                     {% for s in available_skills %}
                     <option value="{{ s }}">{{ s }}</option>
@@ -122,8 +112,8 @@
                 </select>
 
                 <select id="sortDropdownFilter" class="light-select-control" onchange="sortRankingsTable(this.value)">
-                    <option value="score_desc">Sort: Match Score &darr;</option>
-                    <option value="score_asc">Sort: Match Score &uarr;</option>
+                    <option value="score_desc">Sort: Score &darr;</option>
+                    <option value="score_asc">Sort: Score &uarr;</option>
                     <option value="exp_desc">Sort: Experience &darr;</option>
                     <option value="name_asc">Sort: Name (A-Z)</option>
                 </select>
@@ -139,9 +129,9 @@
             <table class="light-saas-table" id="rankingsTable">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">#</th>
+                        <th style="width: 48px;">#</th>
                         <th>Candidate</th>
-                        <th style="width: 170px;">Match Score</th>
+                        <th style="width: 160px;">Match Score</th>
                         <th>Status</th>
                         <th>Skills Matched</th>
                         <th>Experience</th>
@@ -184,7 +174,7 @@
 
                         <td class="col-score">
                             <div style="display: flex; flex-direction: column; gap: 4px;">
-                                <span style="font-weight: 800; font-size: 0.95rem; color: var(--color-slate-title);">{{ c.match_score }}%</span>
+                                <span style="font-weight: 800; font-size: 0.92rem; color: var(--color-slate-title);">{{ c.match_score }}%</span>
                                 <div class="score-track-light">
                                     <div class="score-bar-fill {% if c.match_score >= 70 %}bar-teal{% elif c.match_score >= 45 %}bar-blue{% else %}bar-slate{% endif %}" 
                                          style="width: {{ c.match_score }}%;"></div>
@@ -218,7 +208,7 @@
                         </td>
 
                         <td class="col-exp">
-                            <span style="font-size: 0.88rem; font-weight: 600; color: var(--color-slate-body);">{{ c.experience_years|format_exp }} yrs</span>
+                            <span style="font-size: 0.85rem; font-weight: 600; color: var(--color-slate-body);">{{ c.experience_years|format_exp }} yrs</span>
                         </td>
 
                         <td class="col-actions text-right">
@@ -231,6 +221,6 @@
                 </tbody>
             </table>
         </div>
-    </section>
+    </div>
 </div>
 {% endblock %}

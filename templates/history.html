@@ -6,85 +6,82 @@
 
 {% block content %}
 <div class="history-container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 16px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
         <div>
-            <div class="hero-kicker-pill" style="margin-bottom: 8px;">
-                <span class="pulsing-teal-dot"></span>
-                <span>HISTORICAL RECRUITMENT SESSIONS</span>
-            </div>
-            <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--color-slate-title); letter-spacing: -0.02em;">Screening History &amp; Cohorts</h1>
-            <p style="font-size: 0.95rem; color: var(--color-slate-muted);">Revisit past candidate rankings, review skill criteria, and access candidate leaderboards.</p>
+            <h1 style="font-size: 1.65rem; font-weight: 800; color: var(--color-slate-title); letter-spacing: -0.02em; margin-bottom: 4px;">Screening History &amp; Cohorts</h1>
+            <p style="font-size: 0.88rem; color: var(--color-slate-muted);">Revisit previous candidate evaluations, skill criteria, and ranked shortlists.</p>
         </div>
         <div>
-            <button type="button" class="btn-nav-screening" onclick="openUploadModal()">
+            <button type="button" class="btn-primary-screen" onclick="openUploadModal()" style="padding: 9px 18px; font-size: 0.88rem; width: auto;">
                 <i class="fa-solid fa-plus"></i> New Screening
             </button>
         </div>
     </div>
 
     {% if jobs %}
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px;">
             {% for job in jobs %}
-                <div class="card-light-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div class="card-light-panel" style="display: flex; flex-direction: column; justify-content: space-between; padding: 22px;">
                     <div>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
                             <div>
-                                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
-                                    <span style="font-size: 0.76rem; font-weight: 700; background: var(--color-soft-sky); color: var(--color-arctic-blue); padding: 3px 10px; border-radius: var(--radius-pill);">Session #{{ job.id }}</span>
-                                    <span style="font-size: 0.76rem; color: var(--color-slate-muted);"><i class="fa-regular fa-clock"></i> {{ job.created_at[:16] if job.created_at else 'Recent' }}</span>
+                                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+                                    <span style="font-size: 0.74rem; font-weight: 700; background: var(--color-soft-sky); color: var(--color-arctic-blue); padding: 2px 8px; border-radius: var(--radius-pill);">Session #{{ job.id }}</span>
+                                    <span style="font-size: 0.74rem; color: var(--color-slate-muted);"><i class="fa-regular fa-clock"></i> {{ job.created_at[:10] if job.created_at else 'Recent' }}</span>
                                 </div>
-                                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--color-slate-heading); line-height: 1.3;">{{ job.job_title }}</h3>
+                                <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--color-slate-heading); line-height: 1.25;">{{ job.job_title }}</h3>
                             </div>
-                            <button type="button" class="btn-icon-light text-danger" title="Delete Session" onclick="deleteJob({{ job.id }})" style="color: var(--color-danger);">
+                            <button type="button" class="btn-icon-light" title="Delete Session" onclick="deleteJob({{ job.id }})" style="color: var(--color-danger); width: 32px; height: 32px; font-size: 0.82rem;">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
 
-                        <!-- Stats Row -->
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; background: var(--color-ice-white); padding: 14px 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 16px; text-align: center;">
+                        <!-- Compact Stats Row -->
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; background: var(--color-ice-white); padding: 10px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 14px; text-align: center;">
                             <div>
-                                <span style="font-size: 1.25rem; font-weight: 800; color: var(--color-slate-title); display: block;">{{ job.candidate_count }}</span>
-                                <span style="font-size: 0.72rem; color: var(--color-slate-muted); font-weight: 600; text-transform: uppercase;">Candidates</span>
+                                <span style="font-size: 1.15rem; font-weight: 800; color: var(--color-slate-title); display: block;">{{ job.candidate_count }}</span>
+                                <span style="font-size: 0.68rem; color: var(--color-slate-muted); font-weight: 700; text-transform: uppercase;">Candidates</span>
                             </div>
                             <div>
-                                <span style="font-size: 1.25rem; font-weight: 800; color: var(--color-teal); display: block;">{{ job.top_score }}%</span>
-                                <span style="font-size: 0.72rem; color: var(--color-slate-muted); font-weight: 600; text-transform: uppercase;">Top Score</span>
+                                <span style="font-size: 1.15rem; font-weight: 800; color: var(--color-teal); display: block;">{{ job.top_score }}%</span>
+                                <span style="font-size: 0.68rem; color: var(--color-slate-muted); font-weight: 700; text-transform: uppercase;">Top Score</span>
                             </div>
                             <div>
-                                <span style="font-size: 1.25rem; font-weight: 800; color: var(--color-arctic-blue); display: block;">{{ job.avg_score }}%</span>
-                                <span style="font-size: 0.72rem; color: var(--color-slate-muted); font-weight: 600; text-transform: uppercase;">Avg Score</span>
+                                <span style="font-size: 1.15rem; font-weight: 800; color: var(--color-arctic-blue); display: block;">{{ job.avg_score }}%</span>
+                                <span style="font-size: 0.68rem; color: var(--color-slate-muted); font-weight: 700; text-transform: uppercase;">Avg Score</span>
                             </div>
                         </div>
 
                         <!-- Required Skills Preview -->
-                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px;">
-                            {% for s in job.required_skills[:5] %}
-                                <span class="skill-tag-pill">{{ s }}</span>
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px;">
+                            {% for s in job.required_skills[:4] %}
+                                <span class="skill-tag-pill" style="font-size: 0.74rem; padding: 2px 8px;">{{ s }}</span>
                             {% endfor %}
-                            {% if job.required_skills|length > 5 %}
-                                <span class="skill-tag-more">+{{ job.required_skills|length - 5 }}</span>
+                            {% if job.required_skills|length > 4 %}
+                                <span class="skill-tag-more" style="font-size: 0.74rem; padding: 2px 8px;">+{{ job.required_skills|length - 4 }}</span>
                             {% endif %}
                         </div>
                     </div>
 
                     <div>
-                        <a href="{{ url_for('view_results', job_id=job.id) }}" class="btn-analyze-primary" style="text-decoration: none; font-size: 0.92rem; padding: 10px 16px;">
-                            View Leaderboard <i class="fa-solid fa-arrow-right"></i>
+                        <a href="{{ url_for('view_results', job_id=job.id) }}" class="btn-primary-screen" style="text-decoration: none; font-size: 0.88rem; padding: 9px 16px;">
+                            <span>View Leaderboard</span>
+                            <i class="fa-solid fa-arrow-right"></i>
                         </a>
                     </div>
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <div class="card-light-panel" style="text-align: center; padding: 60px 24px;">
-            <i class="fa-solid fa-folder-open" style="font-size: 3rem; color: var(--color-slate-light); margin-bottom: 16px;"></i>
-            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--color-slate-heading); margin-bottom: 8px;">No Screening Sessions Recorded Yet</h3>
-            <p style="font-size: 0.92rem; color: var(--color-slate-muted); max-width: 480px; margin: 0 auto 24px;">Start by evaluating candidate resumes or explore our pre-configured 1-click sample demo.</p>
-            <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
-                <button type="button" class="btn-nav-screening" onclick="openUploadModal()">
+        <div class="card-light-panel" style="text-align: center; padding: 48px 20px;">
+            <i class="fa-solid fa-folder-open" style="font-size: 2.5rem; color: var(--color-slate-light); margin-bottom: 12px;"></i>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--color-slate-heading); margin-bottom: 6px;">No Screening Sessions Recorded Yet</h3>
+            <p style="font-size: 0.88rem; color: var(--color-slate-muted); max-width: 440px; margin: 0 auto 20px;">Start by evaluating candidate resumes or explore our pre-configured 1-click sample demo.</p>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <button type="button" class="btn-primary-screen" onclick="openUploadModal()" style="width: auto; padding: 9px 20px;">
                     <i class="fa-solid fa-plus"></i> Start Screening
                 </button>
-                <button type="button" class="btn-nav-demo" onclick="triggerSampleDemo()">
+                <button type="button" class="btn-nav-demo" onclick="triggerSampleDemo()" style="padding: 9px 18px;">
                     <i class="fa-solid fa-play"></i> Run 1-Click Demo
                 </button>
             </div>
