@@ -1,124 +1,134 @@
 {% extends 'base.html' %}
 
-{% block title %}ResumeAI - Next-Gen AI Resume Screening Platform{% endblock %}
+{% block title %}ResumeAI - Futuristic AI Resume Intelligence Platform{% endblock %}
 
 {% block content %}
 <div class="landing-page-wrap">
     <!-- ====================================================================
-         1. LANDING PAGE HERO SECTION (FIRST SCREEN VISITATION)
+         1. GAMING-INSPIRED HERO SECTION (FIRST SCREEN VISITATION)
          ==================================================================== -->
     <section class="landing-hero-section">
         <div class="landing-hero-grid">
-            <!-- Left Hero Content -->
+            <!-- Left Hero Column -->
             <div class="hero-content-col">
-                <div class="hero-pill-badge">
-                    <span class="pulsing-cyan-dot"></span>
-                    <span>Next-Gen AI Based Resume Screening System</span>
+                <div class="cyber-badge">
+                    <span class="cyber-dot"></span>
+                    <span>AUTONOMOUS RESUME INTELLIGENCE</span>
                 </div>
 
-                <h1 class="hero-editorial-title">
-                    Hire smarter. <br>
-                    <span class="gradient-luminous-text">Discover the right talent.</span>
+                <h1 class="hero-epic-title">
+                    LEVEL UP HIRING. <br>
+                    <span class="neon-gradient-text">DISCOVER ELITE TALENT.</span>
                 </h1>
 
-                <p class="hero-concise-description">
-                    Screen dozens of PDF resumes in seconds using explainable Natural Language Processing, TF-IDF cosine similarity, and deterministic O(N log N) Merge Sort &amp; Max-Heap ranking.
+                <p class="hero-epic-description">
+                    Next-generation AI resume screening powered by deep skill vector matching, instant PDF text parsing, and deterministic tournament ranking. Fast, explainable, and zero bias.
                 </p>
 
-                <!-- Dual Prominent CTAs -->
+                <!-- Gaming Action CTAs -->
                 <div class="hero-cta-group">
-                    <button type="button" class="btn-hero-primary" onclick="openUploadModal()">
-                        <i class="fa-solid fa-bolt"></i> Start Screening
+                    <button type="button" class="btn-gaming-primary" onclick="openUploadModal()">
+                        <i class="fa-solid fa-bolt"></i> START SCREENING
                     </button>
-                    <button type="button" class="btn-hero-secondary" onclick="triggerSampleDemo()">
-                        <i class="fa-solid fa-play"></i> Explore Demo
+                    <button type="button" class="btn-gaming-secondary" onclick="triggerSampleDemo()">
+                        <i class="fa-solid fa-gamepad"></i> TRY DEMO
                     </button>
-                    <a href="{{ url_for('dashboard') }}" class="btn-hero-secondary" style="font-size: 0.95rem;">
-                        <i class="fa-solid fa-table-columns"></i> Recruiter Workspace
+                    <a href="{{ url_for('dashboard') }}" class="btn-gaming-ghost">
+                        <i class="fa-solid fa-table-columns"></i> WORKSPACE
                     </a>
                 </div>
 
-                <!-- Trust / Capability Signals -->
+                <!-- Gaming Telemetry Signals -->
                 <div class="hero-signals-row">
                     <div class="signal-item">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <span>Zero API Latency</span>
+                        <i class="fa-solid fa-bolt-lightning"></i>
+                        <span>ULTRA-LOW LATENCY</span>
                     </div>
                     <div class="signal-item">
-                        <i class="fa-solid fa-code-merge"></i>
-                        <span>Strict O(N log N) DSA</span>
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>ZERO BIAS MATRIX</span>
                     </div>
                     <div class="signal-item">
                         <i class="fa-solid fa-lock"></i>
-                        <span>100% Offline Capable</span>
+                        <span>100% PRIVATE &amp; OFFLINE</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Hero Animated Visual: AI Holographic Scanner Simulator -->
+            <!-- Right Hero Column: 3D Holographic Cyber AI Core (Visual Replacement) -->
             <div class="hero-visual-col">
-                <div class="ai-hologram-glasscard" id="hologramScannerCard">
-                    <!-- Holographic Laser Scanning Beam -->
-                    <div class="hologram-scanner-beam" aria-hidden="true"></div>
+                <div class="cyber-core-wrapper">
+                    <!-- Ambient Purple/Cyan Energy Flare -->
+                    <div class="cyber-ambient-flare" aria-hidden="true"></div>
 
-                    <!-- Hologram Card Header -->
-                    <div class="hologram-header">
-                        <span class="holo-tag">
-                            <i class="fa-solid fa-microchip"></i> Live Screening Simulator
-                        </span>
-                        <span class="holo-live-pill">AI Engine Active</span>
-                    </div>
+                    <!-- 3D Holographic AI Reactor Deck -->
+                    <div class="cyber-reactor-card" id="cyberReactorCard">
+                        <!-- Laser Scanline Sweeper -->
+                        <div class="cyber-laser-scanline" aria-hidden="true"></div>
 
-                    <!-- Dynamic Candidate Spotlight Preview -->
-                    <div class="holo-candidate-spotlight">
-                        <div class="holo-avatar-ring">
-                            <svg viewBox="0 0 40 40">
-                                <circle cx="20" cy="20" r="16" fill="transparent" stroke="rgba(255,255,255,0.08)" stroke-width="3"></circle>
-                                <circle cx="20" cy="20" r="16" fill="transparent" stroke="url(#holoRingGrad)" stroke-width="3"
-                                        stroke-dasharray="100.5" stroke-dashoffset="12" stroke-linecap="round"></circle>
-                                <defs>
-                                    <linearGradient id="holoRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stop-color="#6366f1" />
-                                        <stop offset="50%" stop-color="#8b5cf6" />
-                                        <stop offset="100%" stop-color="#06b6d4" />
-                                    </linearGradient>
-                                </defs>
-                            </svg>
-                            <div class="holo-avatar-initials">AS</div>
-                        </div>
-
-                        <div class="holo-cand-info">
-                            <div class="holo-cand-name">
-                                <span>Aarav Sharma</span>
-                                <span class="holo-match-badge">91.2% Match</span>
+                        <!-- Top Telemetry Bar -->
+                        <div class="cyber-telemetry-header">
+                            <div class="telemetry-pill">
+                                <span class="telemetry-live-dot"></span>
+                                <span class="telemetry-label">NEURAL AI CORE v4.2</span>
                             </div>
-                            <p class="holo-cand-role">Senior Python &amp; AI Developer • 3.5 yrs exp</p>
-                            <div class="holo-skills-wrap">
-                                <span class="holo-skill-chip"><i class="fa-solid fa-check"></i> Python</span>
-                                <span class="holo-skill-chip"><i class="fa-solid fa-check"></i> FastAPI</span>
-                                <span class="holo-skill-chip"><i class="fa-solid fa-check"></i> Machine Learning</span>
-                                <span class="holo-skill-chip"><i class="fa-solid fa-check"></i> Docker</span>
+                            <span class="cyber-status-tag">SYSTEM ONLINE</span>
+                        </div>
+
+                        <!-- 3D Rotating Gyro Reactor Visual Stage -->
+                        <div class="gyro-reactor-stage">
+                            <!-- Hex Reticle Grid -->
+                            <div class="reticle-hex-hud"></div>
+
+                            <!-- Outer Orbital Ring with Degree Ticks -->
+                            <div class="orbital-ring ring-outer">
+                                <span class="ring-tick tick-0">0°</span>
+                                <span class="ring-tick tick-90">90°</span>
+                                <span class="ring-tick tick-180">180°</span>
+                                <span class="ring-tick tick-270">270°</span>
+                            </div>
+
+                            <!-- Middle Counter-Rotating Orbital Ring -->
+                            <div class="orbital-ring ring-middle"></div>
+
+                            <!-- Inner Pulsing Laser Ring -->
+                            <div class="orbital-ring ring-inner"></div>
+
+                            <!-- Central Quantum Plasma Orb -->
+                            <div class="quantum-plasma-core">
+                                <div class="core-glyph-icon">
+                                    <i class="fa-solid fa-brain"></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- 4 Factors Breakdown Matrix -->
-                    <div class="holo-breakdown-grid">
-                        <div class="holo-metric-cell">
-                            <span class="holo-metric-title">Skills (50%)</span>
-                            <span class="holo-metric-value text-cyan">92%</span>
+                        <!-- Real-Time Telemetry Matrix -->
+                        <div class="cyber-telemetry-matrix">
+                            <div class="telemetry-cell">
+                                <span class="cell-kicker">NEURAL SYNC</span>
+                                <span class="cell-stat color-cyan">99.8%</span>
+                            </div>
+                            <div class="telemetry-cell">
+                                <span class="cell-kicker">PARSER ENGINE</span>
+                                <span class="cell-stat color-purple">MULTI-VEC</span>
+                            </div>
+                            <div class="telemetry-cell">
+                                <span class="cell-kicker">ALGORITHM TIER</span>
+                                <span class="cell-stat color-emerald">O(N log N)</span>
+                            </div>
+                            <div class="telemetry-cell">
+                                <span class="cell-kicker">BIAS RATING</span>
+                                <span class="cell-stat color-cyan">ZERO BIAS</span>
+                            </div>
                         </div>
-                        <div class="holo-metric-cell">
-                            <span class="holo-metric-title">Experience</span>
-                            <span class="holo-metric-value text-emerald">85%</span>
-                        </div>
-                        <div class="holo-metric-cell">
-                            <span class="holo-metric-title">Education</span>
-                            <span class="holo-metric-value text-violet">100%</span>
-                        </div>
-                        <div class="holo-metric-cell">
-                            <span class="holo-metric-title">TF-IDF NLP</span>
-                            <span class="holo-metric-value text-amber">84%</span>
+
+                        <!-- Bottom Reactor Status -->
+                        <div class="reactor-footer-status">
+                            <div class="status-stream-flex">
+                                <span class="status-pulse-led"></span>
+                                <span class="status-stream-text">READY TO EVALUATE RESUME COHORTS</span>
+                            </div>
+                            <span class="status-latency">LATENCY: 0ms</span>
                         </div>
                     </div>
                 </div>
@@ -127,77 +137,77 @@
     </section>
 
     <!-- ====================================================================
-         2. VISUAL PIPELINE STORYTELLING (HOW THE AI ENGINE WORKS)
+         2. CYBER PIPELINE ARCHITECTURE (THE 4 EVALUATION STAGES)
          ==================================================================== -->
     <section class="landing-section" id="pipelineSection">
         <div class="section-headline-center">
-            <span class="section-kicker">End-to-End Intelligence Architecture</span>
+            <span class="section-kicker">Engine Architecture</span>
             <h2 class="section-h2">Deterministic 4-Stage Candidate Evaluation</h2>
-            <p class="section-sub">From unstructured PDF files to transparent candidate rankings in milliseconds.</p>
+            <p class="section-sub">From raw PDF resumes to transparent tournament rankings in milliseconds.</p>
         </div>
 
         <div class="pipeline-flow-grid">
-            <!-- Stage 1 -->
+            <!-- Stage 01 -->
             <div class="pipeline-step-card">
-                <span class="step-num-badge">01</span>
-                <div class="step-icon-glow"><i class="fa-solid fa-file-pdf"></i></div>
+                <span class="step-num-badge">01 // PARSE</span>
+                <div class="step-icon-glow"><i class="fa-solid fa-file-code"></i></div>
                 <h4 class="step-h4">PDF Entity Extraction</h4>
-                <p class="step-p">Extracts raw text, candidate contact info, educational qualifications, and years of work experience.</p>
+                <p class="step-p">Extracts text, candidate contact coordinates, educational credentials, and years of industry tenure.</p>
             </div>
 
-            <!-- Stage 2 -->
+            <!-- Stage 02 -->
             <div class="pipeline-step-card">
-                <span class="step-num-badge">02</span>
-                <div class="step-icon-glow"><i class="fa-solid fa-brain"></i></div>
-                <h4 class="step-h4">Skill Taxonomy Match</h4>
-                <p class="step-p">Matches candidate competencies against a 60+ computer science and engineering skill taxonomy with O(1) lookups.</p>
+                <span class="step-num-badge">02 // TAXONOMY</span>
+                <div class="step-icon-glow"><i class="fa-solid fa-microchip"></i></div>
+                <h4 class="step-h4">Skill Matrix Match</h4>
+                <p class="step-p">Cross-references technical proficiencies against a curated 60+ computer science and tech taxonomy.</p>
             </div>
 
-            <!-- Stage 3 -->
+            <!-- Stage 03 -->
             <div class="pipeline-step-card">
-                <span class="step-num-badge">03</span>
-                <div class="step-icon-glow"><i class="fa-solid fa-chart-pie"></i></div>
+                <span class="step-num-badge">03 // VECTORS</span>
+                <div class="step-icon-glow"><i class="fa-solid fa-network-wired"></i></div>
                 <h4 class="step-h4">TF-IDF Vector NLP</h4>
-                <p class="step-p">Computes sub-linear term frequency and inverse document frequency cosine similarity to assess deep contextual fit.</p>
+                <p class="step-p">Computes sub-linear term frequency and inverse document frequency cosine vectors for deep contextual fit.</p>
             </div>
 
-            <!-- Stage 4 -->
+            <!-- Stage 04 -->
             <div class="pipeline-step-card">
-                <span class="step-num-badge">04</span>
+                <span class="step-num-badge">04 // RANK</span>
                 <div class="step-icon-glow"><i class="fa-solid fa-trophy"></i></div>
-                <h4 class="step-h4">Merge Sort Ranking</h4>
-                <p class="step-p">Determines leaderboards with strict O(N log N) stable Merge Sort and O(1) Max-Heap priority extraction.</p>
+                <h4 class="step-h4">Tournament Sorting</h4>
+                <p class="step-p">Ranks candidates with strict O(N log N) stable Merge Sort and O(1) Max-Heap priority queue extraction.</p>
             </div>
         </div>
     </section>
 
     <!-- ====================================================================
-         3. EXPLAINABILITY & TRANSPARENT 4-FACTOR SCORING WEIGHTS
+         3. SCORING MATRIX CALIBRATION (THE 4-FACTOR WEIGHTS)
          ==================================================================== -->
     <section class="landing-section">
         <div class="section-headline-center">
-            <span class="section-kicker">Explainable AI Framework</span>
+            <span class="section-kicker">Explainable Calibration</span>
             <h2 class="section-h2">Engineered For Zero Black-Box Bias</h2>
-            <p class="section-sub">Every candidate receives a fully mathematical score breakdown with clear rationale.</p>
+            <p class="section-sub">Every candidate receives a fully explainable, transparent mathematical scoring breakdown.</p>
         </div>
 
         <div class="scoring-weights-grid">
             <div class="weight-metric-card">
                 <span class="weight-percent-num color-cyan">50%</span>
                 <h4 class="weight-factor-title">Target Skills</h4>
-                <p class="weight-factor-desc">Overlap ratio between job requirements and candidate technical proficiencies.</p>
+                <p class="weight-factor-desc">Overlap ratio between position criteria and candidate technical stack.</p>
             </div>
 
             <div class="weight-metric-card">
-                <span class="weight-percent-num color-violet">20%</span>
+                <span class="weight-percent-num color-purple">20%</span>
                 <h4 class="weight-factor-title">Experience Tenure</h4>
-                <p class="weight-factor-desc">Verified years of commercial and professional experience against role benchmarks.</p>
+                <p class="weight-factor-desc">Verified years of commercial engineering experience against target role benchmarks.</p>
             </div>
 
             <div class="weight-metric-card">
                 <span class="weight-percent-num color-emerald">10%</span>
                 <h4 class="weight-factor-title">Degree Benchmark</h4>
-                <p class="weight-factor-desc">Academic background matching (Ph.D., Master's, Bachelor's in CS / Engineering).</p>
+                <p class="weight-factor-desc">Academic qualification matching across Ph.D., Master's, and Bachelor's degrees.</p>
             </div>
 
             <div class="weight-metric-card">
@@ -209,22 +219,22 @@
     </section>
 
     <!-- ====================================================================
-         4. CALL TO ACTION BANNER (TRANSITION TO SCREENER)
+         4. LAUNCH DECK CALL TO ACTION BANNER
          ==================================================================== -->
     <section class="landing-section" style="padding-bottom: 110px;">
-        <div class="card" style="text-align: center; padding: 60px 40px; background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.25), rgba(15, 23, 42, 0.85) 70%); border-color: var(--border-highlight);">
-            <div style="max-width: 640px; margin: 0 auto;">
-                <span class="section-kicker" style="color: var(--cyan-light);">Ready to Accelerate Recruitment?</span>
-                <h2 class="section-h2" style="font-size: 2.5rem; margin-bottom: 16px;">Screen Your Candidates in Seconds</h2>
-                <p class="section-sub" style="margin-bottom: 32px;">
-                    Upload your candidate resume pool now or explore the system using pre-configured demonstration profiles.
+        <div class="card" style="text-align: center; padding: 60px 40px; background: radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.22), rgba(9, 14, 31, 0.9) 70%); border-color: var(--purple-border);">
+            <div style="max-width: 660px; margin: 0 auto;">
+                <span class="section-kicker">Ready To Deploy AI Intelligence?</span>
+                <h2 class="section-h2" style="font-size: 2.5rem; margin-bottom: 16px;">Screen Candidate Cohorts In Seconds</h2>
+                <p class="section-sub" style="margin-bottom: 34px;">
+                    Upload your candidate resume pool now or test the pipeline with pre-configured demonstration profiles.
                 </p>
                 <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-                    <button type="button" class="btn-hero-primary" onclick="openUploadModal()">
-                        <i class="fa-solid fa-bolt"></i> Start Screening Resumes
+                    <button type="button" class="btn-gaming-primary" onclick="openUploadModal()">
+                        <i class="fa-solid fa-bolt"></i> START SCREENING
                     </button>
-                    <a href="{{ url_for('dashboard') }}" class="btn-hero-secondary">
-                        <i class="fa-solid fa-layer-group"></i> Open Workspace
+                    <a href="{{ url_for('dashboard') }}" class="btn-gaming-secondary">
+                        <i class="fa-solid fa-layer-group"></i> OPEN WORKSPACE
                     </a>
                 </div>
             </div>

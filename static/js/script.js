@@ -1,10 +1,11 @@
 /**
- * ResumeAI - Futuristic Client Motion & Interactive Neural Architecture
+ * ResumeAI - Gaming-Inspired Futuristic Interactive Architecture & Engine
+ * Midnight-Black • Electric-Purple • Cyan-Blue • Cyberpunk 3D Perspective Grid
  */
 
-// ==========================================
-// 0. LIVE ANIMATED NEURAL WALLPAPER ENGINE
-// ==========================================
+// ==========================================================================
+// 0. LIVE ANIMATED WALLPAPER: 3D CYBER DIGITAL GRID & NEON PARTICLES
+// ==========================================================================
 
 function initNeuralWallpaper() {
     const canvas = document.getElementById('neuralCanvas');
@@ -20,12 +21,13 @@ function initNeuralWallpaper() {
     let height = 0;
     let nodes = [];
     let animationFrameId = null;
+    let gridOffset = 0;
 
-    // Mouse coordinates for interactive attraction
+    // Mouse coordinates for interactive parallax & laser attraction
     const mouse = {
         x: null,
         y: null,
-        radius: 140
+        radius: 160
     };
 
     window.addEventListener('mousemove', (e) => {
@@ -50,24 +52,25 @@ function initNeuralWallpaper() {
 
     function initNodes() {
         nodes = [];
-        const nodeCount = Math.floor(Math.min(width * height / 18000, 70));
+        const nodeCount = Math.floor(Math.min(width * height / 17000, 65));
         const colors = [
-            'rgba(99, 102, 241, ', // electric violet
-            'rgba(6, 182, 212, ',  // neon cyan
-            'rgba(168, 85, 247, '  // luminous purple
+            'rgba(168, 85, 247, ', // electric purple
+            'rgba(0, 242, 254, ',  // neon cyan
+            'rgba(124, 58, 237, ', // deep purple
+            'rgba(56, 189, 248, '  // bright cyan
         ];
 
-        for (let i = 0; i < Math.max(nodeCount, 35); i++) {
+        for (let i = 0; i < Math.max(nodeCount, 32); i++) {
             const colorPrefix = colors[i % colors.length];
             nodes.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                vx: prefersReducedMotion ? 0 : (Math.random() - 0.5) * 0.55,
-                vy: prefersReducedMotion ? 0 : (Math.random() - 0.5) * 0.55,
+                vx: prefersReducedMotion ? 0 : (Math.random() - 0.5) * 0.5,
+                vy: prefersReducedMotion ? 0 : (Math.random() - 0.5) * 0.5,
                 radius: Math.random() * 1.8 + 1.2,
                 colorPrefix: colorPrefix,
                 baseAlpha: Math.random() * 0.45 + 0.35,
-                pulseSpeed: Math.random() * 0.02 + 0.01,
+                pulseSpeed: Math.random() * 0.025 + 0.015,
                 pulseVal: Math.random() * Math.PI
             });
         }
@@ -76,9 +79,63 @@ function initNeuralWallpaper() {
     function draw() {
         ctx.clearRect(0, 0, width, height);
 
-        const connectionDistance = 145;
+        // ----------------------------------------------------
+        // 1. Draw 3D Futuristic Perspective Digital Grid
+        // ----------------------------------------------------
+        ctx.save();
+        const horizonY = height * 0.46;
+        const parallaxX = mouse.x !== null ? (mouse.x - width * 0.5) * 0.04 : 0;
+        const vanishingX = width * 0.5 + parallaxX;
 
-        // Draw connections between nodes
+        // Radial perspective lines radiating towards the viewer
+        const radialLineCount = Math.floor(width / 65);
+        for (let i = -radialLineCount; i <= radialLineCount; i++) {
+            const bottomX = width * 0.5 + (i * 75) + (parallaxX * 2.2);
+            const grad = ctx.createLinearGradient(vanishingX, horizonY, bottomX, height);
+            grad.addColorStop(0, 'rgba(124, 58, 237, 0)');
+            grad.addColorStop(0.2, 'rgba(168, 85, 247, 0.06)');
+            grad.addColorStop(0.65, 'rgba(0, 242, 254, 0.14)');
+            grad.addColorStop(1, 'rgba(0, 242, 254, 0.28)');
+
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(vanishingX, horizonY);
+            ctx.lineTo(bottomX, height);
+            ctx.stroke();
+        }
+
+        // Transverse horizontal grid lines moving forward towards viewer
+        const transverseCount = 14;
+        const gridStep = 45;
+        for (let i = 0; i < transverseCount; i++) {
+            const progress = (i + (gridOffset / gridStep)) / transverseCount;
+            const y = horizonY + Math.pow(progress, 2.3) * (height - horizonY);
+
+            if (y > horizonY && y <= height) {
+                const alpha = Math.min(1, Math.pow(progress, 1.6)) * 0.22;
+                ctx.strokeStyle = i % 2 === 0 
+                    ? `rgba(0, 242, 254, ${alpha})` 
+                    : `rgba(168, 85, 247, ${alpha})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+        }
+
+        if (!prefersReducedMotion) {
+            gridOffset = (gridOffset + 0.45) % gridStep;
+        }
+        ctx.restore();
+
+        // ----------------------------------------------------
+        // 2. Draw Floating Neon Particles & Proximity Lasers
+        // ----------------------------------------------------
+        const connectionDistance = 140;
+
+        // Node-to-node proximity lines
         for (let i = 0; i < nodes.length; i++) {
             for (let j = i + 1; j < nodes.length; j++) {
                 const dx = nodes[i].x - nodes[j].x;
@@ -86,18 +143,18 @@ function initNeuralWallpaper() {
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
                 if (dist < connectionDistance) {
-                    const alpha = (1 - dist / connectionDistance) * 0.20;
+                    const alpha = (1 - dist / connectionDistance) * 0.18;
                     ctx.beginPath();
                     ctx.moveTo(nodes[i].x, nodes[i].y);
                     ctx.lineTo(nodes[j].x, nodes[j].y);
-                    ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
+                    ctx.strokeStyle = `rgba(168, 85, 247, ${alpha})`;
                     ctx.lineWidth = 0.85;
                     ctx.stroke();
                 }
             }
         }
 
-        // Draw mouse connections if hovering
+        // Mouse laser connections
         if (mouse.x !== null && mouse.y !== null && !prefersReducedMotion) {
             for (let i = 0; i < nodes.length; i++) {
                 const dx = nodes[i].x - mouse.x;
@@ -105,18 +162,18 @@ function initNeuralWallpaper() {
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
                 if (dist < mouse.radius) {
-                    const alpha = (1 - dist / mouse.radius) * 0.45;
+                    const alpha = (1 - dist / mouse.radius) * 0.5;
                     ctx.beginPath();
                     ctx.moveTo(nodes[i].x, nodes[i].y);
                     ctx.lineTo(mouse.x, mouse.y);
-                    ctx.strokeStyle = `rgba(6, 182, 212, ${alpha})`;
-                    ctx.lineWidth = 1.1;
+                    ctx.strokeStyle = `rgba(0, 242, 254, ${alpha})`;
+                    ctx.lineWidth = 1.2;
                     ctx.stroke();
                 }
             }
         }
 
-        // Update and draw nodes
+        // Update and draw glowing nodes
         for (let i = 0; i < nodes.length; i++) {
             const n = nodes[i];
 
@@ -128,30 +185,30 @@ function initNeuralWallpaper() {
                 if (n.x < 0 || n.x > width) n.vx *= -1;
                 if (n.y < 0 || n.y > height) n.vy *= -1;
 
-                // Subtle mouse interaction
+                // Subtle cursor repulsion
                 if (mouse.x !== null && mouse.y !== null) {
                     const dx = n.x - mouse.x;
                     const dy = n.y - mouse.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist < mouse.radius && dist > 0) {
                         const force = (mouse.radius - dist) / mouse.radius;
-                        n.x += (dx / dist) * force * 0.5;
-                        n.y += (dy / dist) * force * 0.5;
+                        n.x += (dx / dist) * force * 0.55;
+                        n.y += (dy / dist) * force * 0.55;
                     }
                 }
 
                 n.pulseVal += n.pulseSpeed;
             }
 
-            const currentAlpha = n.baseAlpha + Math.sin(n.pulseVal) * 0.15;
+            const currentAlpha = n.baseAlpha + Math.sin(n.pulseVal) * 0.18;
 
-            // Outer subtle glow halo
+            // Outer soft glow halo
             ctx.beginPath();
-            ctx.arc(n.x, n.y, n.radius * 2.6, 0, Math.PI * 2);
-            ctx.fillStyle = `${n.colorPrefix}${Math.max(0, currentAlpha * 0.25)})`;
+            ctx.arc(n.x, n.y, n.radius * 2.8, 0, Math.PI * 2);
+            ctx.fillStyle = `${n.colorPrefix}${Math.max(0, currentAlpha * 0.28)})`;
             ctx.fill();
 
-            // Inner crisp node
+            // Inner crisp laser core
             ctx.beginPath();
             ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
             ctx.fillStyle = `${n.colorPrefix}${Math.min(1, currentAlpha)})`;
@@ -173,9 +230,9 @@ function initNeuralWallpaper() {
     draw();
 }
 
-// ==========================================
+// ==========================================================================
 // 1. STATE & MODAL CONTROLS
-// ==========================================
+// ==========================================================================
 
 let selectedFilesList = [];
 let currentFilesDataTransfer = new DataTransfer();
@@ -254,12 +311,12 @@ Key Requirements:
     }
 }
 
-// ==========================================
+// ==========================================================================
 // 2. DRAG & DROP & FILE CHIP RENDERING
-// ==========================================
+// ==========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Initialize Neural Wallpaper Engine
+    // 1. Initialize 3D Cyber Wallpaper Engine
     initNeuralWallpaper();
 
     // 2. Navbar scroll glass effect
@@ -274,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 3. Dropzone configuration
+    // 3. Dropzone setup
     const dropzone = document.getElementById('dropzone');
     if (dropzone) {
         ['dragenter', 'dragover'].forEach(eventName => {
@@ -391,9 +448,9 @@ function removeSelectedFile(event, index) {
     renderSelectedFileChips();
 }
 
-// ==========================================
+// ==========================================================================
 // 3. TABLE FILTERING, SORTING & SEARCH
-// ==========================================
+// ==========================================================================
 
 function filterRankingsTable() {
     const searchInput = document.getElementById('candidateSearchInput');
@@ -500,9 +557,9 @@ function toggleRowMenu(event, candId) {
     window.location.href = `/candidate/${candId}`;
 }
 
-// ==========================================
+// ==========================================================================
 // 4. FORM SUBMIT & 1-CLICK DEMO
-// ==========================================
+// ==========================================================================
 
 function handleFormSubmit(e) {
     const fileInput = document.getElementById('resumesInput');
@@ -519,13 +576,13 @@ function handleFormSubmit(e) {
     }
 
     closeUploadModal();
-    showLoading("Extracting & Scoring Resumes...", "Running PDF text extraction, TF-IDF cosine matching, and Merge Sort ranking.");
+    showLoading("Extracting & Scoring Resumes...", "Running PDF text extraction, skill matrix matching, and tournament ranking.");
     return true;
 }
 
 function triggerSampleDemo() {
     closeUploadModal();
-    showLoading("Generating Demonstration Resumes...", "Creating 5 sample PDF candidate profiles across different experience tiers and executing AI ranking.");
+    showLoading("Generating Demonstration Resumes...", "Creating 5 sample PDF candidate profiles across different tiers and executing AI ranking.");
 
     fetch('/api/load-sample', {
         method: 'POST',

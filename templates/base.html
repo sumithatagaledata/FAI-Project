@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ResumeAI - Futuristic AI Resume Intelligence Platform{% endblock %}</title>
-    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <!-- Google Fonts: Orbitron (Gaming / Sci-Fi), Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom Futuristic CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4.0">
+    <!-- Gaming Design System CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=5.0">
 </head>
 <body class="futuristic-app">
-    <!-- 0. LIVE ANIMATED WALLPAPER (NEURAL CANVAS & AMBIENT GLOW) -->
+    <!-- 0. LIVE ANIMATED WALLPAPER (3D DIGITAL GRID & NEON PARTICLES) -->
     <div class="neural-canvas-container" aria-hidden="true">
         <canvas id="neuralCanvas"></canvas>
         <div class="ambient-glow-mesh"></div>
     </div>
 
-    <!-- 1. MINIMAL FUTURISTIC NAVIGATION BAR -->
+    <!-- 1. MINIMAL GAMING NAVBAR -->
     <header class="site-navbar">
         <div class="nav-container">
             <!-- Brand Logo -->
@@ -29,7 +29,7 @@
                     <i class="fa-solid fa-brain"></i>
                 </div>
                 <div class="brand-name-wrap">
-                    <span class="brand-name">ResumeAI</span>
+                    <span class="brand-name">RESUME<span style="color: var(--cyan-neon);">AI</span></span>
                     <span class="brand-tag">AI Based Resume Screening System</span>
                 </div>
             </a>
@@ -46,7 +46,7 @@
                     <i class="fa-solid fa-clock-rotate-left"></i> History
                 </a>
                 <a href="{{ url_for('index') }}#pipelineSection" class="nav-anchor">
-                    <i class="fa-solid fa-microchip"></i> Engine Pipeline
+                    <i class="fa-solid fa-microchip"></i> Pipeline
                 </a>
             </nav>
 
@@ -54,7 +54,7 @@
             <div class="nav-actions-cluster">
                 <!-- 1-Click Demo -->
                 <button type="button" class="btn-nav-demo" onclick="triggerSampleDemo()" title="Run instant candidate screening with sample data">
-                    <i class="fa-solid fa-play"></i> Try Demo
+                    <i class="fa-solid fa-gamepad"></i> Try Demo
                 </button>
 
                 <!-- Start Screening Primary CTA -->
@@ -66,25 +66,25 @@
                 <div class="notification-wrap" onclick="toggleNotificationDropdown(event)">
                     <button type="button" class="btn-icon" title="Notifications">
                         <i class="fa-regular fa-bell"></i>
-                        <span class="notification-badge">1</span>
+                        <span class="notification-badge"></span>
                     </button>
                     <div class="notification-dropdown" id="notificationDropdown">
                         <div class="notif-header">
-                            <strong>System Activity</strong>
+                            <strong>System Telemetry</strong>
                             <span class="badge badge-success">Online</span>
                         </div>
                         <div class="notif-item">
                             <i class="fa-solid fa-circle-check text-success"></i>
                             <div>
-                                <p class="notif-title">Deterministic Engine Ready</p>
-                                <p class="notif-time">TF-IDF NLP and Merge Sort algorithms active.</p>
+                                <p class="notif-title">Neural Engine Active</p>
+                                <p class="notif-time">Multi-vector screening and ranking algorithms ready.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Clear Data -->
-                <button type="button" class="btn-icon text-muted" title="Reset All Records" onclick="confirmClearData()">
+                <button type="button" class="btn-icon text-muted" title="Reset Stored Data" onclick="confirmClearData()">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
@@ -112,7 +112,7 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- 3. UNIVERSAL "UPLOAD RESUMES" MODAL (REFINED EXPENSIVE FUTURISTIC DESIGN) -->
+    <!-- 3. UNIVERSAL "UPLOAD RESUMES" MODAL (GAMING CYBERPUNK THEME) -->
     <div id="uploadResumesModal" class="modal-overlay" style="display: none;" onclick="handleModalBackdropClick(event)">
         <div class="modal-card">
             <!-- Close Button -->
@@ -124,7 +124,7 @@
                     <i class="fa-solid fa-cloud-arrow-up"></i>
                 </div>
                 <h2 class="modal-title">Upload Resumes</h2>
-                <p class="modal-subtitle">Screen multiple PDF resumes with explainable NLP and deterministic O(N log N) ranking.</p>
+                <p class="modal-subtitle">Screen candidate cohorts with deep skill vector matching and tournament ranking.</p>
             </div>
 
             <!-- Screening Form -->
@@ -133,22 +133,22 @@
                 <div class="modal-jd-section">
                     <div class="jd-section-header" onclick="toggleJdAccordion()">
                         <div class="jd-title-flex">
-                            <i class="fa-solid fa-briefcase text-cyan"></i>
+                            <i class="fa-solid fa-briefcase" style="color: var(--cyan-neon);"></i>
                             <span id="jdSectionLabel">Target Position: <strong>{{ sample_title if sample_title else 'Senior Python & AI Developer' }}</strong></span>
                         </div>
-                        <span class="text-xs text-cyan font-medium" id="jdToggleBtn"><i class="fa-solid fa-pen-to-square"></i> Edit JD Requirements</span>
+                        <span class="text-xs font-medium" style="color: var(--cyan-neon);" id="jdToggleBtn"><i class="fa-solid fa-pen-to-square"></i> Edit JD Requirements</span>
                     </div>
 
                     <div id="jdAccordionBody" class="jd-accordion-body" style="display: none;">
                         <div class="form-group mb-2">
                             <label for="job_title" class="form-label-sm">Job Title / Target Role</label>
-                            <input type="text" id="job_title" name="job_title" class="form-control form-control-sm" value="{{ sample_title if sample_title else 'Senior Python & AI Developer' }}" required>
+                            <input type="text" id="job_title" name="job_title" class="form-control-sm" value="{{ sample_title if sample_title else 'Senior Python & AI Developer' }}" required>
                         </div>
                         <div class="form-group">
-                            <label for="job_description" class="form-label-sm">Job Description & Qualifications</label>
-                            <textarea id="job_description" name="job_description" class="form-control form-control-sm" rows="4" required>{{ sample_jd if sample_jd else 'We are seeking a Senior Python & AI Developer with 3+ years experience in Python, Flask, FastAPI, Machine Learning (Pandas, NumPy, Scikit-learn), Docker, SQL, and NLP.' }}</textarea>
-                            <button type="button" class="btn-text-sm text-cyan mt-1" onclick="fillSampleJobData()">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-fill Sample JD
+                            <label for="job_description" class="form-label-sm">Job Description &amp; Minimum Criteria</label>
+                            <textarea id="job_description" name="job_description" class="form-control-sm" rows="4" required>{{ sample_jd if sample_jd else 'We are seeking a Senior Python & AI Developer with 3+ years experience in Python, Flask, FastAPI, Machine Learning (Pandas, NumPy, Scikit-learn), Docker, SQL, and NLP.' }}</textarea>
+                            <button type="button" class="btn-text-sm mt-1" style="color: var(--cyan-neon);" onclick="fillSampleJobData()">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-fill Sample Role
                             </button>
                         </div>
                     </div>
@@ -163,12 +163,12 @@
                         <div class="dropzone-icon-circle">
                             <i class="fa-solid fa-file-arrow-up"></i>
                         </div>
-                        <h4 class="dropzone-h4">Drag & Drop PDF Resumes Here</h4>
+                        <h4 class="dropzone-h4">Drag &amp; Drop PDF Resumes Here</h4>
                         <p class="dropzone-p">or <span class="dropzone-browse">Browse Files</span> from your device</p>
-                        <span class="dropzone-hint">Strict format: PDF only (Up to 16 MB batch size)</span>
+                        <span class="dropzone-hint">Format: PDF only (Up to 16 MB batch size)</span>
                     </div>
 
-                    <!-- Selected Files Box (Mint / Cyan glow with chip pills) -->
+                    <!-- Selected Files Box -->
                     <div id="dropzoneSelected" class="dropzone-selected-wrap" style="display: none;">
                         <div class="selected-badge-center">
                             <div class="check-icon-circle">
@@ -192,7 +192,7 @@
                             </div>
                             <div class="analyze-meta">
                                 <h5>PDF text extraction</h5>
-                                <p>Extract raw text & entity metadata</p>
+                                <p>Extract raw text &amp; entity metadata</p>
                             </div>
                         </div>
 
@@ -211,8 +211,8 @@
                                 <i class="fa-solid fa-graduation-cap"></i>
                             </div>
                             <div class="analyze-meta">
-                                <h5>Experience & education</h5>
-                                <p>Evaluate tenure & degree benchmarks</p>
+                                <h5>Experience &amp; education</h5>
+                                <p>Evaluate tenure &amp; degree benchmarks</p>
                             </div>
                         </div>
 
@@ -230,7 +230,7 @@
 
                 <!-- Primary Action Button -->
                 <div class="modal-action-wrap">
-                    <button type="submit" class="btn btn-primary-gradient btn-block btn-lg" id="submitBtn">
+                    <button type="submit" class="btn-primary-gradient" id="submitBtn">
                         <i class="fa-solid fa-bolt"></i> Analyze Resumes Now
                     </button>
                 </div>
@@ -243,11 +243,11 @@
         <div class="loading-card">
             <div class="spinner"></div>
             <h3 id="loadingTitle">Processing Resumes...</h3>
-            <p id="loadingSubtitle">Extracting text, computing TF-IDF similarity vectors, and ranking candidates with Merge Sort.</p>
+            <p id="loadingSubtitle">Extracting text, computing semantic vector similarity, and executing tournament ranking.</p>
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="{{ url_for('static', filename='js/script.js') }}?v=4.0"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}?v=5.0"></script>
 </body>
 </html>
