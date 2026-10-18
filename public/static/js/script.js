@@ -1,13 +1,184 @@
 /**
- * ResumeAI - Premium Cinematic Client Interaction & Motion Scripts
+ * ResumeAI - Futuristic Client Motion & Interactive Neural Architecture
  */
+
+// ==========================================
+// 0. LIVE ANIMATED NEURAL WALLPAPER ENGINE
+// ==========================================
+
+function initNeuralWallpaper() {
+    const canvas = document.getElementById('neuralCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Respect user's motion preferences
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let width = 0;
+    let height = 0;
+    let nodes = [];
+    let animationFrameId = null;
+
+    // Mouse coordinates for interactive attraction
+    const mouse = {
+        x: null,
+        y: null,
+        radius: 140
+    };
+
+    window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    });
+
+    window.addEventListener('mouseleave', () => {
+        mouse.x = null;
+        mouse.y = null;
+    });
+
+    function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+        initNodes();
+    }
+
+    function initNodes() {
+        nodes = [];
+        const nodeCount = Math.floor(Math.min(width * height / 18000, 70));
+        const colors = [
+            'rgba(99, 102, 241, ', // electric violet
+            'rgba(6, 182, 212, ',  // neon cyan
+            'rgba(168, 85, 247, '  // luminous purple
+        ];
+
+        for (let i = 0; i < Math.max(nodeCount, 35); i++) {
+            const colorPrefix = colors[i % colors.length];
+            nodes.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: prefersReducedMotion ? 0 : (Math.random() - 0.5) * 0.55,
+                vy: prefersReducedMotion ? 0 : (Math.random() - 0.5) * 0.55,
+                radius: Math.random() * 1.8 + 1.2,
+                colorPrefix: colorPrefix,
+                baseAlpha: Math.random() * 0.45 + 0.35,
+                pulseSpeed: Math.random() * 0.02 + 0.01,
+                pulseVal: Math.random() * Math.PI
+            });
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        const connectionDistance = 145;
+
+        // Draw connections between nodes
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                const dx = nodes[i].x - nodes[j].x;
+                const dy = nodes[i].y - nodes[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < connectionDistance) {
+                    const alpha = (1 - dist / connectionDistance) * 0.20;
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
+                    ctx.lineWidth = 0.85;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Draw mouse connections if hovering
+        if (mouse.x !== null && mouse.y !== null && !prefersReducedMotion) {
+            for (let i = 0; i < nodes.length; i++) {
+                const dx = nodes[i].x - mouse.x;
+                const dy = nodes[i].y - mouse.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < mouse.radius) {
+                    const alpha = (1 - dist / mouse.radius) * 0.45;
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(mouse.x, mouse.y);
+                    ctx.strokeStyle = `rgba(6, 182, 212, ${alpha})`;
+                    ctx.lineWidth = 1.1;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Update and draw nodes
+        for (let i = 0; i < nodes.length; i++) {
+            const n = nodes[i];
+
+            if (!prefersReducedMotion) {
+                n.x += n.vx;
+                n.y += n.vy;
+
+                // Bounce off edges smoothly
+                if (n.x < 0 || n.x > width) n.vx *= -1;
+                if (n.y < 0 || n.y > height) n.vy *= -1;
+
+                // Subtle mouse interaction
+                if (mouse.x !== null && mouse.y !== null) {
+                    const dx = n.x - mouse.x;
+                    const dy = n.y - mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < mouse.radius && dist > 0) {
+                        const force = (mouse.radius - dist) / mouse.radius;
+                        n.x += (dx / dist) * force * 0.5;
+                        n.y += (dy / dist) * force * 0.5;
+                    }
+                }
+
+                n.pulseVal += n.pulseSpeed;
+            }
+
+            const currentAlpha = n.baseAlpha + Math.sin(n.pulseVal) * 0.15;
+
+            // Outer subtle glow halo
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.radius * 2.6, 0, Math.PI * 2);
+            ctx.fillStyle = `${n.colorPrefix}${Math.max(0, currentAlpha * 0.25)})`;
+            ctx.fill();
+
+            // Inner crisp node
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `${n.colorPrefix}${Math.min(1, currentAlpha)})`;
+            ctx.fill();
+        }
+
+        if (!prefersReducedMotion) {
+            animationFrameId = requestAnimationFrame(draw);
+        }
+    }
+
+    window.addEventListener('resize', () => {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        resize();
+        draw();
+    });
+
+    resize();
+    draw();
+}
+
+// ==========================================
+// 1. STATE & MODAL CONTROLS
+// ==========================================
 
 let selectedFilesList = [];
 let currentFilesDataTransfer = new DataTransfer();
-
-// ==========================================
-// 1. MODAL CONTROLS & KEYBOARD ACCESSIBILITY
-// ==========================================
 
 function openUploadModal() {
     const modal = document.getElementById('uploadResumesModal');
@@ -31,7 +202,7 @@ function handleModalBackdropClick(event) {
     }
 }
 
-// ESC key to close modal, Ctrl+K for search
+// Global Keyboard Accessibility (ESC closes modal, Ctrl+K for search)
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeUploadModal();
@@ -40,7 +211,7 @@ document.addEventListener('keydown', (e) => {
     }
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        const searchInput = document.getElementById('globalSearchInput') || document.getElementById('candidateSearchInput');
+        const searchInput = document.getElementById('candidateSearchInput');
         if (searchInput) {
             searchInput.focus();
             searchInput.select();
@@ -88,6 +259,22 @@ Key Requirements:
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Initialize Neural Wallpaper Engine
+    initNeuralWallpaper();
+
+    // 2. Navbar scroll glass effect
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.site-navbar');
+        if (navbar) {
+            if (window.scrollY > 20) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+    });
+
+    // 3. Dropzone configuration
     const dropzone = document.getElementById('dropzone');
     if (dropzone) {
         ['dragenter', 'dragover'].forEach(eventName => {
@@ -115,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, false);
     }
 
-    // Close notifications on outer click
+    // 4. Close dropdowns on outside click
     document.addEventListener('click', (e) => {
         const notifWrap = document.querySelector('.notification-wrap');
         const dropdown = document.getElementById('notificationDropdown');
