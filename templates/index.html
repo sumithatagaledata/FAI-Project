@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - AI Based Resume Screening System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-badge">
+        <i class="fa-solid fa-graduation-cap"></i> AI + Data Structures & Algorithms Mini-Project
+    </div>
+    <h1 class="hero-title">
+        AI Based <span class="gradient-text">Resume Screening</span> System
+    </h1>
+    <p class="hero-subtitle">
+        Accelerate recruitment workflows with intelligent PDF parsing, NLP keyword matching, multi-factor scoring, and deterministic candidate ranking using custom algorithms.
+    </p>
+
+    <div class="hero-cta-group">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
+            <i class="fa-solid fa-sliders"></i> Start Screening
+        </a>
+        <button onclick="triggerSampleDemo()" class="btn btn-secondary btn-lg">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Run 1-Click Demo
+        </button>
+    </div>
+
+    <!-- Quick Stats Banner -->
+    <div class="quick-stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon icon-blue"><i class="fa-solid fa-file-pdf"></i></div>
+            <div class="stat-info">
+                <h3>Multi-PDF Extraction</h3>
+                <p>Pure Python PDF text & entity parser</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon icon-purple"><i class="fa-solid fa-network-wired"></i></div>
+            <div class="stat-info">
+                <h3>TF-IDF & Cosine NLP</h3>
+                <p>Semantic document vectorization</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon icon-green"><i class="fa-solid fa-arrow-down-9-1"></i></div>
+            <div class="stat-info">
+                <h3>Merge Sort & Max-Heap</h3>
+                <p>Strict O(N log N) candidate ranking</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon icon-amber"><i class="fa-solid fa-circle-nodes"></i></div>
+            <div class="stat-info">
+                <h3>Explainable Scoring</h3>
+                <p>Transparent factor breakdown</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- System Architecture & Workflow -->
+<section class="workflow-section">
+    <div class="section-header text-center">
+        <span class="section-tag">System Pipeline</span>
+        <h2 class="section-title">How the Screening Engine Works</h2>
+        <p class="section-desc">From unstructured PDF resumes to ranked, explainable candidate recommendations.</p>
+    </div>
+
+    <div class="workflow-steps">
+        <div class="workflow-step">
+            <div class="step-number">1</div>
+            <div class="step-icon"><i class="fa-solid fa-briefcase"></i></div>
+            <h4>Job Description</h4>
+            <p>Recruiter enters requirements; NLP extracts skills, experience & education benchmarks.</p>
+        </div>
+
+        <div class="workflow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+
+        <div class="workflow-step">
+            <div class="step-number">2</div>
+            <div class="step-icon"><i class="fa-solid fa-file-lines"></i></div>
+            <h4>Resume Parsing</h4>
+            <p>Extracts text from uploaded PDF resumes without hallucination.</p>
+        </div>
+
+        <div class="workflow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+
+        <div class="workflow-step">
+            <div class="step-number">3</div>
+            <div class="step-icon"><i class="fa-solid fa-brain"></i></div>
+            <h4>AI / NLP Matching</h4>
+            <p>Computes skill set intersections and TF-IDF cosine similarity.</p>
+        </div>
+
+        <div class="workflow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+
+        <div class="workflow-step">
+            <div class="step-number">4</div>
+            <div class="step-icon"><i class="fa-solid fa-ranking-star"></i></div>
+            <h4>DSA Ranking</h4>
+            <p>Custom Merge Sort and Max-Heap generate the ranked leaderboard.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Explainable Scoring Weights Section -->
+<section class="scoring-section">
+    <div class="section-header text-center">
+        <span class="section-tag">Evaluation Model</span>
+        <h2 class="section-title">Configurable 4-Factor Scoring</h2>
+        <p class="section-desc">Clear, non-blackbox scoring formula tailored for recruitement transparency.</p>
+    </div>
+
+    <div class="scoring-grid">
+        <div class="weight-card">
+            <div class="weight-percentage text-primary">50%</div>
+            <h3>Skill Match</h3>
+            <p>Mathematical set intersection between job-required skills and candidate skill inventory.</p>
+        </div>
+        <div class="weight-card">
+            <div class="weight-percentage text-purple">20%</div>
+            <h3>Experience Match</h3>
+            <p>Numerical comparison of verified work tenure against specified minimum role requirements.</p>
+        </div>
+        <div class="weight-card">
+            <div class="weight-percentage text-emerald">10%</div>
+            <h3>Education Level</h3>
+            <p>Degree hierarchy qualification alignment (Ph.D., Master's, Bachelor's, Diploma).</p>
+        </div>
+        <div class="weight-card">
+            <div class="weight-percentage text-amber">20%</div>
+            <h3>Semantic TF-IDF</h3>
+            <p>Cosine similarity on normalized term frequency vectors for domain keyword affinity.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Academic & DSA Details -->
+<section class="about-section">
+    <div class="about-card">
+        <div class="about-header">
+            <i class="fa-solid fa-code"></i>
+            <div>
+                <h3>Academic & Technical Foundations</h3>
+                <p>Designed and structured specifically to demonstrate core Computer Science topics.</p>
+            </div>
+        </div>
+        <div class="about-grid">
+            <div class="about-item">
+                <h4><i class="fa-solid fa-calculator text-primary"></i> Data Structures & Algorithms</h4>
+                <ul>
+                    <li><strong>Merge Sort & Quick Sort:</strong> Implemented manually in <code>algorithms.py</code> for candidate ranking.</li>
+                    <li><strong>Max-Heap (Priority Queue):</strong> Dynamic heap for $O(1)$ top candidate peek and $O(K \log N)$ top-K retrieval.</li>
+                    <li><strong>Inverted Index & Hash Maps:</strong> O(1) skill-to-candidate dictionary lookups.</li>
+                    <li><strong>Binary Search:</strong> Fast $O(\log N)$ candidate name retrieval on sorted sets.</li>
+                </ul>
+            </div>
+            <div class="about-item">
+                <h4><i class="fa-solid fa-robot text-purple"></i> Natural Language Processing</h4>
+                <ul>
+                    <li><strong>Tokenization & Normalization:</strong> Custom stop-word removal and punctuation cleaning.</li>
+                    <li><strong>Skill Taxonomy:</strong> Curated taxonomy covering 60+ technologies and canonical aliases.</li>
+                    <li><strong>TF-IDF & Cosine Metric:</strong> Pure Python vector dot products with L2 normalization.</li>
+                    <li><strong>Zero External Paid APIs:</strong> Fully self-contained and runnable offline.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

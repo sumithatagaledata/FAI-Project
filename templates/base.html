@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Based Resume Screening System{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.0">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="brand-logo">
+                <div class="logo-icon"><i class="fa-solid fa-brain"></i></div>
+                <div class="logo-text">
+                    <span class="logo-title">ResumeAI</span>
+                    <span class="logo-sub">Screening System</span>
+                </div>
+            </a>
+
+            <nav class="nav-menu">
+                <a href="{{ url_for('index') }}" class="nav-link"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="{{ url_for('dashboard') }}" class="nav-link"><i class="fa-solid fa-sliders"></i> Screener</a>
+                <a href="{{ url_for('history') }}" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a>
+                
+                <div class="nav-actions">
+                    <button class="btn btn-outline-primary btn-sm" id="loadSampleBtn" onclick="triggerSampleDemo()">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 1-Click Demo
+                    </button>
+                    <button class="btn btn-ghost btn-sm text-danger" title="Reset Database" onclick="confirmClearData()">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Global Toast / Alerts -->
+    <main class="main-content">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category if category != 'error' else 'danger' }}">
+                                <i class="fa-solid {% if category == 'success' %}fa-circle-check{% else %}fa-triangle-exclamation{% endif %}"></i>
+                                <span>{{ message }}</span>
+                                <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Project Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-left">
+                <div class="footer-brand">
+                    <i class="fa-solid fa-brain"></i> AI Based Resume Screening System
+                </div>
+                <p class="footer-desc">
+                    An intelligent recruitment assistant demonstrating Natural Language Processing, TF-IDF Vectorization, and Core Data Structures & Algorithms.
+                </p>
+            </div>
+            <div class="footer-tags">
+                <span class="tech-tag"><i class="fa-brands fa-python"></i> Python 3</span>
+                <span class="tech-tag"><i class="fa-solid fa-server"></i> Flask</span>
+                <span class="tech-tag"><i class="fa-solid fa-code-merge"></i> Merge Sort & Heap</span>
+                <span class="tech-tag"><i class="fa-solid fa-database"></i> SQLite</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Modal Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-card">
+            <div class="spinner"></div>
+            <h3 id="loadingTitle">Processing Resumes...</h3>
+            <p id="loadingSubtitle">Extracting text, computing TF-IDF similarity, and ranking candidates with Merge Sort.</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/script.js') }}?v=2.0"></script>
+</body>
+</html>

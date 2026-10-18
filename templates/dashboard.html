@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Recruiter Dashboard - AI Resume Screening{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1 class="page-title">Recruiter Screening Dashboard</h1>
+        <p class="page-subtitle">Configure job requirements and upload PDF resumes to evaluate candidate matching.</p>
+    </div>
+    <div class="dashboard-quick-actions">
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="fillSampleJobData()">
+            <i class="fa-solid fa-file-pen"></i> Auto-fill Sample Job
+        </button>
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="triggerSampleDemo()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> 1-Click Full Demo
+        </button>
+    </div>
+</div>
+
+<form action="{{ url_for('screen_resumes') }}" method="POST" enctype="multipart/form-data" id="screeningForm" onsubmit="return handleFormSubmit(event)">
+    <div class="screening-grid">
+        <!-- Left Column: Job Description Setup -->
+        <div class="card jd-card">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <div class="card-icon icon-blue"><i class="fa-solid fa-briefcase"></i></div>
+                    <div>
+                        <h3 class="card-title">1. Job Requirements</h3>
+                        <p class="card-subtitle">Define position details & target skill requirements</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="job_title" class="form-label">Job Title / Role <span class="text-danger">*</span></label>
+                    <input type="text" id="job_title" name="job_title" class="form-control" placeholder="e.g. Senior Python & AI Developer" required value="{{ sample_title }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="job_description" class="form-label">Job Description & Qualifications <span class="text-danger">*</span></label>
+                    <textarea id="job_description" name="job_description" class="form-control" rows="12" placeholder="Paste the job requirements, necessary skills (Python, SQL, ML, Docker), required experience (3+ years), and education criteria..." required>{{ sample_jd }}</textarea>
+                    <small class="form-hint">Tip: The NLP engine automatically detects required skills, experience thresholds, and education benchmarks from this text.</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Resume Upload Dropzone -->
+        <div class="card upload-card">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <div class="card-icon icon-purple"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                    <div>
+                        <h3 class="card-title">2. Upload Resumes</h3>
+                        <p class="card-subtitle">Select multiple PDF format resumes for batch processing</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <!-- Drag and Drop Dropzone -->
+                <div class="dropzone" id="dropzone" onclick="document.getElementById('resumesInput').click()">
+                    <input type="file" id="resumesInput" name="resumes" multiple accept=".pdf" style="display: none;" onchange="handleFileSelect(this.files)">
+                    <div class="dropzone-icon">
+                        <i class="fa-solid fa-file-arrow-up"></i>
+                    </div>
+                    <h4>Drag & Drop PDF Resumes Here</h4>
+                    <p>or <span class="text-primary font-semibold">Browse Files</span> from your computer</p>
+                    <span class="file-limits">Supported format: PDF only (Up to 16 MB total)</span>
+                </div>
+
+                <!-- Selected Files List -->
+                <div id="fileListContainer" class="selected-files-list" style="display: none;">
+                    <div class="files-list-header">
+                        <span id="fileCountBadge" class="badge badge-primary">0 files selected</span>
+                        <button type="button" class="btn btn-ghost btn-xs text-danger" onclick="clearSelectedFiles()">Clear All</button>
+                    </div>
+                    <div id="fileItemsList" class="file-items-scroll"></div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="upload-action-area">
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitBtn">
+                        <i class="fa-solid fa-bolt"></i> Start AI Resume Screening
+                    </button>
+                </div>
+
+                <!-- Demo Note -->
+                <div class="demo-callout">
+                    <div class="callout-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                    <div class="callout-text">
+                        <strong>College Demonstration Tip:</strong>
+                        If you don't have sample PDF resumes ready on this computer, click the <strong>"1-Click Demo"</strong> button at the top right to instantly generate 5 realistic candidate resumes and rank them!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

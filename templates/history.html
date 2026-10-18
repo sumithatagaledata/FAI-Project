@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Screening History - AI Resume Screening{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1 class="page-title">Screening History & Sessions</h1>
+        <p class="page-subtitle">Access previous candidate evaluation runs and job screening results.</p>
+    </div>
+    <div class="dashboard-quick-actions">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-plus"></i> New Screening
+        </a>
+    </div>
+</div>
+
+{% if jobs %}
+    <div class="history-grid">
+        {% for job in jobs %}
+            <div class="card history-card">
+                <div class="history-card-header">
+                    <div>
+                        <div class="history-badge-row">
+                            <span class="badge badge-secondary">Job #{{ job.id }}</span>
+                            <span class="history-date"><i class="fa-regular fa-clock"></i> {{ job.created_at[:16] if job.created_at else 'Recent' }}</span>
+                        </div>
+                        <h3 class="history-job-title">{{ job.job_title }}</h3>
+                    </div>
+                    <button type="button" class="btn btn-ghost btn-xs text-danger" title="Delete Session" onclick="deleteJob({{ job.id }})">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+
+                <div class="history-stats-row">
+                    <div class="history-stat">
+                        <span class="stat-number">{{ job.candidate_count }}</span>
+                        <span class="stat-label">Candidates</span>
+                    </div>
+                    <div class="history-stat">
+                        <span class="stat-number text-emerald">{{ job.top_score }}%</span>
+                        <span class="stat-label">Top Score</span>
+                    </div>
+                    <div class="history-stat">
+                        <span class="stat-number text-purple">{{ job.avg_score }}%</span>
+                        <span class="stat-label">Avg Score</span>
+                    </div>
+                </div>
+
+                <div class="history-skills-preview">
+                    {% for s in job.required_skills[:5] %}
+                        <span class="skill-chip skill-req">{{ s }}</span>
+                    {% endfor %}
+                    {% if job.required_skills|length > 5 %}
+                        <span class="skill-chip-more">+{{ job.required_skills|length - 5 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="history-card-footer">
+                    <a href="{{ url_for('view_results', job_id=job.id) }}" class="btn btn-primary btn-sm btn-block">
+                        View Leaderboard <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card empty-history-card text-center py-5">
+        <div class="empty-icon"><i class="fa-solid fa-folder-open"></i></div>
+        <h3>No Screening Sessions Recorded Yet</h3>
+        <p class="text-muted">Start by creating a new job screening or load our 1-click sample demo.</p>
+        <div class="empty-actions mt-4">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                <i class="fa-solid fa-sliders"></i> Go to Dashboard
+            </a>
+            <button onclick="triggerSampleDemo()" class="btn btn-outline-primary">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Run 1-Click Demo
+            </button>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

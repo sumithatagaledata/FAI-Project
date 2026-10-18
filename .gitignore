@@ -1,0 +1,48 @@
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+
+# Environment Variables & Secrets
+.env
+.env.*
+.env.local
+*.pem
+*.key
+*.pfx
+*.pkcs12
+
+# Node modules & Build output
+node_modules/
+dist/
+build/
+*.egg-info/
+
+# Database dumps
+*.sql
+*.dump
+*.dump.gz
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Project generated/uploaded files
+uploads/*
+!uploads/.gitkeep
+
+# Database (optional: uncomment if you don't want to track local sqlite db)
+# database/*.db
+
