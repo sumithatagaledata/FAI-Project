@@ -413,10 +413,16 @@
                                 </td>
 
                                 <td class="col-actions text-right">
-                                    <a href="{{ url_for('candidate_detail', candidate_id=c.id) }}" class="btn-view-details">
-                                        <span>View Details</span>
-                                        <i class="fa-solid fa-arrow-right"></i>
-                                    </a>
+                                    <div class="table-actions-cluster">
+                                        <a href="{{ url_for('talent_twin_view', candidate_id=c.id) }}" class="btn-twin-table-action {% if c.sim_completed %}is-completed{% endif %}" title="{% if c.sim_completed %}Talent Twin Practical: {{ c.practical_score }}%{% else %}Run Practical AI Job Simulation{% endif %}">
+                                            <i class="fa-solid {% if c.sim_completed %}fa-chart-line{% else %}fa-microchip{% endif %}"></i>
+                                            <span>{% if c.sim_completed %}{{ c.practical_score }}%{% else %}Talent Twin{% endif %}</span>
+                                        </a>
+                                        <a href="{{ url_for('candidate_detail', candidate_id=c.id) }}" class="btn-view-details">
+                                            <span>Details</span>
+                                            <i class="fa-solid fa-arrow-right"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         {% endfor %}

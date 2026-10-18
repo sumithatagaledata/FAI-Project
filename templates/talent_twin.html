@@ -1,0 +1,609 @@
+{% extends 'base.html' %}
+
+{% block title %}Talent Twin — {{ candidate.name }} — Talentora AI{% endblock %}
+
+{% block page_title %}Talent Twin — AI Job Simulation &amp; Evidence Intelligence{% endblock %}
+
+{% block content %}
+<div class="talent-twin-workspace">
+    <!-- Breadcrumb & Top Bar -->
+    <div class="card-light-panel mb-4" style="padding: 12px 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <a href="{{ url_for('candidate_detail', candidate_id=candidate.id) }}" class="link-clean">
+                    <i class="fa-solid fa-arrow-left"></i> Candidate Profile
+                </a>
+                <span style="color: var(--color-slate-light);">|</span>
+                <a href="{{ url_for('talent_twin_compare', job_id=job.id) }}" class="link-clean">
+                    <i class="fa-solid fa-users-viewfinder"></i> Recruiter Comparison Board
+                </a>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--color-slate-muted);">
+                <span>Target Position: <strong style="color: var(--color-slate-heading);">{{ job.job_title }}</strong></span>
+                <span class="status-pill-modern pill-high" style="font-size: 0.72rem; padding: 2px 8px;">
+                    <i class="fa-solid fa-shield-halved"></i> Decision Support
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Candidate Intelligence Header Card -->
+    <div class="card-light-panel mb-4">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div style="display: flex; align-items: center; gap: 18px;">
+                <div class="cand-avatar avatar-tint-1" style="width: 58px; height: 58px; font-size: 1.4rem;">
+                    {{ candidate.initials }}
+                </div>
+                <div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap;">
+                        <h1 style="font-size: 1.55rem; font-weight: 800; color: var(--color-slate-title); margin: 0;">{{ candidate.name }}</h1>
+                        <span class="twin-role-pill">
+                            <i class="fa-solid {{ challenge.task_icon|default('fa-laptop-code') }}"></i> {{ challenge.task_badge|default('Job Simulation') }}
+                        </span>
+                        {% if simulation.status == 'completed' %}
+                            <span class="status-pill-modern pill-high">
+                                <i class="fa-solid fa-circle-check"></i> Simulation Completed
+                            </span>
+                        {% else %}
+                            <span class="status-pill-modern pill-moderate">
+                                <i class="fa-solid fa-clock"></i> Simulation Ready
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div style="display: flex; gap: 16px; font-size: 0.82rem; color: var(--color-slate-muted); flex-wrap: wrap;">
+                        <span><i class="fa-regular fa-envelope" style="color: var(--color-arctic-blue);"></i> {{ candidate.email }}</span>
+                        <span><i class="fa-solid fa-briefcase" style="color: var(--color-teal);"></i> {{ candidate.experience_years|format_exp }} yrs experience</span>
+                        <span><i class="fa-solid fa-graduation-cap"></i> {{ candidate.education }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dual Score Snapshot -->
+            <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+                <div class="twin-score-box">
+                    <span class="twin-score-label">Resume Match</span>
+                    <span class="twin-score-num text-blue">{{ candidate.match_score }}%</span>
+                    <span class="twin-score-sub">4-Factor NLP</span>
+                </div>
+
+                <div class="twin-score-box highlight-teal">
+                    <span class="twin-score-label">Practical Score</span>
+                    <span class="twin-score-num text-teal" id="topPracticalScore">
+                        {% if simulation.status == 'completed' %}{{ simulation.practical_score }}%{% else %}--{% endif %}
+                    </span>
+                    <span class="twin-score-sub" id="topPracticalBadge">
+                        {% if simulation.status == 'completed' %}{{ simulation.confidence_badge }}{% else %}Awaiting Run{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skill Evidence Pre-Analysis Drawer -->
+    <div class="card-light-panel mb-4" style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border-left: 4px solid var(--color-teal);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--color-slate-title); margin: 0; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-magnifying-glass-chart" style="color: var(--color-teal);"></i>
+                    Resume Skill Evidence Analysis
+                </h3>
+                <p style="font-size: 0.82rem; color: var(--color-slate-muted); margin: 2px 0 0;">
+                    Categorized against target role requirements: <strong>{{ job.job_title }}</strong>
+                </p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <span class="status-pill-modern pill-high" style="font-size: 0.72rem;">{{ evidence.demonstrated_count }} Demonstrated</span>
+                <span class="status-pill-modern pill-moderate" style="font-size: 0.72rem;">{{ evidence.verification_count }} Requires Verification</span>
+                <span class="status-pill-modern pill-low" style="font-size: 0.72rem;">{{ evidence.missing_count }} Missing</span>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
+            <!-- Demonstrated Skills -->
+            <div class="evidence-column-card">
+                <span class="evidence-col-title text-teal"><i class="fa-solid fa-circle-check"></i> Demonstrated in Resume</span>
+                <div class="skills-pill-cluster" style="margin-top: 6px;">
+                    {% for item in evidence.demonstrated %}
+                        <span class="skill-pill-tag" title="{{ item.evidence_quote }}">{{ item.skill }}</span>
+                    {% endfor %}
+                    {% if not evidence.demonstrated %}
+                        <span style="font-size: 0.78rem; color: var(--color-slate-muted);">No explicit project citations found.</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Requires Verification -->
+            <div class="evidence-column-card">
+                <span class="evidence-col-title text-blue"><i class="fa-solid fa-circle-question"></i> Skills Requiring Verification</span>
+                <div class="skills-pill-cluster" style="margin-top: 6px;">
+                    {% for item in evidence.requires_verification %}
+                        <span class="skill-pill-tag is-verify" title="{{ item.reason }}">{{ item.skill }}</span>
+                    {% endfor %}
+                    {% if not evidence.requires_verification %}
+                        <span style="font-size: 0.78rem; color: var(--color-slate-muted);">All claimed required skills substantiated.</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Missing Skills -->
+            <div class="evidence-column-card">
+                <span class="evidence-col-title text-danger"><i class="fa-solid fa-circle-minus"></i> Missing Required Skills</span>
+                <div class="skills-pill-cluster" style="margin-top: 6px;">
+                    {% for item in evidence.missing %}
+                        <span class="skill-pill-tag is-missing">{{ item }}</span>
+                    {% endfor %}
+                    {% if not evidence.missing %}
+                        <span style="font-size: 0.78rem; color: var(--color-teal);">No missing core requirements.</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mode Selector Navigation -->
+    <div class="twin-nav-tabs mb-4">
+        <button type="button" class="twin-tab-btn {% if simulation.status != 'completed' %}active{% endif %}" id="tabBtnChallenge" onclick="switchTwinTab('challenge')">
+            <i class="fa-solid fa-terminal"></i> Interactive Job Simulation
+        </button>
+        <button type="button" class="twin-tab-btn {% if simulation.status == 'completed' %}active{% endif %}" id="tabBtnDashboard" onclick="switchTwinTab('dashboard')">
+            <i class="fa-solid fa-chart-line"></i> Evidence Intelligence Dashboard
+            {% if simulation.status == 'completed' %}
+                <span class="tab-badge-verified">Verified</span>
+            {% endif %}
+        </button>
+    </div>
+
+    <!-- TAB 1: INTERACTIVE JOB SIMULATION (RUNNER) -->
+    <div id="twinSectionChallenge" style="display: {% if simulation.status == 'completed' %}none{% else %}block{% endif %};">
+        <div class="mid-workspace-grid mb-4">
+            <!-- Left: Challenge Prompt & Questions -->
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <!-- Problem Statement Card -->
+                <div class="card-light-panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color-light);">
+                        <div>
+                            <span class="kpi-label-muted" style="text-transform: uppercase; letter-spacing: 0.05em;">Role-Specific Practical Challenge</span>
+                            <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--color-slate-title); margin: 2px 0 0;">{{ challenge.title }}</h2>
+                        </div>
+                        <span class="twin-role-pill">
+                            <i class="fa-solid {{ challenge.task_icon|default('fa-code') }}"></i> {{ challenge.task_badge|default('Challenge') }}
+                        </span>
+                    </div>
+
+                    <p style="font-size: 0.88rem; color: var(--color-slate-body); line-height: 1.55; margin-bottom: 14px;">
+                        {{ challenge.scenario }}
+                    </p>
+
+                    <h4 style="font-size: 0.88rem; font-weight: 800; color: var(--color-slate-heading); margin-bottom: 8px;">
+                        <i class="fa-solid fa-list-check" style="color: var(--color-arctic-blue);"></i> Deliverable Requirements:
+                    </h4>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 0.84rem; color: var(--color-slate-body); line-height: 1.5;">
+                        {% for inst in challenge.instructions %}
+                            <li style="margin-bottom: 4px;">{{ inst }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Measurable Evaluation Rubric -->
+                <div class="card-light-panel">
+                    <h4 style="font-size: 0.88rem; font-weight: 800; color: var(--color-slate-heading); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-scale-balanced text-teal"></i> Measurable Evaluation Rubric
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+                        {% for r in challenge.rubric %}
+                            <div style="background: var(--color-ice-white); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: var(--radius-sm);">
+                                <span style="font-size: 0.72rem; color: var(--color-slate-muted); display: block;">{{ r.name }}</span>
+                                <strong style="font-size: 0.95rem; color: var(--color-arctic-blue);">{{ r.weight }}% Weight</strong>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Follow-up Probe Questions -->
+                <div class="card-light-panel">
+                    <h4 style="font-size: 0.88rem; font-weight: 800; color: var(--color-slate-heading); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-comments text-blue"></i> Architectural Follow-up Questions
+                    </h4>
+                    <p style="font-size: 0.8rem; color: var(--color-slate-muted); margin-bottom: 12px;">
+                        Evaluate edge cases, concurrency, distribution, and architectural trade-offs.
+                    </p>
+
+                    {% for q in challenge.follow_up_questions %}
+                        <div style="margin-bottom: 12px;">
+                            <label for="input_{{ q.id }}" style="font-size: 0.82rem; font-weight: 700; color: var(--color-slate-title); display: block; margin-bottom: 4px;">
+                                {{ loop.index }}. {{ q.question }}
+                            </label>
+                            <textarea id="input_{{ q.id }}" class="twin-textarea" rows="2" placeholder="{{ q.placeholder }}">{% if simulation.submission and simulation.submission.answers %}{{ simulation.submission.answers[q.id]|default('') }}{% endif %}</textarea>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right: Interactive Code / Solution Editor -->
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="card-light-panel" style="display: flex; flex-direction: column; height: 100%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color-light);">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="code-editor-dot dot-red"></span>
+                            <span class="code-editor-dot dot-yellow"></span>
+                            <span class="code-editor-dot dot-green"></span>
+                            <span style="font-family: monospace; font-size: 0.78rem; font-weight: 700; color: var(--color-slate-heading); margin-left: 6px;">
+                                solution_{{ challenge.task_type }}.py
+                            </span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" class="btn-clear-filters" onclick="resetEditorCode()" title="Reset to starter template">
+                                <i class="fa-solid fa-rotate-left"></i> Reset Template
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Editor Mockup with Textarea -->
+                    <div class="editor-container">
+                        <textarea id="solutionCodeEditor" class="code-editor-input" spellcheck="false" placeholder="Write or refine your solution implementation here...">{% if simulation.submission and simulation.submission.code %}{{ simulation.submission.code }}{% else %}{{ challenge.starter_code }}{% endif %}</textarea>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 0.76rem; color: var(--color-slate-muted);">
+                        <span><i class="fa-solid fa-circle-info text-teal"></i> Python 3.11 AST Heuristic Parser active</span>
+                        <span id="editorStats">Ready to evaluate</span>
+                    </div>
+
+                    <!-- Action Bar -->
+                    <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                        <span style="font-size: 0.78rem; color: var(--color-slate-muted);">
+                            <i class="fa-solid fa-lock" style="color: var(--color-teal);"></i> Candidate data isolated &amp; protected
+                        </span>
+
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="btn-primary-screen" id="btnSubmitSimulation" onclick="submitSimulationEvaluation()" style="padding: 10px 24px; font-size: 0.88rem;">
+                                <i class="fa-solid fa-bolt"></i> Run Practical Evaluation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: ANIMATED CANDIDATE INTELLIGENCE DASHBOARD -->
+    <div id="twinSectionDashboard" style="display: {% if simulation.status == 'completed' %}block{% else %}none{% endif %};">
+        <!-- Dual Metric & Confidence Header Banner -->
+        <div class="kpi-slots-grid mb-4">
+            <!-- Resume NLP Match -->
+            <div class="kpi-card-clean">
+                <div class="kpi-icon-pill icon-blue"><i class="fa-solid fa-file-invoice"></i></div>
+                <div>
+                    <span class="kpi-label-muted">Resume Match Score</span>
+                    <div class="kpi-stat-bold text-blue">{{ candidate.match_score }}%</div>
+                    <span style="font-size: 0.72rem; color: var(--color-slate-muted);">Paper Qualification</span>
+                </div>
+            </div>
+
+            <!-- Practical Simulation Performance -->
+            <div class="kpi-card-clean">
+                <div class="kpi-icon-pill icon-teal"><i class="fa-solid fa-terminal"></i></div>
+                <div>
+                    <span class="kpi-label-muted">Practical Simulation</span>
+                    <div class="kpi-stat-bold text-teal" id="dashPracticalScore">
+                        {{ simulation.practical_score|default(0.0) }}%
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--color-teal);">Empirical Demonstration</span>
+                </div>
+            </div>
+
+            <!-- Evidence Confidence Level -->
+            <div class="kpi-card-clean">
+                <div class="kpi-icon-pill icon-green"><i class="fa-solid fa-certificate"></i></div>
+                <div>
+                    <span class="kpi-label-muted">Evidence Confidence</span>
+                    <div class="kpi-stat-bold" id="dashConfidenceScore" style="color: #0F766E;">
+                        {{ simulation.confidence_score|default(0.0) }}%
+                    </div>
+                    <span style="font-size: 0.72rem;" id="dashConfidenceBadge" class="status-pill-modern pill-high">
+                        {{ simulation.confidence_badge|default('Awaiting Run') }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Alignment Delta -->
+            <div class="kpi-card-clean">
+                <div class="kpi-icon-pill icon-indigo"><i class="fa-solid fa-chart-line"></i></div>
+                <div>
+                    <span class="kpi-label-muted">Score Correlation</span>
+                    <div class="kpi-stat-bold" id="dashCorrelationDelta" style="font-size: 1.3rem;">
+                        {% if simulation.status == 'completed' %}
+                            {% set delta = simulation.practical_score - candidate.match_score %}
+                            {% if delta >= 0 %}+{{ delta|round(1) }}%{% else %}{{ delta|round(1) }}%{% endif %}
+                        {% else %}
+                            --
+                        {% endif %}
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--color-slate-muted);">Resume vs. Practical</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Measurable Rubric & Skill-by-Skill Evidence Grid -->
+        <div class="mid-workspace-grid mb-4">
+            <!-- Left: Skill-by-Skill Evidence Matrix -->
+            <div class="card-light-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color-light);">
+                    <div>
+                        <h3 class="panel-title-clean">Skill-by-Skill Evidence Matrix</h3>
+                        <p class="panel-sub-text">Citations from resume matched against submitted practical verification</p>
+                    </div>
+                    <span class="status-pill-modern pill-high" style="font-size: 0.74rem;">
+                        <i class="fa-solid fa-check-double"></i> Verified Evidence
+                    </span>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="light-saas-table" style="font-size: 0.82rem;">
+                        <thead>
+                            <tr>
+                                <th style="width: 140px;">Skill</th>
+                                <th style="width: 150px;">Practical Status</th>
+                                <th style="width: 100px;">Score</th>
+                                <th>Evidence Citation</th>
+                            </tr>
+                        </thead>
+                        <tbody id="skillEvidenceTableBody">
+                            {% if simulation.results and simulation.results.skill_evaluations %}
+                                {% for s in simulation.results.skill_evaluations %}
+                                    <tr>
+                                        <td><strong style="color: var(--color-slate-heading);">${s.skill}</strong></td>
+                                        <td>
+                                            <span class="status-pill-modern {% if 'Verified' in s.practical_status %}pill-high{% else %}pill-moderate{% endif %}">
+                                                {{ s.practical_status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <strong style="color: var(--color-teal);">{{ s.verified_score }}%</strong>
+                                        </td>
+                                        <td style="font-size: 0.78rem; color: var(--color-slate-body); line-height: 1.45;">
+                                            <span style="font-style: italic;">"{{ s.evidence_quote }}"</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4" style="color: var(--color-slate-muted);">
+                                        Run the job simulation to generate empirical skill evidence.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right: Measurable Criteria Scores & Recruiter Decision Support -->
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <!-- Rubric Performance Breakdown -->
+                <div class="card-light-panel">
+                    <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--color-slate-heading); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-chart-column text-teal"></i> Measurable Rubric Breakdown
+                    </h4>
+
+                    <div style="margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 4px;">
+                            <span style="color: var(--color-slate-title); font-weight: 700;">Implementation Logic</span>
+                            <strong id="rubricImplScore">{{ simulation.results.implementation_score|default(0.0) }}%</strong>
+                        </div>
+                        <div class="score-track-modern">
+                            <div class="score-fill-modern fill-high" id="rubricImplBar" style="width: {{ simulation.results.implementation_score|default(0.0) }}%;"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 4px;">
+                            <span style="color: var(--color-slate-title); font-weight: 700;">Edge-Case &amp; Error Resilience</span>
+                            <strong id="rubricEdgeScore">{{ simulation.results.edge_case_score|default(0.0) }}%</strong>
+                        </div>
+                        <div class="score-track-modern">
+                            <div class="score-fill-modern fill-moderate" id="rubricEdgeBar" style="width: {{ simulation.results.edge_case_score|default(0.0) }}%;"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 4px;">
+                            <span style="color: var(--color-slate-title); font-weight: 700;">Architectural Reasoning</span>
+                            <strong id="rubricReasonScore">{{ simulation.results.reasoning_score|default(0.0) }}%</strong>
+                        </div>
+                        <div class="score-track-modern">
+                            <div class="score-fill-modern fill-high" id="rubricReasonBar" style="width: {{ simulation.results.reasoning_score|default(0.0) }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suggested Recruiter Interview Questions -->
+                <div class="card-light-panel">
+                    <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--color-slate-heading); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-lightbulb text-blue"></i> Suggested Interview Questions
+                    </h4>
+                    <p style="font-size: 0.78rem; color: var(--color-slate-muted); margin-bottom: 10px;">
+                        Probe questions generated from candidate submission gaps &amp; technical trade-offs:
+                    </p>
+
+                    <div id="suggestedQuestionsList" style="display: flex; flex-direction: column; gap: 8px;">
+                        {% if simulation.results and simulation.results.suggested_questions %}
+                            {% for q in simulation.results.suggested_questions %}
+                                <div style="background: var(--color-ice-white); border-left: 3px solid var(--color-arctic-blue); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--color-slate-heading); line-height: 1.45;">
+                                    {{ q }}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div style="font-size: 0.8rem; color: var(--color-slate-muted); font-style: italic;">
+                                Interview questions will populate once simulation evaluation is completed.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recruiter Decision Support & Disclaimers -->
+        <div class="card-light-panel mb-4" style="border: 1px solid var(--border-color); background: #FFFFFF;">
+            <div style="display: flex; align-items: flex-start; gap: 14px;">
+                <div class="kpi-icon-pill icon-teal" style="flex-shrink: 0;"><i class="fa-solid fa-handshake-angle"></i></div>
+                <div>
+                    <h4 style="font-size: 0.92rem; font-weight: 800; color: var(--color-slate-title); margin: 0 0 4px;">
+                        Decision Support Recommendation (Recruiter Discretion Required)
+                    </h4>
+                    <p id="decisionSummaryText" style="font-size: 0.84rem; color: var(--color-slate-body); line-height: 1.5; margin: 0 0 8px;">
+                        {% if simulation.results and simulation.results.decision_summary %}
+                            {{ simulation.results.decision_summary }}
+                        {% else %}
+                            Talent Twin assessment results provide empirical decision support. Treat practical scores as inputs for human recruiter evaluation, not automatic hiring decisions.
+                        {% endif %}
+                    </p>
+                    <div style="display: flex; gap: 16px; font-size: 0.76rem; color: var(--color-slate-muted); flex-wrap: wrap;">
+                        <span><i class="fa-solid fa-check text-teal"></i> Evaluation Engine: <strong id="engineLabel">{{ simulation.results.evaluation_engine|default('Deterministic AST Heuristic Engine') }}</strong></span>
+                        <span><i class="fa-solid fa-shield text-blue"></i> Candidate data isolated under strict privacy controls</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Action Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <button type="button" class="btn-clear-filters" onclick="switchTwinTab('challenge')" style="padding: 9px 18px;">
+                <i class="fa-solid fa-pen-to-square"></i> Edit &amp; Re-run Simulation
+            </button>
+            <div style="display: flex; gap: 10px;">
+                <a href="{{ url_for('talent_twin_compare', job_id=job.id) }}" class="btn-nav-demo">
+                    <i class="fa-solid fa-users-viewfinder"></i> Compare All Candidates
+                </a>
+                <a href="{{ url_for('view_results', job_id=job.id) }}" class="btn-nav-screening">
+                    <i class="fa-solid fa-list-ol"></i> Return to Leaderboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const CANDIDATE_ID = {{ candidate.id }};
+    const STARTER_CODE = {{ challenge.starter_code|tojson }};
+
+    function switchTwinTab(tab) {
+        const secChallenge = document.getElementById('twinSectionChallenge');
+        const secDashboard = document.getElementById('twinSectionDashboard');
+        const btnChallenge = document.getElementById('tabBtnChallenge');
+        const btnDashboard = document.getElementById('tabBtnDashboard');
+
+        if (tab === 'dashboard') {
+            secChallenge.style.display = 'none';
+            secDashboard.style.display = 'block';
+            btnChallenge.classList.remove('active');
+            btnDashboard.classList.add('active');
+        } else {
+            secChallenge.style.display = 'block';
+            secDashboard.style.display = 'none';
+            btnChallenge.classList.add('active');
+            btnDashboard.classList.remove('active');
+        }
+    }
+
+    function resetEditorCode() {
+        if (confirm("Reset editor to original starter template?")) {
+            document.getElementById('solutionCodeEditor').value = STARTER_CODE;
+        }
+    }
+
+    async function submitSimulationEvaluation() {
+        const btn = document.getElementById('btnSubmitSimulation');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Evaluating Simulation...';
+
+        const codeVal = document.getElementById('solutionCodeEditor').value;
+        const q1Val = document.getElementById('input_q1') ? document.getElementById('input_q1').value : '';
+        const q2Val = document.getElementById('input_q2') ? document.getElementById('input_q2').value : '';
+
+        try {
+            const resp = await fetch(`/api/talent-twin/evaluate/${CANDIDATE_ID}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    code: codeVal,
+                    answers: { q1: q1Val, q2: q2Val }
+                })
+            });
+
+            const data = await resp.json();
+            if (data.status === 'success' && data.results) {
+                const res = data.results;
+
+                // Update Top Bar Indicators
+                document.getElementById('topPracticalScore').innerText = `${res.practical_score}%`;
+                document.getElementById('topPracticalBadge').innerText = res.confidence_badge;
+
+                // Update Dashboard KPIs
+                document.getElementById('dashPracticalScore').innerText = `${res.practical_score}%`;
+                document.getElementById('dashConfidenceScore').innerText = `${res.confidence_score}%`;
+                document.getElementById('dashConfidenceBadge').innerText = res.confidence_badge;
+
+                const resumeScore = {{ candidate.match_score }};
+                const delta = (res.practical_score - resumeScore).toFixed(1);
+                document.getElementById('dashCorrelationDelta').innerText = (delta >= 0 ? `+${delta}%` : `${delta}%`);
+
+                // Update Rubric Bars
+                document.getElementById('rubricImplScore').innerText = `${res.implementation_score}%`;
+                document.getElementById('rubricImplBar').style.width = `${res.implementation_score}%`;
+                document.getElementById('rubricEdgeScore').innerText = `${res.edge_case_score}%`;
+                document.getElementById('rubricEdgeBar').style.width = `${res.edge_case_score}%`;
+                document.getElementById('rubricReasonScore').innerText = `${res.reasoning_score}%`;
+                document.getElementById('rubricReasonBar').style.width = `${res.reasoning_score}%`;
+
+                // Update Skill Evidence Table
+                if (res.skill_evaluations && res.skill_evaluations.length > 0) {
+                    const tbody = document.getElementById('skillEvidenceTableBody');
+                    tbody.innerHTML = '';
+                    res.skill_evaluations.forEach(s => {
+                        const tr = document.createElement('tr');
+                        const isHigh = s.practical_status.includes('Verified');
+                        tr.innerHTML = `
+                            <td><strong style="color: var(--color-slate-heading);">${s.skill}</strong></td>
+                            <td><span class="status-pill-modern ${isHigh ? 'pill-high' : 'pill-moderate'}">${s.practical_status}</span></td>
+                            <td><strong style="color: var(--color-teal);">${s.verified_score}%</strong></td>
+                            <td style="font-size: 0.78rem; color: var(--color-slate-body); line-height: 1.45;"><span style="font-style: italic;">"${s.evidence_quote}"</span></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // Update Suggested Questions
+                if (res.suggested_questions && res.suggested_questions.length > 0) {
+                    const qBox = document.getElementById('suggestedQuestionsList');
+                    qBox.innerHTML = '';
+                    res.suggested_questions.forEach(q => {
+                        const div = document.createElement('div');
+                        div.style.cssText = "background: var(--color-ice-white); border-left: 3px solid var(--color-arctic-blue); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--color-slate-heading); line-height: 1.45;";
+                        div.innerText = q;
+                        qBox.appendChild(div);
+                    });
+                }
+
+                // Update Decision Text
+                if (res.decision_summary) {
+                    document.getElementById('decisionSummaryText').innerText = res.decision_summary;
+                }
+                if (res.evaluation_engine) {
+                    document.getElementById('engineLabel').innerText = res.evaluation_engine;
+                }
+
+                // Auto switch to dashboard tab
+                switchTwinTab('dashboard');
+            } else {
+                alert("Evaluation error: " + (data.message || 'Unknown response'));
+            }
+        } catch (err) {
+            alert("Error connecting to evaluation API: " + err);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    }
+</script>
+{% endblock %}

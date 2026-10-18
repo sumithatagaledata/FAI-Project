@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+
+{% block title %}Talent Twin Recruiter Comparison — {{ job.job_title }} — Talentora AI{% endblock %}
+
+{% block page_title %}Talent Twin — Dual-Metric Candidate Comparison{% endblock %}
+
+{% block content %}
+<div class="talent-twin-compare-container">
+    <!-- Top Breadcrumb Bar -->
+    <div class="card-light-panel mb-4" style="padding: 12px 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <a href="{{ url_for('view_results', job_id=job.id) }}" class="link-clean">
+                    <i class="fa-solid fa-arrow-left"></i> Screening Leaderboard
+                </a>
+                <span style="color: var(--color-slate-light);">|</span>
+                <span style="font-size: 0.85rem; color: var(--color-slate-muted);">Position: <strong style="color: var(--color-slate-heading);">{{ job.job_title }}</strong></span>
+            </div>
+            <div>
+                <span class="status-pill-modern pill-high" style="font-size: 0.74rem;">
+                    <i class="fa-solid fa-scale-balanced"></i> Dual-Metric Evaluation Model
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparative KPI Summary Cards -->
+    <div class="kpi-slots-grid mb-4">
+        <div class="kpi-card-clean">
+            <div class="kpi-icon-pill icon-blue"><i class="fa-solid fa-users"></i></div>
+            <div>
+                <span class="kpi-label-muted">Screened Candidates</span>
+                <div class="kpi-stat-bold">{{ total_candidates }}</div>
+            </div>
+        </div>
+
+        <div class="kpi-card-clean">
+            <div class="kpi-icon-pill icon-teal"><i class="fa-solid fa-circle-check"></i></div>
+            <div>
+                <span class="kpi-label-muted">Simulations Completed</span>
+                <div class="kpi-stat-bold" style="color: var(--color-teal);">{{ completed_count }} / {{ total_candidates }}</div>
+            </div>
+        </div>
+
+        <div class="kpi-card-clean">
+            <div class="kpi-icon-pill icon-green"><i class="fa-solid fa-chart-line"></i></div>
+            <div>
+                <span class="kpi-label-muted">Avg. Practical Score</span>
+                <div class="kpi-stat-bold" style="color: #0F766E;">
+                    {% if completed_count > 0 %}{{ avg_practical }}%{% else %}N/A{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="kpi-card-clean">
+            <div class="kpi-icon-pill icon-indigo"><i class="fa-solid fa-shield-halved"></i></div>
+            <div>
+                <span class="kpi-label-muted">Decision Protocol</span>
+                <div class="kpi-stat-bold" style="font-size: 1.15rem; color: var(--color-arctic-blue);">Evidence Assist</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Table Panel -->
+    <div class="card-light-panel">
+        <div class="table-toolbar-flex" style="margin-bottom: 18px;">
+            <div>
+                <h3 class="panel-title-clean" style="font-size: 1.2rem;">Recruiter Dual-Metric Comparison Board</h3>
+                <p class="panel-sub-text">Compare candidate paper qualifications against verified job simulation performance without altering baseline rankings.</p>
+            </div>
+
+            <!-- Toolbar Filters -->
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div style="position: relative; width: 240px;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--color-slate-light); font-size: 0.85rem;"></i>
+                    <input type="text" id="compareSearchInput" class="light-table-search" placeholder="Search candidate..." onkeyup="filterCompareTable()" style="padding-left: 32px; font-size: 0.85rem; padding-top: 7px; padding-bottom: 7px;">
+                </div>
+
+                <select id="simStatusFilter" class="light-select-control" onchange="filterCompareTable()" style="font-size: 0.85rem; padding: 7px 12px;">
+                    <option value="">All Simulation Statuses</option>
+                    <option value="completed">Completed Simulations</option>
+                    <option value="pending">Pending Simulations</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Responsive Comparison Table -->
+        <div style="overflow-x: auto;">
+            <table class="light-saas-table" id="compareTable">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th style="min-width: 220px;">Candidate</th>
+                        <th style="width: 150px;">Resume Match (NLP)</th>
+                        <th style="width: 160px;">Talent Twin (Practical)</th>
+                        <th style="width: 130px;">Score Delta</th>
+                        <th style="width: 160px;">Evidence Confidence</th>
+                        <th class="text-right" style="width: 160px;">Simulation Action</th>
+                    </tr>
+                </thead>
+                <tbody id="compareTableBody">
+                    {% for c in candidates %}
+                    <tr class="compare-row" 
+                        data-name="{{ c.name|lower }}" 
+                        data-status="{% if c.sim_completed %}completed{% else %}pending{% endif %}">
+                        <!-- Rank -->
+                        <td class="col-rank">
+                            {% if loop.index == 1 %}
+                                <span class="rank-badge-medal rank-1"><i class="fa-solid fa-crown"></i> 1</span>
+                            {% elif loop.index == 2 %}
+                                <span class="rank-badge-medal rank-2"><i class="fa-solid fa-medal"></i> 2</span>
+                            {% elif loop.index == 3 %}
+                                <span class="rank-badge-medal rank-3"><i class="fa-solid fa-award"></i> 3</span>
+                            {% else %}
+                                <span class="rank-badge-medal rank-default">#{{ loop.index }}</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Candidate -->
+                        <td class="col-candidate">
+                            <div class="cand-info-flex">
+                                <div class="cand-avatar avatar-tint-{{ loop.index % 5 }}">
+                                    {{ c.initials }}
+                                </div>
+                                <div class="cand-meta">
+                                    <a href="{{ url_for('candidate_detail', candidate_id=c.id) }}" class="cand-name-title">
+                                        {{ c.name }}
+                                    </a>
+                                    <div class="cand-contact-row">
+                                        <span class="cand-contact-item"><i class="fa-regular fa-envelope"></i> {{ c.email }}</span>
+                                        <span class="cand-contact-item"><i class="fa-solid fa-briefcase"></i> {{ c.experience_years|format_exp }} yrs</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Resume Match Score -->
+                        <td class="col-score">
+                            <div class="cand-score-box">
+                                <div class="cand-score-header">
+                                    <span class="cand-score-percent text-blue">{{ c.match_score }}%</span>
+                                </div>
+                                <div class="score-track-modern">
+                                    <div class="score-fill-modern fill-high" style="width: {{ c.match_score }}%;"></div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Talent Twin Practical Performance -->
+                        <td class="col-score">
+                            {% if c.sim_completed %}
+                                <div class="cand-score-box">
+                                    <div class="cand-score-header">
+                                        <span class="cand-score-percent text-teal">{{ c.practical_score }}%</span>
+                                    </div>
+                                    <div class="score-track-modern">
+                                        <div class="score-fill-modern fill-high" style="width: {{ c.practical_score }}%; background: var(--gradient-teal);"></div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <span class="status-pill-modern pill-moderate" style="font-size: 0.74rem;">
+                                    <i class="fa-solid fa-clock"></i> Pending Run
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Score Delta -->
+                        <td>
+                            {% if c.sim_completed %}
+                                {% set delta = c.practical_score - c.match_score %}
+                                {% if delta > 0 %}
+                                    <span style="font-weight: 800; font-size: 0.84rem; color: var(--color-teal);">
+                                        <i class="fa-solid fa-arrow-trend-up"></i> +{{ delta|round(1) }}%
+                                    </span>
+                                {% elif delta < 0 %}
+                                    <span style="font-weight: 800; font-size: 0.84rem; color: #E11D48;">
+                                        <i class="fa-solid fa-arrow-trend-down"></i> {{ delta|round(1) }}%
+                                    </span>
+                                {% else %}
+                                    <span style="font-weight: 700; font-size: 0.84rem; color: var(--color-slate-muted);">0.0%</span>
+                                {% endif %}
+                            {% else %}
+                                <span style="font-size: 0.8rem; color: var(--color-slate-light);">--</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Evidence Confidence -->
+                        <td>
+                            {% if c.sim_completed and c.confidence_badge %}
+                                <span class="status-pill-modern {% if 'High' in c.confidence_badge %}pill-high{% else %}pill-moderate{% endif %}" style="font-size: 0.74rem;">
+                                    <i class="fa-solid fa-certificate"></i> {{ c.confidence_badge }}
+                                </span>
+                            {% else %}
+                                <span style="font-size: 0.78rem; color: var(--color-slate-muted);">Awaiting Simulation</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Action -->
+                        <td class="text-right">
+                            <a href="{{ url_for('talent_twin_view', candidate_id=c.id) }}" class="btn-twin-action {% if c.sim_completed %}is-completed{% endif %}">
+                                {% if c.sim_completed %}
+                                    <i class="fa-solid fa-chart-line"></i> View Evidence
+                                {% else %}
+                                    <i class="fa-solid fa-play"></i> Run Simulation
+                                {% endif %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recruiter Decision Support Notice -->
+    <div class="card-light-panel mt-4" style="border: 1px solid var(--border-color); background: #FFFFFF; padding: 16px 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <i class="fa-solid fa-circle-info" style="color: var(--color-teal); font-size: 1.2rem;"></i>
+                <span style="font-size: 0.82rem; color: var(--color-slate-body);">
+                    <strong>Human-in-the-Loop AI Recruiting:</strong> Talent Twin scores separate claimed resume qualifications from empirical practical demonstration. Original ranking algorithms remain deterministic and unaltered.
+                </span>
+            </div>
+            <a href="{{ url_for('view_results', job_id=job.id) }}" class="link-clean" style="font-weight: 700;">
+                Back to Leaderboard <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filterCompareTable() {
+        const query = (document.getElementById('compareSearchInput').value || '').toLowerCase();
+        const statusVal = document.getElementById('simStatusFilter').value;
+        const rows = document.querySelectorAll('.compare-row');
+
+        rows.forEach(row => {
+            const name = row.getAttribute('data-name') || '';
+            const status = row.getAttribute('data-status') || '';
+
+            const matchesQuery = !query || name.includes(query);
+            const matchesStatus = !statusVal || status === statusVal;
+
+            if (matchesQuery && matchesStatus) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+</script>
+{% endblock %}

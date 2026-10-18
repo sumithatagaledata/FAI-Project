@@ -182,6 +182,84 @@ class TestResumeScreeningSystem(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertIn(b'Screening History', res.data)
 
+    def test_08_talent_twin_engine_and_routes(self):
+        import talent_twin_engine
+
+        # 1. Skill evidence analysis
+        sample_cand = {
+            "name": "Alex Mercer",
+            "matched_skills": ["Python", "SQL"],
+            "missing_skills": ["Docker"],
+            "additional_skills": ["Flask"],
+            "raw_text": "Built scalable Python API pipelines processing 5M events daily with PostgreSQL databases.",
+            "projects": "Engineered microservices in Python with high performance.",
+            "certifications": "Python Certified Expert"
+        }
+        sample_job = {
+            "job_title": "Senior Python Engineer",
+            "required_skills": ["Python", "SQL", "Docker"],
+            "job_description": "We need a Senior Python Engineer experienced in microservices, SQL databases, and Docker."
+        }
+        evidence = talent_twin_engine.analyze_skill_evidence(sample_cand, sample_job)
+        self.assertGreaterEqual(evidence["demonstrated_count"], 1)
+        self.assertEqual(evidence["demonstrated"][0]["skill"], "Python")
+
+        # 2. Challenge generation
+        challenge = talent_twin_engine.generate_job_challenge(sample_cand, sample_job)
+        self.assertEqual(challenge["task_type"], "coding")
+        self.assertIn("starter_code", challenge)
+        self.assertIn("rubric", challenge)
+        self.assertGreaterEqual(len(challenge["follow_up_questions"]), 2)
+
+        # 3. Functional Evaluation
+        submission = {
+            "code": challenge["starter_code"] + "\n        # Implementation\n        if client_id:\n            return True\n",
+            "answers": {
+                "q1": "We use Redis Lua scripts for distributed concurrency locks across server nodes.",
+                "q2": "We configure LRU eviction with sliding window TTL memory caps to prevent leakage."
+            }
+        }
+        eval_res = talent_twin_engine.evaluate_simulation(challenge, submission, sample_cand, sample_job)
+        self.assertGreater(eval_res["practical_score"], 40.0)
+        self.assertIn("confidence_badge", eval_res)
+        self.assertGreaterEqual(len(eval_res["skill_evaluations"]), 1)
+        self.assertGreaterEqual(len(eval_res["suggested_questions"]), 1)
+
+        # 4. Flask Routes
+        client = app.test_client()
+        jobs = database.get_all_jobs()
+        self.assertGreater(len(jobs), 0)
+        job_id = jobs[0]["id"]
+        cands = database.get_candidates_for_job(job_id)
+        self.assertGreater(len(cands), 0)
+        cand_id = cands[0]["id"]
+
+        # GET /talent-twin/<candidate_id>
+        res = client.get(f'/talent-twin/{cand_id}')
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(b'Talent Twin', res.data)
+        self.assertIn(b'Interactive Job Simulation', res.data)
+
+        # POST /api/talent-twin/evaluate/<candidate_id>
+        eval_api_res = client.post(
+            f'/api/talent-twin/evaluate/{cand_id}',
+            json={"code": challenge["starter_code"], "answers": {"q1": "Testing locks", "q2": "Testing LRU"}}
+        )
+        self.assertEqual(eval_api_res.status_code, 200)
+        eval_data = json.loads(eval_api_res.data)
+        self.assertEqual(eval_data["status"], "success")
+        self.assertIn("practical_score", eval_data)
+
+        # GET /talent-twin/compare/<job_id>
+        comp_res = client.get(f'/talent-twin/compare/{job_id}')
+        self.assertEqual(comp_res.status_code, 200)
+        self.assertIn(b'Dual-Metric Candidate Comparison', comp_res.data)
+
+        # POST /api/talent-twin/reset/<candidate_id>
+        reset_res = client.post(f'/api/talent-twin/reset/{cand_id}')
+        self.assertEqual(reset_res.status_code, 200)
+
 
 if __name__ == '__main__':
     unittest.main()
+

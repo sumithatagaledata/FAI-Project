@@ -105,6 +105,28 @@ def init_db():
         )
     """)
 
+    # 5. Talent Twin Simulations Table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS talent_twin_simulations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            candidate_id INTEGER NOT NULL UNIQUE,
+            job_id INTEGER NOT NULL,
+            task_type TEXT,
+            challenge_title TEXT,
+            challenge_json TEXT,
+            submission_json TEXT,
+            results_json TEXT,
+            practical_score REAL DEFAULT 0.0,
+            confidence_score REAL DEFAULT 0.0,
+            confidence_badge TEXT,
+            status TEXT DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            completed_at TIMESTAMP,
+            FOREIGN KEY (candidate_id) REFERENCES candidates (id) ON DELETE CASCADE,
+            FOREIGN KEY (job_id) REFERENCES jobs (id) ON DELETE CASCADE
+        )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -288,6 +310,7 @@ def delete_candidate(candidate_id: int) -> bool:
     cursor = conn.cursor()
     cursor.execute("DELETE FROM candidates WHERE id = ?", (candidate_id,))
     cursor.execute("DELETE FROM candidate_skills WHERE candidate_id = ?", (candidate_id,))
+    cursor.execute("DELETE FROM talent_twin_simulations WHERE candidate_id = ?", (candidate_id,))
     conn.commit()
     conn.close()
     return True
@@ -299,6 +322,7 @@ def delete_job(job_id: int) -> bool:
     cursor = conn.cursor()
     cursor.execute("DELETE FROM candidates WHERE job_id = ?", (job_id,))
     cursor.execute("DELETE FROM screening_sessions WHERE job_id = ?", (job_id,))
+    cursor.execute("DELETE FROM talent_twin_simulations WHERE job_id = ?", (job_id,))
     cursor.execute("DELETE FROM jobs WHERE id = ?", (job_id,))
     conn.commit()
     conn.close()
@@ -309,6 +333,7 @@ def clear_all_data() -> bool:
     """Resets the entire database for a fresh demonstration."""
     conn = get_db_connection()
     cursor = conn.cursor()
+    cursor.execute("DELETE FROM talent_twin_simulations")
     cursor.execute("DELETE FROM candidate_skills")
     cursor.execute("DELETE FROM candidates")
     cursor.execute("DELETE FROM screening_sessions")
@@ -316,6 +341,146 @@ def clear_all_data() -> bool:
     conn.commit()
     conn.close()
     return True
+
+
+def get_talent_twin_simulation(candidate_id: int) -> Optional[Dict[str, Any]]:
+    """Fetches the Talent Twin simulation record for a candidate."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM talent_twin_simulations WHERE candidate_id = ?", (candidate_id,))
+    row = cursor.fetchone()
+    conn.close()
+    if not row:
+        return None
+    d = dict(row)
+    d["challenge"] = json.loads(d["challenge_json"]) if d.get("challenge_json") else {}
+    d["submission"] = json.loads(d["submission_json"]) if d.get("submission_json") else {}
+    d["results"] = json.loads(d["results_json"]) if d.get("results_json") else {}
+    return d
+
+
+def save_talent_twin_challenge(candidate_id: int, job_id: int, challenge_data: Dict[str, Any]) -> int:
+    """Inserts or updates the initial Talent Twin challenge for a candidate."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    task_type = challenge_data.get("task_type", "coding")
+    challenge_title = challenge_data.get("title", "Job Simulation Challenge")
+    challenge_json = json.dumps(challenge_data)
+
+    cursor.execute("""
+        INSERT INTO talent_twin_simulations (candidate_id, job_id, task_type, challenge_title, challenge_json, status)
+        VALUES (?, ?, ?, ?, ?, 'pending')
+        ON CONFLICT(candidate_id) DO UPDATE SET
+            job_id=excluded.job_id,
+            task_type=excluded.task_type,
+            challenge_title=excluded.challenge_title,
+            challenge_json=excluded.challenge_json
+    """, (candidate_id, job_id, task_type, challenge_title, challenge_json))
+
+    sim_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return sim_id
+
+
+def save_talent_twin_evaluation(
+    candidate_id: int,
+    submission_data: Dict[str, Any],
+    results_data: Dict[str, Any],
+    practical_score: float,
+    confidence_score: float,
+    confidence_badge: str
+) -> bool:
+    """Saves the candidate's simulation submission and intelligence evaluation results."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE talent_twin_simulations
+        SET submission_json = ?,
+            results_json = ?,
+            practical_score = ?,
+            confidence_score = ?,
+            confidence_badge = ?,
+            status = 'completed',
+            completed_at = CURRENT_TIMESTAMP
+        WHERE candidate_id = ?
+    """, (
+        json.dumps(submission_data),
+        json.dumps(results_data),
+        practical_score,
+        confidence_score,
+        confidence_badge,
+        candidate_id
+    ))
+    conn.commit()
+    conn.close()
+    return True
+
+
+def reset_talent_twin_simulation(candidate_id: int) -> bool:
+    """Resets simulation submission and returns it to pending challenge state."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE talent_twin_simulations
+        SET submission_json = NULL,
+            results_json = NULL,
+            practical_score = 0.0,
+            confidence_score = 0.0,
+            confidence_badge = NULL,
+            status = 'pending',
+            completed_at = NULL
+        WHERE candidate_id = ?
+    """, (candidate_id,))
+    conn.commit()
+    conn.close()
+    return True
+
+
+def get_job_talent_twin_comparison(job_id: int) -> List[Dict[str, Any]]:
+    """
+    Returns candidate list joined with their Talent Twin simulation status
+    and practical performance scores for recruiter comparative review.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT c.*, 
+               t.id as sim_id,
+               t.task_type,
+               t.challenge_title,
+               t.practical_score,
+               t.confidence_score,
+               t.confidence_badge,
+               t.status as sim_status,
+               t.completed_at as sim_completed_at
+        FROM candidates c
+        LEFT JOIN talent_twin_simulations t ON c.id = t.candidate_id
+        WHERE c.job_id = ?
+        ORDER BY c.match_score DESC
+    """, (job_id,))
+    rows = cursor.fetchall()
+    conn.close()
+
+    candidates = []
+    for idx, r in enumerate(rows):
+        d = dict(r)
+        d["matched_skills"] = json.loads(d["matched_skills"]) if d.get("matched_skills") else []
+        d["missing_skills"] = json.loads(d["missing_skills"]) if d.get("missing_skills") else []
+        d["additional_skills"] = json.loads(d["additional_skills"]) if d.get("additional_skills") else []
+        d["skills"] = d["matched_skills"] + d["additional_skills"]
+        d["rank"] = idx + 1
+        name_parts = (d.get("name") or "Candidate").split()
+        if len(name_parts) >= 2:
+            d["initials"] = f"{name_parts[0][0]}{name_parts[1][0]}".upper()
+        elif len(name_parts) == 1 and name_parts[0]:
+            d["initials"] = name_parts[0][:2].upper()
+        else:
+            d["initials"] = "CD"
+        d["sim_completed"] = (d.get("sim_status") == "completed")
+        d["practical_score"] = round(float(d.get("practical_score") or 0.0), 1)
+        candidates.append(d)
+    return candidates
 
 
 def get_dashboard_summary() -> Dict[str, Any]:
@@ -329,9 +494,15 @@ def get_dashboard_summary() -> Dict[str, Any]:
     jobs = get_all_jobs()
 
     cursor.execute("""
-        SELECT c.*, j.job_title 
+        SELECT c.*, j.job_title,
+               t.id as sim_id,
+               t.task_type,
+               t.practical_score,
+               t.confidence_badge,
+               t.status as sim_status
         FROM candidates c
         LEFT JOIN jobs j ON c.job_id = j.id
+        LEFT JOIN talent_twin_simulations t ON c.id = t.candidate_id
         ORDER BY c.match_score DESC
     """)
     rows = cursor.fetchall()
@@ -361,6 +532,9 @@ def get_dashboard_summary() -> Dict[str, Any]:
             d["initials"] = name_parts[0][:2].upper()
         else:
             d["initials"] = "CD"
+
+        d["sim_completed"] = (d.get("sim_status") == "completed")
+        d["practical_score"] = round(float(d.get("practical_score") or 0.0), 1)
 
         score = float(d.get("match_score", 0.0))
         total_score += score

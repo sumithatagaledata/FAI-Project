@@ -38,13 +38,61 @@
                 </div>
             </div>
 
-            <div style="text-align: right; background: var(--color-ice-white); padding: 14px 22px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-                <div style="font-size: 2rem; font-weight: 900; color: var(--color-slate-title); line-height: 1;">{{ candidate.match_score }}%</div>
-                <div style="margin-top: 4px;">
-                    <span class="status-pill-light {% if candidate.match_score >= 70 %}pill-strong{% elif candidate.match_score >= 45 %}pill-moderate{% else %}pill-low{% endif %}">
-                        {{ candidate.badge }}
-                    </span>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <div style="text-align: right; background: var(--color-ice-white); padding: 14px 22px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                    <div style="font-size: 2rem; font-weight: 900; color: var(--color-slate-title); line-height: 1;">{{ candidate.match_score }}%</div>
+                    <div style="margin-top: 4px;">
+                        <span class="status-pill-light {% if candidate.match_score >= 70 %}pill-strong{% elif candidate.match_score >= 45 %}pill-moderate{% else %}pill-low{% endif %}">
+                            {{ candidate.badge }}
+                        </span>
+                    </div>
                 </div>
+
+                <a href="{{ url_for('talent_twin_view', candidate_id=candidate.id) }}" class="btn-talent-twin-header">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-microchip" style="font-size: 1.1rem;"></i>
+                        <div style="text-align: left;">
+                            <span style="font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; display: block; opacity: 0.85;">AI Simulation</span>
+                            <span style="font-size: 0.88rem; font-weight: 800; display: block;">
+                                {% if simulation and simulation.status == 'completed' %}
+                                    Talent Twin: {{ simulation.practical_score }}%
+                                {% else %}
+                                    Launch Talent Twin
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-arrow-right" style="font-size: 0.85rem; margin-left: 6px;"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Talent Twin Evidence Intelligence Card -->
+    <div class="card-light-panel mb-4" style="background: linear-gradient(135deg, #F8FAFC 0%, #F0FDFA 100%); border-left: 4px solid var(--color-teal);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div class="kpi-icon-pill icon-teal" style="width: 44px; height: 44px; font-size: 1.1rem;">
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--color-slate-title); margin: 0 0 2px;">
+                        Talent Twin Evidence &amp; Practical Simulation
+                    </h3>
+                    <p style="font-size: 0.82rem; color: var(--color-slate-muted); margin: 0;">
+                        {% if simulation and simulation.status == 'completed' %}
+                            Verified practical score: <strong style="color: var(--color-teal);">{{ simulation.practical_score }}%</strong> &bull; Confidence: <strong>{{ simulation.confidence_badge }}</strong>
+                        {% else %}
+                            Empirical job challenge ready. Test candidate on practical coding, data analysis, or situational problems.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <a href="{{ url_for('talent_twin_view', candidate_id=candidate.id) }}" class="btn-primary-screen" style="padding: 8px 18px; font-size: 0.84rem;">
+                    <i class="fa-solid fa-bolt"></i> {% if simulation and simulation.status == 'completed' %}View Full Intelligence{% else %}Start Simulation{% endif %}
+                </a>
             </div>
         </div>
     </div>

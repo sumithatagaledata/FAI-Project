@@ -63,10 +63,14 @@
                         </div>
                     </div>
 
-                    <div>
-                        <a href="{{ url_for('view_results', job_id=job.id) }}" class="btn-primary-screen" style="text-decoration: none; font-size: 0.88rem; padding: 9px 16px;">
+                    <div style="display: flex; gap: 8px;">
+                        <a href="{{ url_for('view_results', job_id=job.id) }}" class="btn-primary-screen" style="flex: 1; text-decoration: none; font-size: 0.88rem; padding: 9px 14px; justify-content: center;">
                             <span>View Leaderboard</span>
                             <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a href="{{ url_for('talent_twin_compare', job_id=job.id) }}" class="btn-nav-demo" style="text-decoration: none; font-size: 0.84rem; padding: 9px 14px; display: inline-flex; align-items: center; gap: 6px;" title="Compare Candidate Talent Twin Simulations">
+                            <i class="fa-solid fa-users-viewfinder"></i>
+                            <span>Talent Twin</span>
                         </a>
                     </div>
                 </div>

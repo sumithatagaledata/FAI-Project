@@ -30,6 +30,7 @@ from sample_generator import (
     generate_all_sample_resumes, SAMPLE_JOB_TITLE,
     SAMPLE_JOB_DESCRIPTION, SAMPLES_DIR
 )
+import talent_twin_engine
 
 # Base Directories
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -217,7 +218,7 @@ def view_results(job_id: int):
         flash("Screening session not found.", "error")
         return redirect(url_for('dashboard'))
 
-    candidates = database.get_candidates_for_job(job_id)
+    candidates = database.get_job_talent_twin_comparison(job_id)
 
     # DSA Merge Sort to ensure strict ranking
     ranked_candidates = merge_sort(candidates, key=lambda c: c["match_score"], reverse=True)
@@ -256,6 +257,7 @@ def candidate_detail(candidate_id: int):
     - 4-factor scoring breakdown (Skills 50%, Experience 20%, Education 10%, Text Similarity 20%)
     - Explainability Card ("Why this candidate matched")
     - Skill gap chips (Matched, Missing, Bonus)
+    - Talent Twin Evidence & Simulation status
     """
     cand = database.get_candidate_by_id(candidate_id)
     if not cand:
@@ -276,7 +278,151 @@ def candidate_detail(candidate_id: int):
     cand["rank"] = rank
     cand["total_pool"] = len(sorted_cands)
 
-    return render_template('candidate.html', candidate=cand, job=job)
+    # Talent Twin simulation status and evidence analysis
+    sim = database.get_talent_twin_simulation(candidate_id)
+    evidence = talent_twin_engine.analyze_skill_evidence(cand, job)
+
+    return render_template('candidate.html', candidate=cand, job=job, simulation=sim, evidence=evidence)
+
+
+@app.route('/talent-twin/<int:candidate_id>')
+def talent_twin_view(candidate_id: int):
+    """
+    Talent Twin — AI Job Simulation & Evidence Intelligence View:
+    - Generates or retrieves role-specific interactive job challenge
+    - Supports Coding, Data Analysis, and Situational Problem Solving
+    - Displays interactive challenge runner & animated intelligence dashboard
+    """
+    cand = database.get_candidate_by_id(candidate_id)
+    if not cand:
+        flash("Candidate record not found.", "error")
+        return redirect(url_for('dashboard'))
+
+    job = database.get_job(cand["job_id"])
+    if not job:
+        flash("Screening session not found.", "error")
+        return redirect(url_for('dashboard'))
+
+    # Retrieve existing simulation or generate new challenge
+    sim = database.get_talent_twin_simulation(candidate_id)
+    if not sim or not sim.get("challenge"):
+        challenge = talent_twin_engine.generate_job_challenge(cand, job)
+        database.save_talent_twin_challenge(candidate_id, cand["job_id"], challenge)
+        sim = database.get_talent_twin_simulation(candidate_id)
+
+    # Calculate rank
+    all_job_cands = database.get_candidates_for_job(cand["job_id"])
+    sorted_cands = merge_sort(all_job_cands, key=lambda c: c["match_score"], reverse=True)
+    rank = 1
+    for idx, c in enumerate(sorted_cands):
+        if c["id"] == candidate_id:
+            rank = idx + 1
+            break
+    cand["rank"] = rank
+    cand["total_pool"] = len(sorted_cands)
+
+    evidence = talent_twin_engine.analyze_skill_evidence(cand, job)
+
+    return render_template(
+        'talent_twin.html',
+        candidate=cand,
+        job=job,
+        simulation=sim,
+        challenge=sim.get("challenge", {}),
+        results=sim.get("results", {}),
+        evidence=evidence
+    )
+
+
+@app.route('/talent-twin/compare/<int:job_id>')
+def talent_twin_compare(job_id: int):
+    """
+    Recruiter Dual-Metric Comparison Board:
+    Compares candidate resume match scores side-by-side with practical Talent Twin simulation performance.
+    """
+    job = database.get_job(job_id)
+    if not job:
+        flash("Job screening session not found.", "error")
+        return redirect(url_for('history'))
+
+    candidates = database.get_job_talent_twin_comparison(job_id)
+    total_candidates = len(candidates)
+    completed_sims = [c for c in candidates if c.get("sim_completed")]
+    avg_practical = round(sum(c["practical_score"] for c in completed_sims) / len(completed_sims), 1) if completed_sims else 0.0
+
+    return render_template(
+        'talent_twin_compare.html',
+        job=job,
+        candidates=candidates,
+        total_candidates=total_candidates,
+        completed_count=len(completed_sims),
+        avg_practical=avg_practical
+    )
+
+
+@app.route('/api/talent-twin/evaluate/<int:candidate_id>', methods=['POST'])
+def api_evaluate_talent_twin(candidate_id: int):
+    """
+    Evaluates candidate job simulation submission:
+    Runs practical rubrics, computes verified skill scores, confidence indicator, and interview questions.
+    """
+    cand = database.get_candidate_by_id(candidate_id)
+    if not cand:
+        return jsonify({"status": "error", "message": "Candidate not found"}), 404
+
+    job = database.get_job(cand["job_id"])
+    sim = database.get_talent_twin_simulation(candidate_id)
+    if not sim or not sim.get("challenge"):
+        challenge = talent_twin_engine.generate_job_challenge(cand, job)
+        database.save_talent_twin_challenge(candidate_id, cand["job_id"], challenge)
+        sim = database.get_talent_twin_simulation(candidate_id)
+
+    payload = request.get_json() or {}
+    code_submission = payload.get("code", "")
+    answers = payload.get("answers", {})
+
+    submission_data = {
+        "code": code_submission,
+        "answers": answers
+    }
+
+    # Execute functional evaluation
+    results = talent_twin_engine.evaluate_simulation(
+        challenge=sim.get("challenge", {}),
+        submission_data=submission_data,
+        candidate=cand,
+        job=job
+    )
+
+    # Persist evaluation in database
+    database.save_talent_twin_evaluation(
+        candidate_id=candidate_id,
+        submission_data=submission_data,
+        results_data=results,
+        practical_score=results["practical_score"],
+        confidence_score=results["confidence_score"],
+        confidence_badge=results["confidence_badge"]
+    )
+
+    return jsonify({
+        "status": "success",
+        "message": "Talent Twin simulation evaluated successfully!",
+        "results": results,
+        "practical_score": results["practical_score"],
+        "confidence_badge": results["confidence_badge"],
+        "confidence_score": results["confidence_score"]
+    })
+
+
+@app.route('/api/talent-twin/reset/<int:candidate_id>', methods=['POST'])
+def api_reset_talent_twin(candidate_id: int):
+    """Resets candidate simulation to initial unsubmitted state."""
+    database.reset_talent_twin_simulation(candidate_id)
+    return jsonify({
+        "status": "success",
+        "message": "Candidate Talent Twin simulation reset."
+    })
+
 
 
 @app.route('/history')
