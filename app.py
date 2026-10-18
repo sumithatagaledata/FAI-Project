@@ -360,11 +360,11 @@ def talent_twin_compare(job_id: int):
     )
 
 
-@app.route('/api/talent-twin/evaluate/<int:candidate_id>', methods=['POST'])
-def api_evaluate_talent_twin(candidate_id: int):
+@app.route('/api/talent-twin/run-tests/<int:candidate_id>', methods=['POST'])
+def api_run_talent_twin_tests(candidate_id: int):
     """
-    Evaluates candidate job simulation submission:
-    Runs practical rubrics, computes verified skill scores, confidence indicator, and interview questions.
+    Executes candidate code in a safe sandbox against the challenge test cases.
+    Returns test-by-test execution results without persisting or finalizing assessment.
     """
     cand = database.get_candidate_by_id(candidate_id)
     if not cand:
@@ -378,40 +378,94 @@ def api_evaluate_talent_twin(candidate_id: int):
         sim = database.get_talent_twin_simulation(candidate_id)
 
     payload = request.get_json() or {}
-    code_submission = payload.get("code", "")
+    code_submission = (payload.get("code") or "").strip()
+
+    if not code_submission:
+        return jsonify({
+            "status": "error",
+            "message": "Code editor is empty. Please enter your implementation before running test cases."
+        }), 400
+
+    test_run = talent_twin_engine.execute_code_against_tests(
+        code_str=code_submission,
+        challenge=sim.get("challenge", {})
+    )
+
+    return jsonify({
+        "status": "success",
+        "test_run": test_run
+    })
+
+
+@app.route('/api/talent-twin/evaluate/<int:candidate_id>', methods=['POST'])
+def api_evaluate_talent_twin(candidate_id: int):
+    """
+    Evaluates candidate job simulation submission:
+    Validates submission, executes tests, computes empirical rubric scores, and persists results.
+    """
+    cand = database.get_candidate_by_id(candidate_id)
+    if not cand:
+        return jsonify({"status": "error", "message": "Candidate not found"}), 404
+
+    job = database.get_job(cand["job_id"])
+    sim = database.get_talent_twin_simulation(candidate_id)
+    if not sim or not sim.get("challenge"):
+        challenge = talent_twin_engine.generate_job_challenge(cand, job)
+        database.save_talent_twin_challenge(candidate_id, cand["job_id"], challenge)
+        sim = database.get_talent_twin_simulation(candidate_id)
+
+    payload = request.get_json() or {}
+    code_submission = (payload.get("code") or "").strip()
     answers = payload.get("answers", {})
+
+    if not code_submission:
+        return jsonify({
+            "status": "error",
+            "message": "Submission code cannot be empty. Please provide your implementation before evaluating."
+        }), 400
 
     submission_data = {
         "code": code_submission,
         "answers": answers
     }
 
-    # Execute functional evaluation
-    results = talent_twin_engine.evaluate_simulation(
-        challenge=sim.get("challenge", {}),
-        submission_data=submission_data,
-        candidate=cand,
-        job=job
-    )
+    try:
+        # Execute genuine empirical evaluation
+        results = talent_twin_engine.evaluate_simulation(
+            challenge=sim.get("challenge", {}),
+            submission_data=submission_data,
+            candidate=cand,
+            job=job
+        )
 
-    # Persist evaluation in database
-    database.save_talent_twin_evaluation(
-        candidate_id=candidate_id,
-        submission_data=submission_data,
-        results_data=results,
-        practical_score=results["practical_score"],
-        confidence_score=results["confidence_score"],
-        confidence_badge=results["confidence_badge"]
-    )
+        # Persist evaluation in database
+        database.save_talent_twin_evaluation(
+            candidate_id=candidate_id,
+            submission_data=submission_data,
+            results_data=results,
+            practical_score=results["practical_score"],
+            confidence_score=results["confidence_score"],
+            confidence_badge=results["confidence_badge"]
+        )
 
-    return jsonify({
-        "status": "success",
-        "message": "Talent Twin simulation evaluated successfully!",
-        "results": results,
-        "practical_score": results["practical_score"],
-        "confidence_badge": results["confidence_badge"],
-        "confidence_score": results["confidence_score"]
-    })
+        return jsonify({
+            "status": "success",
+            "message": "Talent Twin simulation evaluated successfully!",
+            "results": results,
+            "practical_score": results["practical_score"],
+            "confidence_badge": results["confidence_badge"],
+            "confidence_score": results["confidence_score"]
+        })
+    except ValueError as ve:
+        return jsonify({
+            "status": "error",
+            "message": str(ve)
+        }), 400
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": f"Evaluation processing failed: {str(e)}"
+        }), 500
 
 
 @app.route('/api/talent-twin/reset/<int:candidate_id>', methods=['POST'])

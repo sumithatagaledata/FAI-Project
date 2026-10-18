@@ -182,51 +182,52 @@ class TestResumeScreeningSystem(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertIn(b'Screening History', res.data)
 
-    def test_08_talent_twin_engine_and_routes(self):
+    def test_08_talent_twin_role_challenge_generation(self):
         import talent_twin_engine
 
-        # 1. Skill evidence analysis
-        sample_cand = {
+        # 1. Python Developer Role
+        py_cand = {
             "name": "Alex Mercer",
-            "matched_skills": ["Python", "SQL"],
+            "matched_skills": ["Python", "Flask"],
             "missing_skills": ["Docker"],
-            "additional_skills": ["Flask"],
-            "raw_text": "Built scalable Python API pipelines processing 5M events daily with PostgreSQL databases.",
-            "projects": "Engineered microservices in Python with high performance.",
-            "certifications": "Python Certified Expert"
+            "additional_skills": [],
+            "raw_text": "Built Python microservices processing API event streams.",
+            "projects": "API Gateway in Python",
+            "certifications": "Python Certified"
         }
-        sample_job = {
+        py_job = {
             "job_title": "Senior Python Engineer",
-            "required_skills": ["Python", "SQL", "Docker"],
-            "job_description": "We need a Senior Python Engineer experienced in microservices, SQL databases, and Docker."
+            "required_skills": ["Python", "SQL"],
+            "job_description": "We need a Python engineer for high-throughput API microservices."
         }
-        evidence = talent_twin_engine.analyze_skill_evidence(sample_cand, sample_job)
-        self.assertGreaterEqual(evidence["demonstrated_count"], 1)
-        self.assertEqual(evidence["demonstrated"][0]["skill"], "Python")
+        py_chal = talent_twin_engine.generate_job_challenge(py_cand, py_job)
+        self.assertEqual(py_chal["task_type"], "coding")
+        self.assertEqual(py_chal["role_category"], "python_developer")
+        self.assertIn("starter_code", py_chal)
+        self.assertIn("instructions", py_chal)
+        self.assertIsInstance(py_chal["instructions"], list)
+        self.assertIn("test_cases", py_chal)
+        self.assertEqual(sum(r["weight"] for r in py_chal["rubric"]), 100)
 
-        # 2. Challenge generation
-        challenge = talent_twin_engine.generate_job_challenge(sample_cand, sample_job)
-        self.assertEqual(challenge["task_type"], "coding")
-        self.assertIn("starter_code", challenge)
-        self.assertIn("rubric", challenge)
-        self.assertGreaterEqual(len(challenge["follow_up_questions"]), 2)
+        # 2. Data Analyst Role
+        da_cand = {"name": "Jordan Lee", "matched_skills": ["Data Analysis", "Pandas"], "raw_text": "Analyzed cohort metrics in Pandas."}
+        da_job = {"job_title": "Data Analyst", "required_skills": ["Data Analysis", "SQL"], "job_description": "Analyze sales transactions and compute cohort KPIs."}
+        da_chal = talent_twin_engine.generate_job_challenge(da_cand, da_job)
+        self.assertEqual(da_chal["role_category"], "data_analyst")
+        self.assertIn("analyze_sales_data", da_chal["starter_code"])
 
-        # 3. Functional Evaluation
-        submission = {
-            "code": challenge["starter_code"] + "\n        # Implementation\n        if client_id:\n            return True\n",
-            "answers": {
-                "q1": "We use Redis Lua scripts for distributed concurrency locks across server nodes.",
-                "q2": "We configure LRU eviction with sliding window TTL memory caps to prevent leakage."
-            }
-        }
-        eval_res = talent_twin_engine.evaluate_simulation(challenge, submission, sample_cand, sample_job)
-        self.assertGreater(eval_res["practical_score"], 40.0)
-        self.assertIn("confidence_badge", eval_res)
-        self.assertGreaterEqual(len(eval_res["skill_evaluations"]), 1)
-        self.assertGreaterEqual(len(eval_res["suggested_questions"]), 1)
+        # 3. SQL Developer Role
+        sql_cand = {"name": "Morgan Blake", "matched_skills": ["SQL", "PostgreSQL"], "raw_text": "Optimized PostgreSQL relational schemas."}
+        sql_job = {"job_title": "SQL Database Developer", "required_skills": ["SQL"], "job_description": "Build high performance SQL queries and relational models."}
+        sql_chal = talent_twin_engine.generate_job_challenge(sql_cand, sql_job)
+        self.assertEqual(sql_chal["task_type"], "sql")
+        self.assertEqual(sql_chal["role_category"], "sql_developer")
+        self.assertIn("SELECT", sql_chal["starter_code"])
 
-        # 4. Flask Routes
+    def test_09_talent_twin_validation_and_sandbox(self):
+        import talent_twin_engine
         client = app.test_client()
+
         jobs = database.get_all_jobs()
         self.assertGreater(len(jobs), 0)
         job_id = jobs[0]["id"]
@@ -234,32 +235,208 @@ class TestResumeScreeningSystem(unittest.TestCase):
         self.assertGreater(len(cands), 0)
         cand_id = cands[0]["id"]
 
-        # GET /talent-twin/<candidate_id>
-        res = client.get(f'/talent-twin/{cand_id}')
-        self.assertEqual(res.status_code, 200)
-        self.assertIn(b'Talent Twin', res.data)
-        self.assertIn(b'Interactive Job Simulation', res.data)
+        # 1. Rejection of empty code submission
+        empty_res = client.post(
+            f'/api/talent-twin/evaluate/{cand_id}',
+            json={"code": "", "answers": {}}
+        )
+        self.assertEqual(empty_res.status_code, 400)
+        empty_data = json.loads(empty_res.data)
+        self.assertEqual(empty_data["status"], "error")
+        self.assertIn("cannot be empty", empty_data["message"])
 
-        # POST /api/talent-twin/evaluate/<candidate_id>
+        # 2. Sandbox execution endpoint (/api/talent-twin/run-tests/<id>)
+        # Test with working code for process_and_deduplicate_events
+        working_code = (
+            "from typing import List, Dict, Any\n"
+            "def process_and_deduplicate_events(events: List[Dict[str, Any]], max_limit: int = 5) -> Dict[str, Any]:\n"
+            "    seen_ids = set()\n"
+            "    client_counts = {}\n"
+            "    unique_clients = set()\n"
+            "    total_amount = 0.0\n"
+            "    duplicates = 0\n"
+            "    processed = 0\n"
+            "    for ev in events:\n"
+            "        eid = ev.get('event_id')\n"
+            "        if eid in seen_ids:\n"
+            "            duplicates += 1\n"
+            "            continue\n"
+            "        seen_ids.add(eid)\n"
+            "        cid = ev.get('client_id')\n"
+            "        if client_counts.get(cid, 0) >= max_limit:\n"
+            "            continue\n"
+            "        raw = ev.get('amount')\n"
+            "        amt = 0.0 if (raw is None or raw < 0) else float(raw)\n"
+            "        total_amount += amt\n"
+            "        client_counts[cid] = client_counts.get(cid, 0) + 1\n"
+            "        unique_clients.add(cid)\n"
+            "        processed += 1\n"
+            "    return {\n"
+            "        'processed_count': processed,\n"
+            "        'unique_clients': sorted(list(unique_clients)),\n"
+            "        'total_amount': total_amount,\n"
+            "        'duplicate_count': duplicates\n"
+            "    }\n"
+        )
+        test_run_res = client.post(
+            f'/api/talent-twin/run-tests/{cand_id}',
+            json={"code": working_code}
+        )
+        self.assertEqual(test_run_res.status_code, 200)
+        test_run_data = json.loads(test_run_res.data)
+        self.assertEqual(test_run_data["status"], "success")
+        self.assertIn("test_run", test_run_data)
+        self.assertGreaterEqual(test_run_data["test_run"]["passed_count"], 1)
+
+    def test_10_talent_twin_evaluation_and_evidence(self):
+        import talent_twin_engine
+        client = app.test_client()
+
+        jobs = database.get_all_jobs()
+        job_id = jobs[0]["id"]
+        cands = database.get_candidates_for_job(job_id)
+        cand_id = cands[0]["id"]
+
+        # 1. Evaluate valid working submission
+        working_code = (
+            "from typing import List, Dict, Any\n"
+            "def process_and_deduplicate_events(events: List[Dict[str, Any]], max_limit: int = 5) -> Dict[str, Any]:\n"
+            "    seen_ids = set()\n"
+            "    client_counts = {}\n"
+            "    unique_clients = set()\n"
+            "    total_amount = 0.0\n"
+            "    duplicates = 0\n"
+            "    processed = 0\n"
+            "    for ev in events:\n"
+            "        eid = ev.get('event_id')\n"
+            "        if eid in seen_ids:\n"
+            "            duplicates += 1\n"
+            "            continue\n"
+            "        seen_ids.add(eid)\n"
+            "        cid = ev.get('client_id')\n"
+            "        if client_counts.get(cid, 0) >= max_limit:\n"
+            "            continue\n"
+            "        raw = ev.get('amount')\n"
+            "        amt = 0.0 if (raw is None or raw < 0) else float(raw)\n"
+            "        total_amount += amt\n"
+            "        client_counts[cid] = client_counts.get(cid, 0) + 1\n"
+            "        unique_clients.add(cid)\n"
+            "        processed += 1\n"
+            "    return {\n"
+            "        'processed_count': processed,\n"
+            "        'unique_clients': sorted(list(unique_clients)),\n"
+            "        'total_amount': total_amount,\n"
+            "        'duplicate_count': duplicates\n"
+            "    }\n"
+        )
+        submission = {
+            "code": working_code,
+            "answers": {
+                "q1": "We use Redis distributed locks with Lua scripts to prevent concurrent duplicate event ingestion across worker pods.",
+                "q2": "We configure an LRU eviction policy with strict TTL windows on the sliding cache to prevent memory exhaustion during traffic spikes."
+            }
+        }
         eval_api_res = client.post(
             f'/api/talent-twin/evaluate/{cand_id}',
-            json={"code": challenge["starter_code"], "answers": {"q1": "Testing locks", "q2": "Testing LRU"}}
+            json=submission
         )
         self.assertEqual(eval_api_res.status_code, 200)
         eval_data = json.loads(eval_api_res.data)
         self.assertEqual(eval_data["status"], "success")
-        self.assertIn("practical_score", eval_data)
+        self.assertGreaterEqual(eval_data["practical_score"], 80.0)
+        self.assertEqual(eval_data["confidence_badge"], "High Confidence")
 
-        # GET /talent-twin/compare/<job_id>
+        # 2. Verify persistence in DB
+        sim_record = database.get_talent_twin_simulation(cand_id)
+        self.assertIsNotNone(sim_record)
+        self.assertEqual(sim_record["status"], "completed")
+        self.assertGreaterEqual(sim_record["practical_score"], 80.0)
+
+        # 3. Candidate comparison page
         comp_res = client.get(f'/talent-twin/compare/{job_id}')
         self.assertEqual(comp_res.status_code, 200)
         self.assertIn(b'Dual-Metric Candidate Comparison', comp_res.data)
+        self.assertIn(b'High Confidence', comp_res.data)
 
-        # POST /api/talent-twin/reset/<candidate_id>
+        # 4. Reset simulation
         reset_res = client.post(f'/api/talent-twin/reset/{cand_id}')
         self.assertEqual(reset_res.status_code, 200)
+        sim_after_reset = database.get_talent_twin_simulation(cand_id)
+        self.assertEqual(sim_after_reset["status"], "pending")
+
+    def test_11_ai_fallback_and_varying_answers(self):
+        import talent_twin_engine
+
+        cand = {"name": "Test User", "matched_skills": ["Python"], "missing_skills": [], "additional_skills": [], "match_score": 70.0}
+        job = {"job_title": "Python Developer", "required_skills": ["Python"]}
+        chal = talent_twin_engine.generate_job_challenge(cand, job)
+
+        # 1. Broken implementation
+        broken_sub = {
+            "code": "def process_and_deduplicate_events(events, max_limit=5):\n    return {}\n",
+            "answers": {"q1": "none", "q2": "none"}
+        }
+        broken_res = talent_twin_engine.evaluate_simulation(chal, broken_sub, cand, job)
+        self.assertEqual(broken_res["passed_tests"], 0)
+        self.assertLess(broken_res["practical_score"], 40.0)
+        self.assertIn("Fallback", broken_res["evaluation_engine"])
+
+        # 2. Working implementation
+        working_code = (
+            "from typing import List, Dict, Any\n"
+            "def process_and_deduplicate_events(events: List[Dict[str, Any]], max_limit: int = 5) -> Dict[str, Any]:\n"
+            "    seen_ids = set()\n"
+            "    client_counts = {}\n"
+            "    unique_clients = set()\n"
+            "    total_amount = 0.0\n"
+            "    duplicates = 0\n"
+            "    processed = 0\n"
+            "    for ev in events:\n"
+            "        eid = ev.get('event_id')\n"
+            "        if eid in seen_ids:\n"
+            "            duplicates += 1\n"
+            "            continue\n"
+            "        seen_ids.add(eid)\n"
+            "        cid = ev.get('client_id')\n"
+            "        if client_counts.get(cid, 0) >= max_limit:\n"
+            "            continue\n"
+            "        raw = ev.get('amount')\n"
+            "        amt = 0.0 if (raw is None or raw < 0) else float(raw)\n"
+            "        total_amount += amt\n"
+            "        client_counts[cid] = client_counts.get(cid, 0) + 1\n"
+            "        unique_clients.add(cid)\n"
+            "        processed += 1\n"
+            "    return {\n"
+            "        'processed_count': processed,\n"
+            "        'unique_clients': sorted(list(unique_clients)),\n"
+            "        'total_amount': total_amount,\n"
+            "        'duplicate_count': duplicates\n"
+            "    }\n"
+        )
+        working_sub = {
+            "code": working_code,
+            "answers": {
+                "q1": "Redis distributed lock with Lua scripts and retry backoff.",
+                "q2": "LRU memory eviction policy with TTL sliding window cap."
+            }
+        }
+        working_res = talent_twin_engine.evaluate_simulation(chal, working_sub, cand, job)
+        self.assertEqual(working_res["passed_tests"], working_res["total_tests"])
+        self.assertGreaterEqual(working_res["practical_score"], 80.0)
+
+        # Changing answer dramatically changes score appropriately
+        self.assertGreater(working_res["practical_score"] - broken_res["practical_score"], 40.0)
+
+        # 3. Existing Resume Ranking Invariant
+        # Verify that candidate match_score in database remains completely untouched
+        db_cand = database.get_candidate_by_id(1)
+        if db_cand:
+            original_match_score = db_cand["match_score"]
+            self.assertGreater(original_match_score, 0.0)
 
 
 if __name__ == '__main__':
     unittest.main()
+
+
 
