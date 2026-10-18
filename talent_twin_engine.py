@@ -264,25 +264,17 @@ def generate_job_challenge(candidate: Dict[str, Any], job: Dict[str, Any]) -> Di
                 "def analyze_sales_data(transactions: List[Dict[str, Any]], min_amount: float = 10.0) -> Dict[str, Any]:\n"
                 "    \"\"\"\n"
                 "    Cleans transactions and computes business KPIs.\n"
-                "    \"\"\"\n"
-                "    total_revenue = 0.0\n"
-                "    valid_orders = 0\n"
-                "    customer_totals = {}\n"
                 "    \n"
-                "    # TODO: Iterate through transactions, filter invalid records, and accumulate revenue\n"
-                "    for tx in transactions:\n"
-                "        # Step 1: Check status and amount\n"
-                "        pass\n"
-                "        \n"
-                "    avg_order_value = round(total_revenue / valid_orders, 2) if valid_orders > 0 else 0.0\n"
-                "    high_value_customers = [c for c, amt in customer_totals.items() if amt >= 200.0]\n"
-                "    \n"
-                "    return {\n"
-                "        'total_revenue': round(total_revenue, 2),\n"
-                "        'avg_order_value': avg_order_value,\n"
-                "        'valid_order_count': valid_orders,\n"
-                "        'high_value_customers': sorted(high_value_customers)\n"
+                "    Expected return format:\n"
+                "    {\n"
+                "        'total_revenue': float,\n"
+                "        'avg_order_value': float,\n"
+                "        'valid_order_count': int,\n"
+                "        'high_value_customers': List[str]\n"
                 "    }\n"
+                "    \"\"\"\n"
+                "    # TODO: Implement transaction filtering and KPI aggregation\n"
+                "    pass\n"
             ),
             "follow_up_questions": [
                 {
@@ -432,22 +424,22 @@ def generate_job_challenge(candidate: Dict[str, Any], job: Dict[str, Any]) -> Di
             ],
             "starter_code": (
                 "class CircuitBreaker:\n"
+                "    \"\"\"\n"
+                "    Resilient Circuit Breaker state machine (CLOSED, OPEN, HALF_OPEN).\n"
+                "    \"\"\"\n"
                 "    def __init__(self, failure_threshold: int = 3):\n"
                 "        self.failure_threshold = failure_threshold\n"
                 "        self.failure_count = 0\n"
                 "        self.state = 'CLOSED'  # 'CLOSED', 'OPEN', 'HALF_OPEN'\n\n"
                 "    def can_execute(self) -> bool:\n"
                 "        # TODO: Return True if CLOSED or HALF_OPEN, False if OPEN\n"
-                "        return self.state != 'OPEN'\n\n"
+                "        pass\n\n"
                 "    def record_failure(self):\n"
-                "        self.failure_count += 1\n"
-                "        # TODO: If failure_count >= threshold, set state to 'OPEN'\n"
-                "        if self.failure_count >= self.failure_threshold:\n"
-                "            self.state = 'OPEN'\n\n"
+                "        # TODO: Increment failure count and transition to OPEN if threshold reached\n"
+                "        pass\n\n"
                 "    def record_success(self):\n"
-                "        # TODO: Reset failure count and set state to 'CLOSED'\n"
-                "        self.failure_count = 0\n"
-                "        self.state = 'CLOSED'\n"
+                "        # TODO: Reset failure count and restore state to CLOSED\n"
+                "        pass\n"
             ),
             "follow_up_questions": [
                 {
@@ -466,6 +458,75 @@ def generate_job_challenge(candidate: Dict[str, Any], job: Dict[str, Any]) -> Di
                 {"name": "Edge-Case Transition Resilience", "weight": 25},
                 {"name": "Code Architecture & Modularity", "weight": 20},
                 {"name": "Distributed Scalability", "weight": 15}
+            ]
+        }
+
+    elif role_category == "situational":
+        challenge = {
+            "id": "chal_situational",
+            "role_category": "situational",
+            "task_type": "situational",
+            "task_badge": "Situational & Operations Simulation",
+            "task_icon": "fa-user-tie",
+            "title": f"Scenario Resolution: Critical Service Disruption & Stakeholder Communication ({target_skill})",
+            "target_skill": target_skill,
+            "scenario": (
+                f"As a {job_title} at Talentora, an enterprise client experiences a critical workflow stoppage during peak business hours. "
+                f"You need to assess the situation, execute an immediate containment plan, coordinate cross-functional mitigation, "
+                f"and craft a transparent, professional communication to executive leadership."
+            ),
+            "instructions": [
+                "Step 1: Immediate Triage & Containment Plan — Outline priority actions within the first 15 minutes.",
+                "Step 2: Cross-Functional Alignment — Detail steps to collaborate with technical and operations teams.",
+                "Step 3: Executive Client Communication — Provide the exact draft message to the client leadership.",
+                "Step 4: Root Cause Prevention — Propose 2 systemic safeguards to prevent recurrence."
+            ],
+            "test_data_description": "Scenario Parameters: Enterprise Client Tier-1, SLA response < 30 mins, 400 affected users, partial service degradation.",
+            "test_cases": [
+                {
+                    "name": "Operational Triage & Containment Plan",
+                    "expected_output": "Includes immediate containment protocols, triage steps, and SLA alignment"
+                },
+                {
+                    "name": "Stakeholder Communication & Empathy",
+                    "expected_output": "Drafted communication demonstrating empathy, clear timeline, and executive transparency"
+                },
+                {
+                    "name": "Actionable Preventive Safeguards",
+                    "expected_output": "Actionable post-incident review (PIR) safeguards to prevent recurrence"
+                }
+            ],
+            "starter_code": (
+                "### 1. Immediate Triage & Containment Plan\n"
+                "- Initial assessment:\n"
+                "- Immediate containment action:\n\n"
+                "### 2. Cross-Functional Coordination\n"
+                "- Teams engaged:\n"
+                "- Communication cadence:\n\n"
+                "### 3. Executive Client Communication\n"
+                "Subject: Update regarding service status\n\n"
+                "[Draft your client response here]\n\n"
+                "### 4. Preventive Measures\n"
+                "- Measure 1:\n"
+                "- Measure 2:\n"
+            ),
+            "follow_up_questions": [
+                {
+                    "id": "q1",
+                    "question": "If the client threatens contract cancellation during the outage, how do you de-escalate professionally while keeping your team focused?",
+                    "placeholder": "Explain active listening, SLA guarantees, executive sponsorship escalation..."
+                },
+                {
+                    "id": "q2",
+                    "question": "What key metrics or post-incident review (PIR) indicators would you present to demonstrate operational accountability?",
+                    "placeholder": "Discuss MTTA, MTTR, customer impact timeline, action item ownership..."
+                }
+            ],
+            "rubric": [
+                {"name": "Crisis Triage & Prioritization", "weight": 40},
+                {"name": "Stakeholder Communication & Empathy", "weight": 25},
+                {"name": "Operational Structure & Actionability", "weight": 20},
+                {"name": "Preventive Strategy & Accountability", "weight": 15}
             ]
         }
 
@@ -536,42 +597,17 @@ def generate_job_challenge(candidate: Dict[str, Any], job: Dict[str, Any]) -> Di
                 "def process_and_deduplicate_events(events: List[Dict[str, Any]], max_limit: int = 5) -> Dict[str, Any]:\n"
                 "    \"\"\"\n"
                 "    Deduplicates incoming event batch and applies per-client rate limit.\n"
-                "    \"\"\"\n"
-                "    seen_event_ids = set()\n"
-                "    client_counts = {}\n"
-                "    total_amount = 0.0\n"
-                "    processed_count = 0\n"
-                "    duplicate_count = 0\n"
                 "    \n"
-                "    for event in events:\n"
-                "        event_id = event.get('event_id')\n"
-                "        client_id = event.get('client_id', 'unknown')\n"
-                "        \n"
-                "        # BUG 1 TO FIX: Deduplication check\n"
-                "        if event_id in seen_event_ids:\n"
-                "            duplicate_count += 1\n"
-                "            continue\n"
-                "        seen_event_ids.add(event_id)\n"
-                "        \n"
-                "        # Rate limit check per client\n"
-                "        current_count = client_counts.get(client_id, 0)\n"
-                "        if current_count >= max_limit:\n"
-                "            continue\n"
-                "            \n"
-                "        # BUG 2 TO FIX: Handle None, missing, or negative amounts safely\n"
-                "        raw_amt = event.get('amount')\n"
-                "        amount = float(raw_amt) if (raw_amt is not None and raw_amt > 0) else 0.0\n"
-                "        \n"
-                "        total_amount += amount\n"
-                "        client_counts[client_id] = current_count + 1\n"
-                "        processed_count += 1\n"
-                "        \n"
-                "    return {\n"
-                "        'processed_count': processed_count,\n"
-                "        'duplicate_count': duplicate_count,\n"
-                "        'total_amount': round(total_amount, 2),\n"
-                "        'unique_clients': sorted(list(client_counts.keys()))\n"
+                "    Return format:\n"
+                "    {\n"
+                "        'processed_count': int,\n"
+                "        'duplicate_count': int,\n"
+                "        'total_amount': float,\n"
+                "        'unique_clients': List[str]\n"
                 "    }\n"
+                "    \"\"\"\n"
+                "    # TODO: Implement event deduplication and per-client rate limiting\n"
+                "    pass\n"
             ),
             "follow_up_questions": [
                 {
@@ -625,7 +661,11 @@ def execute_code_against_tests(
     task_type = challenge.get("task_type", "coding")
     test_cases = challenge.get("test_cases", [])
 
-    # Case 1: SQL Query Challenge Execution
+    # Case 1: Situational Problem-Solving Execution
+    if task_type == "situational":
+        return _execute_situational_challenge(code_cleaned, challenge)
+
+    # Case 2: SQL Query Challenge Execution
     if task_type == "sql":
         return _execute_sql_challenge(code_cleaned, challenge)
 
@@ -800,6 +840,61 @@ def _execute_sql_challenge(candidate_sql: str, challenge: Dict[str, Any]) -> Dic
     }
 
 
+def _execute_situational_challenge(candidate_response: str, challenge: Dict[str, Any]) -> Dict[str, Any]:
+    """Validates situational and operational challenge responses against rubric criteria."""
+    text = (candidate_response or "").strip()
+    words = text.split()
+    lower_text = text.lower()
+    test_cases = challenge.get("test_cases", [])
+
+    test_results = []
+    passed_count = 0
+
+    # Test 1: Operational Triage & Containment Plan
+    has_triage = len(words) >= 30 and any(k in lower_text for k in ["triage", "contain", "sla", "priority", "mitigat", "escalat", "incident", "immediate", "assess"])
+    test_results.append({
+        "name": "Operational Triage & Containment Plan",
+        "passed": has_triage,
+        "expected": "Includes immediate containment protocols, triage steps, and SLA alignment",
+        "error": None if has_triage else "Provide thorough triage actions and containment steps (minimum 30 words).",
+        "execution_time_ms": 1.2
+    })
+    if has_triage:
+        passed_count += 1
+
+    # Test 2: Stakeholder Communication & Empathy
+    has_client_comm = any(k in lower_text for k in ["subject:", "dear", "client", "stakeholder", "update", "apolog", "transparen", "regard", "sincerely"])
+    test_results.append({
+        "name": "Stakeholder Communication & Empathy",
+        "passed": has_client_comm,
+        "expected": "Drafted communication demonstrating empathy, clear timeline, and executive transparency",
+        "error": None if has_client_comm else "Include drafted communication to affected stakeholders.",
+        "execution_time_ms": 1.1
+    })
+    if has_client_comm:
+        passed_count += 1
+
+    # Test 3: Actionable Preventive Safeguards
+    has_prevention = any(k in lower_text for k in ["prevent", "safeguard", "root cause", "post-incident", "pir", "recurren", "monitor", "audit"])
+    test_results.append({
+        "name": "Actionable Preventive Safeguards",
+        "passed": has_prevention,
+        "expected": "Actionable post-incident review (PIR) safeguards to prevent recurrence",
+        "error": None if has_prevention else "Propose concrete preventive safeguards and root-cause mitigations.",
+        "execution_time_ms": 1.0
+    })
+    if has_prevention:
+        passed_count += 1
+
+    return {
+        "success": (passed_count == 3),
+        "passed_count": passed_count,
+        "total_count": 3,
+        "test_results": test_results,
+        "error": None if passed_count == 3 else f"{3 - passed_count} evaluation criteria required additional detail."
+    }
+
+
 # ==============================================================================
 # 4. COMPREHENSIVE PRACTICAL EVALUATION ENGINE
 # ==============================================================================
@@ -827,79 +922,115 @@ def evaluate_simulation(
 
     # Validation: reject completely empty submissions
     if not code_submission:
-        raise ValueError("Submission code cannot be empty. Please provide your implementation before evaluating.")
+        raise ValueError("Submission answer cannot be empty. Please provide your implementation before evaluating.")
 
     starter_code = (challenge.get("starter_code") or "").strip()
-    # Check if submission is identical to starter code with all TODOs unaddressed
-    if code_submission == starter_code and "# TODO" in code_submission:
+    # Check if submission is identical to starter code
+    if code_submission == starter_code or (code_submission.endswith("pass") and len(code_submission.splitlines()) <= 5):
         raise ValueError("Submission is identical to the starter template. Please write your solution before running evaluation.")
 
-    # 1. Execute safe test cases
+    task_type = challenge.get("task_type", "coding")
+
+    # 1. Execute safe test cases / evaluation criteria
     test_run = execute_code_against_tests(code_submission, challenge)
     total_tests = test_run.get("total_count", 0)
     passed_tests = test_run.get("passed_count", 0)
 
-    # Component 1: Test Case Correctness (40 points)
-    if total_tests > 0:
-        test_correctness_score = round((passed_tests / total_tests) * 40.0, 1)
+    if task_type == "situational":
+        # Component 1: Operational Triage & Criteria Pass (40 points)
+        test_correctness_score = round((passed_tests / max(1, total_tests)) * 40.0, 1)
+
+        # Component 2: Crisis Containment & Operational Depth (25 points)
+        edge_case_score = 0.0
+        lower_sub = code_submission.lower()
+        if any(k in lower_sub for k in ["sla", "contain", "triage", "priority", "mitigat"]):
+            edge_case_score += 15.0
+        if any(k in lower_sub for k in ["root cause", "post-incident", "pir", "recurren", "audit", "prevent"]):
+            edge_case_score += 10.0
+        edge_case_score = min(25.0, round(edge_case_score, 1))
+
+        # Component 3: Communication Quality & Structure (20 points)
+        code_quality_score = 0.0
+        if any(k in lower_sub for k in ["subject:", "dear", "client", "update", "apolog", "sincerely", "regard"]):
+            code_quality_score += 12.0
+        if "###" in code_submission or "-" in code_submission or len(code_submission.split()) >= 40:
+            code_quality_score += 8.0
+        code_quality_score = min(20.0, round(code_quality_score, 1))
+
+        # Component 4: Reasoning Answers (15 points)
+        reasoning_score = 0.0
+        q1_ans = follow_up_answers.get("q1", "").strip()
+        q2_ans = follow_up_answers.get("q2", "").strip()
+        combined_answers = f"{q1_ans} {q2_ans}".lower()
+        if len(combined_answers.split()) >= 15:
+            reasoning_score += 8.0
+        if any(k in combined_answers for k in ["listen", "de-escalat", "guarantee", "mtta", "mttr", "timeline", "ownership"]):
+            reasoning_score += 7.0
+        reasoning_score = min(15.0, round(reasoning_score, 1))
+
     else:
-        test_correctness_score = 30.0
+        # Standard coding/sql evaluation
+        # Component 1: Test Case Correctness (40 points)
+        if total_tests > 0:
+            test_correctness_score = round((passed_tests / total_tests) * 40.0, 1)
+        else:
+            test_correctness_score = 30.0
 
-    # Component 2: Edge-Case & Error Resilience (25 points)
-    # Checked from AST and test execution: presence of try/except, if conditions, None checks
-    edge_case_score = 0.0
-    if passed_tests > 0:
-        edge_case_score += (passed_tests / max(1, total_tests)) * 15.0
+        # Component 2: Edge-Case & Error Resilience (25 points)
+        edge_case_score = 0.0
+        if passed_tests > 0:
+            edge_case_score += (passed_tests / max(1, total_tests)) * 15.0
 
-    lower_code = code_submission.lower()
-    if any(k in lower_code for k in ["try:", "except", "if not", "is not none", "is none", "raise"]):
-        edge_case_score += 10.0
-    elif any(k in lower_code for k in ["if len", "if amt", "if event"]):
-        edge_case_score += 6.0
+        lower_code = code_submission.lower()
+        if any(k in lower_code for k in ["try:", "except", "if not", "is not none", "is none", "raise"]):
+            edge_case_score += 10.0
+        elif any(k in lower_code for k in ["if len", "if amt", "if event", "if c", "if seen"]):
+            edge_case_score += 6.0
 
-    edge_case_score = min(25.0, round(edge_case_score, 1))
+        edge_case_score = min(25.0, round(edge_case_score, 1))
 
-    # Component 3: Code Structure & AST Quality (20 points)
-    code_quality_score = 0.0
-    try:
-        tree = ast.parse(code_submission)
-        code_quality_score += 10.0  # Valid AST syntax
+        # Component 3: Code Structure & AST Quality (20 points)
+        code_quality_score = 0.0
+        try:
+            tree = ast.parse(code_submission)
+            code_quality_score += 10.0  # Valid AST syntax
 
-        # Check for function/class definition and docstrings
-        has_func = any(isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) for node in ast.walk(tree))
-        if has_func:
-            code_quality_score += 6.0
+            # Check for function/class definition and docstrings
+            has_func = any(isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) for node in ast.walk(tree))
+            if has_func:
+                code_quality_score += 6.0
 
-        # Check for modularity / comprehensions / typing
-        if any(isinstance(node, (ast.ListComp, ast.DictComp, ast.SetComp, ast.AnnAssign)) for node in ast.walk(tree)):
-            code_quality_score += 4.0
-    except Exception:
-        code_quality_score = 4.0  # Syntax failure penalized
+            # Check for modularity / comprehensions / typing
+            if any(isinstance(node, (ast.ListComp, ast.DictComp, ast.SetComp, ast.AnnAssign)) for node in ast.walk(tree)):
+                code_quality_score += 4.0
+        except Exception:
+            code_quality_score = 4.0  # Syntax failure penalized
 
-    code_quality_score = min(20.0, round(code_quality_score, 1))
+        code_quality_score = min(20.0, round(code_quality_score, 1))
 
-    # Component 4: Follow-up Technical Reasoning (15 points)
-    q1_ans = follow_up_answers.get("q1", "").strip()
-    q2_ans = follow_up_answers.get("q2", "").strip()
-    combined_answers = f"{q1_ans} {q2_ans}".lower()
-    answer_words = len(combined_answers.split())
+        # Component 4: Follow-up Technical Reasoning (15 points)
+        q1_ans = follow_up_answers.get("q1", "").strip()
+        q2_ans = follow_up_answers.get("q2", "").strip()
+        combined_answers = f"{q1_ans} {q2_ans}".lower()
+        answer_words = len(combined_answers.split())
 
-    reasoning_score = 0.0
-    if answer_words >= 20:
-        reasoning_score += 6.0
-    if answer_words >= 50:
-        reasoning_score += 5.0
+        reasoning_score = 0.0
+        if answer_words >= 20:
+            reasoning_score += 6.0
+        if answer_words >= 50:
+            reasoning_score += 5.0
 
-    tech_keywords = [
-        "redis", "concurrency", "lock", "thread", "latency", "scale", "streaming",
-        "batch", "generator", "memory", "ttl", "lru", "index", "sharding", "circuit breaker",
-        "window", "partition", "idempotent", "sli", "slo", "failover", "consistency"
-    ]
-    matched_tech = [k for k in tech_keywords if k in combined_answers]
-    if len(matched_tech) >= 1:
-        reasoning_score += 4.0
+        tech_keywords = [
+            "redis", "concurrency", "lock", "thread", "latency", "scale", "streaming",
+            "batch", "generator", "memory", "ttl", "lru", "index", "sharding", "circuit breaker",
+            "window", "partition", "idempotent", "sli", "slo", "failover", "consistency"
+        ]
+        matched_tech = [k for k in tech_keywords if k in combined_answers]
+        if len(matched_tech) >= 1:
+            reasoning_score += 4.0
 
-    reasoning_score = min(15.0, round(reasoning_score, 1))
+        reasoning_score = min(15.0, round(reasoning_score, 1))
+
 
     # Total Practical Score (0.0 - 100.0)
     practical_score = round(

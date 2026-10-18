@@ -229,17 +229,31 @@
                 </div>
             </div>
 
-            <!-- Right: Interactive Code / Query Editor & Safe Sandbox Runner -->
+            <!-- Right: Interactive Challenge Editor & Safe Runner -->
             <div style="display: flex; flex-direction: column; gap: 16px;">
                 <div class="card-light-panel" style="display: flex; flex-direction: column; height: 100%;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color-light);">
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            <span class="code-editor-dot dot-red"></span>
-                            <span class="code-editor-dot dot-yellow"></span>
-                            <span class="code-editor-dot dot-green"></span>
-                            <span style="font-family: monospace; font-size: 0.78rem; font-weight: 700; color: var(--color-slate-heading); margin-left: 6px;">
-                                {% if challenge.task_type == 'sql' %}solution.sql{% else %}solution.py{% endif %}
-                            </span>
+                            {% if challenge.task_type == 'coding' %}
+                                <span class="code-editor-dot dot-red"></span>
+                                <span class="code-editor-dot dot-yellow"></span>
+                                <span class="code-editor-dot dot-green"></span>
+                                <span style="font-family: monospace; font-size: 0.8rem; font-weight: 700; color: var(--color-slate-heading); margin-left: 6px;">
+                                    solution.py <span style="color: var(--color-slate-muted); font-weight: 400;">(Python 3.11)</span>
+                                </span>
+                            {% elif challenge.task_type == 'sql' %}
+                                <span class="code-editor-dot dot-red"></span>
+                                <span class="code-editor-dot dot-yellow"></span>
+                                <span class="code-editor-dot dot-green"></span>
+                                <span style="font-family: monospace; font-size: 0.8rem; font-weight: 700; color: var(--color-slate-heading); margin-left: 6px;">
+                                    solution.sql <span style="color: var(--color-slate-muted); font-weight: 400;">(SQLite 3)</span>
+                                </span>
+                            {% else %}
+                                <i class="fa-solid fa-file-pen text-teal"></i>
+                                <span style="font-size: 0.84rem; font-weight: 800; color: var(--color-slate-heading);">
+                                    Operational Strategy &amp; Response Field
+                                </span>
+                            {% endif %}
                         </div>
                         <div style="display: flex; gap: 8px;">
                             <button type="button" class="btn-clear-filters" onclick="resetEditorCode()" title="Reset to starter template">
@@ -251,21 +265,38 @@
                     <!-- Validation Message Banner -->
                     <div id="editorAlertBox" style="display: none; margin-bottom: 12px; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.82rem;"></div>
 
-                    <!-- Code Editor -->
+                    <!-- Answer Editor / Response Field -->
                     <div class="editor-container">
-                        <textarea id="solutionCodeEditor" class="code-editor-input" spellcheck="false" placeholder="Enter your solution implementation here...">{% if simulation and simulation.submission and simulation.submission.code %}{{ simulation.submission.code }}{% else %}{{ challenge.starter_code }}{% endif %}</textarea>
+                        {% if challenge.task_type == 'situational' %}
+                            <textarea id="solutionCodeEditor" class="twin-textarea" style="min-height: 330px; font-size: 0.88rem; line-height: 1.6;" placeholder="Provide your tactical containment plan, executive communication draft, and preventive measures here...">{% if simulation and simulation.submission and simulation.submission.code %}{{ simulation.submission.code }}{% else %}{{ challenge.starter_code }}{% endif %}</textarea>
+                        {% else %}
+                            <textarea id="solutionCodeEditor" class="code-editor-input" spellcheck="false" placeholder="Write your solution implementation here...">{% if simulation and simulation.submission and simulation.submission.code %}{{ simulation.submission.code }}{% else %}{{ challenge.starter_code }}{% endif %}</textarea>
+                        {% endif %}
                     </div>
 
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 0.76rem; color: var(--color-slate-muted);">
-                        <span><i class="fa-solid fa-microchip text-teal"></i> In-Process Safe Sandbox Execution Environment</span>
-                        <span id="editorStats">{{ challenge.test_cases|length }} automated unit tests configured</span>
+                        <span>
+                            <i class="fa-solid fa-shield-halved text-teal"></i>
+                            {% if challenge.task_type == 'situational' %}
+                                Structured Situational Evaluation Criteria
+                            {% else %}
+                                Safe In-Process Sandbox Execution Environment
+                            {% endif %}
+                        </span>
+                        <span id="editorStats">
+                            {% if challenge.task_type == 'situational' %}
+                                3-Stage Operational Assessment
+                            {% else %}
+                                {{ challenge.test_cases|length }} automated unit tests configured
+                            {% endif %}
+                        </span>
                     </div>
 
                     <!-- Live Sandbox Test Output Drawer -->
                     <div id="testOutputDrawer" style="display: none; margin-top: 14px; background: #0B1120; border: 1px solid #1E293B; border-radius: var(--radius-sm); padding: 12px; color: #F8FAFC;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <span style="font-size: 0.76rem; font-weight: 700; color: var(--color-slate-light); text-transform: uppercase;">
-                                <i class="fa-solid fa-vial-circle-check text-teal"></i> Sandbox Test Results
+                                <i class="fa-solid fa-vial-circle-check text-teal"></i> Challenge Test Results
                             </span>
                             <span id="testSummaryBadge" style="font-size: 0.74rem; font-weight: 700; padding: 2px 8px; border-radius: var(--radius-pill);"></span>
                         </div>
@@ -279,14 +310,14 @@
                         </span>
 
                         <div style="display: flex; gap: 10px;">
-                            <!-- Safe Test Runner -->
-                            <button type="button" class="btn-twin-compare-link" id="btnRunSandboxTests" onclick="runSandboxTests()" style="padding: 9px 18px; font-size: 0.84rem;">
-                                <i class="fa-solid fa-play"></i> Run Test Cases
+                            <!-- Run Challenge -->
+                            <button type="button" class="btn-twin-compare-link" id="btnRunSandboxTests" onclick="runSandboxTests()" style="padding: 10px 20px; font-size: 0.86rem; font-weight: 700;">
+                                <i class="fa-solid fa-play"></i> Run Challenge
                             </button>
 
-                            <!-- Practical Evaluation -->
-                            <button type="button" class="btn-primary-screen" id="btnSubmitSimulation" onclick="submitSimulationEvaluation()" style="padding: 10px 22px; font-size: 0.88rem;">
-                                <i class="fa-solid fa-bolt"></i> Run Practical Evaluation
+                            <!-- Submit Answer -->
+                            <button type="button" class="btn-primary-screen" id="btnSubmitSimulation" onclick="submitSimulationEvaluation()" style="padding: 10px 22px; font-size: 0.88rem; font-weight: 700;">
+                                <i class="fa-solid fa-paper-plane"></i> Submit Answer
                             </button>
                         </div>
                     </div>
@@ -618,11 +649,11 @@
         const btn = document.getElementById('btnRunSandboxTests');
         const originalText = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Running Tests...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Running Challenge...';
 
         const codeVal = (document.getElementById('solutionCodeEditor').value || '').trim();
         if (!codeVal) {
-            showEditorAlert("Please enter your implementation in the editor before running test cases.", 'error');
+            showEditorAlert("Please enter your answer in the response editor before running the challenge.", 'error');
             btn.disabled = false;
             btn.innerHTML = originalText;
             return;
@@ -645,15 +676,15 @@
                 drawer.style.display = 'block';
                 list.innerHTML = '';
 
-                badge.innerText = `${tr.passed_count} of ${tr.total_count} Tests Passed`;
+                badge.innerText = `${tr.passed_count} of ${tr.total_count} Criteria Passed`;
                 if (tr.passed_count === tr.total_count) {
                     badge.style.background = '#059669';
                     badge.style.color = '#FFFFFF';
-                    showEditorAlert("All sandbox test cases passed successfully! You are ready to Run Practical Evaluation.", 'success');
+                    showEditorAlert("All challenge criteria passed successfully! Click 'Submit Answer' to finalize the evaluation report.", 'success');
                 } else {
                     badge.style.background = '#E11D48';
                     badge.style.color = '#FFFFFF';
-                    showEditorAlert(`${tr.total_count - tr.passed_count} test case(s) failed. Review the output below and refine your solution.`, 'error');
+                    showEditorAlert(`${tr.total_count - tr.passed_count} test case(s) failed. Refine your solution and run the challenge again.`, 'error');
                 }
 
                 tr.test_results.forEach(t => {
@@ -669,10 +700,10 @@
                     list.appendChild(row);
                 });
             } else {
-                showEditorAlert(data.message || "Failed to execute test cases.", 'error');
+                showEditorAlert(data.message || "Failed to execute challenge test cases.", 'error');
             }
         } catch (err) {
-            showEditorAlert("Sandbox execution error: " + err, 'error');
+            showEditorAlert("Challenge execution error: " + err, 'error');
         } finally {
             btn.disabled = false;
             btn.innerHTML = originalText;
@@ -684,14 +715,14 @@
         const btn = document.getElementById('btnSubmitSimulation');
         const originalText = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Evaluating Assessment...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting Answer...';
 
         const codeVal = (document.getElementById('solutionCodeEditor').value || '').trim();
         const q1Val = document.getElementById('input_q1') ? document.getElementById('input_q1').value : '';
         const q2Val = document.getElementById('input_q2') ? document.getElementById('input_q2').value : '';
 
         if (!codeVal) {
-            showEditorAlert("Solution code cannot be empty. Please write your implementation before running evaluation.", 'error');
+            showEditorAlert("Submission answer cannot be empty. Please provide your implementation before evaluating.", 'error');
             btn.disabled = false;
             btn.innerHTML = originalText;
             return;

@@ -224,6 +224,14 @@ class TestResumeScreeningSystem(unittest.TestCase):
         self.assertEqual(sql_chal["role_category"], "sql_developer")
         self.assertIn("SELECT", sql_chal["starter_code"])
 
+        # 4. Situational / Operations Role
+        ops_cand = {"name": "Taylor Quinn", "matched_skills": ["Customer Support", "Operations"], "raw_text": "Managed enterprise escalations and SLA incidents."}
+        ops_job = {"job_title": "Customer Support Operations Manager", "required_skills": ["Customer Support"], "job_description": "Manage enterprise client escalations and critical service outages."}
+        ops_chal = talent_twin_engine.generate_job_challenge(ops_cand, ops_job)
+        self.assertEqual(ops_chal["task_type"], "situational")
+        self.assertEqual(ops_chal["role_category"], "situational")
+        self.assertIn("Immediate Triage", ops_chal["starter_code"])
+
     def test_09_talent_twin_validation_and_sandbox(self):
         import talent_twin_engine
         client = app.test_client()
@@ -433,6 +441,54 @@ class TestResumeScreeningSystem(unittest.TestCase):
         if db_cand:
             original_match_score = db_cand["match_score"]
             self.assertGreater(original_match_score, 0.0)
+
+    def test_12_situational_challenge_workflow(self):
+        import talent_twin_engine
+
+        cand = {"name": "Jordan Smith", "matched_skills": ["Customer Support"], "missing_skills": [], "additional_skills": []}
+        job = {"job_title": "Customer Support Operations Lead", "required_skills": ["Customer Support"]}
+        chal = talent_twin_engine.generate_job_challenge(cand, job)
+
+        self.assertEqual(chal["task_type"], "situational")
+        self.assertNotIn("def ", chal["starter_code"])  # No exposed raw Python code
+        self.assertIn("Immediate Triage", chal["starter_code"])
+
+        # 1. Unmodified starter response rejection
+        with self.assertRaises(ValueError):
+            talent_twin_engine.evaluate_simulation(chal, {"code": chal["starter_code"], "answers": {}}, cand, job)
+
+        # 2. Complete valid operational response
+        response_text = (
+            "### 1. Immediate Triage & Containment Plan\n"
+            "- Immediately assess scope and declare a P1 critical service disruption.\n"
+            "- Coordinate with SRE to isolate failing worker nodes and enforce circuit breaker failovers.\n"
+            "- Prioritize containment within our 30-minute SLA commitment to limit affected users.\n\n"
+            "### 2. Cross-Functional Coordination\n"
+            "- Engage engineering leads, customer success, and operations directors on an active bridge.\n"
+            "- Establish 15-minute sync cadences and assign single-threaded incident owners.\n\n"
+            "### 3. Executive Client Communication\n"
+            "Subject: Important Update Regarding Talentora Service Status\n\n"
+            "Dear Executive Leadership,\n"
+            "We are actively managing a temporary service disruption affecting batch processing. "
+            "Our engineering team has implemented traffic containment, and full restoration is expected within 25 minutes. "
+            "We sincerely apologize for the inconvenience and will provide updates every 15 minutes.\n\n"
+            "### 4. Preventive Measures\n"
+            "- Implement automated canary health checks and redundant multi-zone database read replicas.\n"
+            "- Schedule a comprehensive Post-Incident Review (PIR) to audit telemetry and root cause safeguards.\n"
+        )
+        submission = {
+            "code": response_text,
+            "answers": {
+                "q1": "We de-escalate using active listening, acknowledge SLA guarantees, and offer executive sponsor alignment.",
+                "q2": "We provide transparent MTTA, MTTR metrics, impact timeline, and direct ownership on remediation items."
+            }
+        }
+        test_run = talent_twin_engine.execute_code_against_tests(response_text, chal)
+        self.assertEqual(test_run["passed_count"], 3)
+
+        eval_res = talent_twin_engine.evaluate_simulation(chal, submission, cand, job)
+        self.assertGreaterEqual(eval_res["practical_score"], 80.0)
+        self.assertEqual(eval_res["confidence_badge"], "High Confidence")
 
 
 if __name__ == '__main__':
