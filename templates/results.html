@@ -36,15 +36,13 @@
             </div>
         </div>
 
-        <!-- Target Required Skills Chips -->
+        <!-- Target Skills Section -->
         {% if job.required_skills %}
-        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color-light); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-slate-heading);">Target Skills:</span>
-            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <div class="target-skills-wrap">
+            <span class="target-skills-label">Target Skills:</span>
+            <div class="skills-pill-cluster">
                 {% for s in job.required_skills %}
-                <span class="skill-tag-pill" style="background: var(--color-soft-sky); color: var(--color-arctic-blue); border-color: var(--color-soft-sky);">
-                    <i class="fa-solid fa-check" style="font-size: 0.7rem;"></i> {{ s }}
-                </span>
+                <span class="skill-pill-tag">{{ s }}</span>
                 {% endfor %}
             </div>
         </div>
@@ -230,23 +228,17 @@
                             {% endif %}
                         </td>
 
-                        <!-- Skills Matched Colored Chips -->
+                        <!-- Skills Matched -->
                         <td class="col-skills">
                             <div class="cand-skills-chips-wrap">
                                 {% for s in c.matched_skills[:3] %}
-                                    <span class="skill-chip-pill" title="Matched Requirement">
-                                        <i class="fa-solid fa-check"></i> {{ s }}
-                                    </span>
+                                    <span class="skill-pill-tag">{{ s }}</span>
                                 {% endfor %}
                                 {% if c.matched_skills|length > 3 %}
-                                    <span class="skill-chip-more" title="{{ c.matched_skills[3:]|join(', ') }}">
-                                        +{{ c.matched_skills|length - 3 }} more
-                                    </span>
+                                    <span class="skill-chip-more" title="{{ c.matched_skills[3:]|join(', ') }}">+{{ c.matched_skills|length - 3 }} more</span>
                                 {% elif not c.matched_skills and c.skills %}
                                     {% for s in c.skills[:2] %}
-                                        <span class="skill-chip-pill" style="background: var(--color-soft-sky-light); color: var(--color-arctic-blue); border-color: var(--color-soft-sky);">
-                                            <i class="fa-solid fa-tag"></i> {{ s }}
-                                        </span>
+                                        <span class="skill-pill-tag">{{ s }}</span>
                                     {% endfor %}
                                 {% endif %}
                             </div>

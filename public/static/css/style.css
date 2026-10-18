@@ -2047,48 +2047,121 @@ body.futuristic-app {
     border: 1px solid #CBD5E1;
 }
 
-/* Skills Matched Chips */
-.cand-skills-chips-wrap {
+/* ==========================================================================
+   TALENTORA AI - UNIFIED COMPACT LIGHT-BLUE SKILL PILL TAGS
+   ========================================================================== */
+
+.skill-pill-tag,
+.skill-tag-pill,
+.skill-chip-pill,
+.skill-pill-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #EFF6FF !important;           /* Soft light blue */
+    color: #2563EB !important;                /* Small, readable blue text */
+    border: 1px solid #DBEAFE !important;      /* Subtle border */
+    border-radius: 9999px !important;         /* Fully rounded compact pill */
+    padding: 4px 12px !important;             /* Consistent, neat padding */
+    font-size: 0.78rem !important;            /* Small, readable font */
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+    white-space: nowrap !important;
+    text-decoration: none !important;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.04) !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    cursor: default;
+    box-sizing: border-box;
+}
+
+.skill-pill-tag:hover,
+.skill-tag-pill:hover,
+.skill-chip-pill:hover,
+.skill-pill-btn:hover {
+    background: #DBEAFE !important;           /* Subtle light-blue hover accent */
+    color: #1D4ED8 !important;
+    border-color: #BFDBFE !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.12) !important;
+}
+
+button.skill-pill-tag,
+button.skill-pill-btn {
+    cursor: pointer !important;
+    font-family: inherit !important;
+    outline: none !important;
+}
+
+/* Target Skills Section Wrap & Single Responsive Wrapping Layout */
+.target-skills-wrap {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color-light);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 10px;
     flex-wrap: wrap;
-    max-width: 290px;
 }
 
-.skill-chip-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: #F0FDF4;
-    color: #047857;
-    border: 1px solid #BBF7D0;
-    font-size: 0.74rem;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: var(--radius-pill);
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
-
-.skill-chip-pill:hover {
-    background: #DCFCE7;
-    border-color: #86EFAC;
-    transform: translateY(-1px);
-}
-
-.skill-chip-more {
-    display: inline-flex;
-    align-items: center;
-    background: #F8FAFC;
-    color: #0D9488;
-    border: 1px solid #CCFBF1;
-    font-size: 0.72rem;
+.target-skills-label {
+    font-size: 0.8rem;
     font-weight: 700;
-    padding: 3px 8px;
-    border-radius: var(--radius-pill);
-    cursor: default;
+    color: var(--color-slate-heading);
     white-space: nowrap;
+    margin-right: 2px;
+}
+
+.skills-pill-cluster,
+.top-skills-pills,
+.cand-skills-chips-wrap {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    align-items: center !important;
+}
+
+/* More Skills Count Pill (+N more) */
+.skill-chip-more,
+.skill-tag-more {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #F8FAFC !important;
+    color: #0D9488 !important;
+    border: 1px solid #CCFBF1 !important;
+    border-radius: 9999px !important;
+    padding: 4px 9px !important;
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
+    white-space: nowrap !important;
+    cursor: default !important;
+}
+
+/* Missing Target Skills in Candidate Profile */
+.skill-pill-tag.is-missing,
+.skill-tag-pill.is-missing {
+    background: #FFF1F2 !important;
+    color: #E11D48 !important;
+    border-color: #FECDD3 !important;
+}
+.skill-pill-tag.is-missing:hover,
+.skill-tag-pill.is-missing:hover {
+    background: #FFE4E6 !important;
+    border-color: #FDA4AF !important;
+}
+
+/* Bonus / Additional Skills in Candidate Profile */
+.skill-pill-tag.is-bonus,
+.skill-tag-pill.is-bonus {
+    background: #F0FDFA !important;
+    color: #0D9488 !important;
+    border-color: #CCFBF1 !important;
+}
+.skill-pill-tag.is-bonus:hover,
+.skill-tag-pill.is-bonus:hover {
+    background: #CCFBF1 !important;
+    border-color: #99F6E4 !important;
 }
 
 /* Experience & Education Column */

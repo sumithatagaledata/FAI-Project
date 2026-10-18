@@ -53,12 +53,12 @@
                         </div>
 
                         <!-- Required Skills Preview -->
-                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px;">
+                        <div class="skills-pill-cluster" style="margin-bottom: 16px;">
                             {% for s in job.required_skills[:4] %}
-                                <span class="skill-tag-pill" style="font-size: 0.74rem; padding: 2px 8px;">{{ s }}</span>
+                                <span class="skill-pill-tag">{{ s }}</span>
                             {% endfor %}
                             {% if job.required_skills|length > 4 %}
-                                <span class="skill-tag-more" style="font-size: 0.74rem; padding: 2px 8px;">+{{ job.required_skills|length - 4 }}</span>
+                                <span class="skill-chip-more">+{{ job.required_skills|length - 4 }}</span>
                             {% endif %}
                         </div>
                     </div>

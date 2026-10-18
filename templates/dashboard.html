@@ -242,7 +242,7 @@
                 </div>
                 <div class="top-skills-pills">
                     {% for skill in summary.top_skills %}
-                        <button type="button" class="skill-pill-btn" onclick="filterBySkillPill('{{ skill }}')">
+                        <button type="button" class="skill-pill-tag" onclick="filterBySkillPill('{{ skill }}')">
                             {{ skill }}
                         </button>
                     {% endfor %}
@@ -385,19 +385,13 @@
                                 <td class="col-skills">
                                     <div class="cand-skills-chips-wrap">
                                         {% for s in c.matched_skills[:3] %}
-                                            <span class="skill-chip-pill" title="Matched Requirement">
-                                                <i class="fa-solid fa-check"></i> {{ s }}
-                                            </span>
+                                            <span class="skill-pill-tag">{{ s }}</span>
                                         {% endfor %}
                                         {% if c.matched_skills|length > 3 %}
-                                            <span class="skill-chip-more" title="{{ c.matched_skills[3:]|join(', ') }}">
-                                                +{{ c.matched_skills|length - 3 }} more
-                                            </span>
+                                            <span class="skill-chip-more" title="{{ c.matched_skills[3:]|join(', ') }}">+{{ c.matched_skills|length - 3 }} more</span>
                                         {% elif not c.matched_skills and c.skills %}
                                             {% for s in c.skills[:2] %}
-                                                <span class="skill-chip-pill" style="background: var(--color-soft-sky-light); color: var(--color-arctic-blue); border-color: var(--color-soft-sky);">
-                                                    <i class="fa-solid fa-tag"></i> {{ s }}
-                                                </span>
+                                                <span class="skill-pill-tag">{{ s }}</span>
                                             {% endfor %}
                                         {% endif %}
                                     </div>

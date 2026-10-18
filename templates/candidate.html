@@ -119,11 +119,9 @@
                     <span style="font-size: 0.74rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px;">
                         Matched Required Skills ({{ candidate.matched_skills|length }})
                     </span>
-                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <div class="skills-pill-cluster">
                         {% for s in candidate.matched_skills %}
-                            <span class="skill-tag-pill" style="background: var(--color-soft-teal); color: var(--color-teal); border-color: var(--color-soft-teal-border);">
-                                <i class="fa-solid fa-check" style="font-size: 0.7rem;"></i> {{ s }}
-                            </span>
+                            <span class="skill-pill-tag">{{ s }}</span>
                         {% endfor %}
                         {% if not candidate.matched_skills %}
                             <span style="font-size: 0.82rem; color: var(--color-slate-muted);">No explicit required skills detected in resume.</span>
@@ -136,11 +134,9 @@
                     <span style="font-size: 0.74rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px;">
                         Missing Target Skills ({{ candidate.missing_skills|length }})
                     </span>
-                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <div class="skills-pill-cluster">
                         {% for s in candidate.missing_skills %}
-                            <span class="skill-tag-pill" style="background: #FFF1F2; color: #E11D48; border-color: #FECDD3;">
-                                <i class="fa-solid fa-xmark" style="font-size: 0.7rem;"></i> {{ s }}
-                            </span>
+                            <span class="skill-pill-tag is-missing">{{ s }}</span>
                         {% endfor %}
                     </div>
                 </div>
@@ -151,11 +147,9 @@
                     <span style="font-size: 0.74rem; font-weight: 800; color: var(--color-slate-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px;">
                         Bonus / Additional Skills ({{ candidate.additional_skills|length }})
                     </span>
-                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <div class="skills-pill-cluster">
                         {% for s in candidate.additional_skills %}
-                            <span class="skill-tag-pill" style="background: var(--color-soft-sky); color: var(--color-arctic-blue); border-color: var(--color-soft-sky);">
-                                <i class="fa-solid fa-plus" style="font-size: 0.7rem;"></i> {{ s }}
-                            </span>
+                            <span class="skill-pill-tag is-bonus">{{ s }}</span>
                         {% endfor %}
                     </div>
                 </div>
